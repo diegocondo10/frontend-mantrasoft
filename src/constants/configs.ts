@@ -1,0 +1,5 @@
+const CONFIGS = {
+  TOKEN_KEY: 'MANTRA-TOKEN',
+  REFRESH_TOKEN_KEY: 'MANTRA-REFRES_TOKEN',
+};
+export default CONFIGS;
