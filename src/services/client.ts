@@ -12,7 +12,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      authorization: token ? `JWT ${token}` : '',
+      authorization: token ? `Bearer ${token}` : '',
     },
   };
 });
@@ -20,7 +20,7 @@ const authLink = setContext((_, { headers }) => {
 const client = new ApolloClient({
   link: authLink.concat(link),
   cache: new InMemoryCache(),
-  uri: `${URL_BASE}graphql`,
+  uri: `${URL_BASE}graphql/`,
   defaultOptions: {
     query: { fetchPolicy: 'no-cache' },
     watchQuery: {

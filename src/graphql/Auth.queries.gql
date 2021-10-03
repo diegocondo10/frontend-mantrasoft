@@ -1,0 +1,8 @@
+query myPerfil {
+  perfil {
+    username
+    firstName
+    lastName
+    lastLogin
+  }
+}
