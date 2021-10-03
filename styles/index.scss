@@ -4,3 +4,14 @@
 @import '~primeicons/primeicons.css';
 @import '~primereact/resources/primereact.min.css';
 @import '~primereact/resources/themes/mdc-light-indigo/theme.css';
+
+.grid-container {
+  height: 100vh !important;
+  width: 100%;
+  display: grid;
+  .center {
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+  }
+}

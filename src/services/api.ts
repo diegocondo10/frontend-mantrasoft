@@ -5,7 +5,8 @@ import { URL_BASE } from './urls';
 const API = {
   public(configs?: AxiosRequestConfig) {
     return axios.create({
-      url: `${URL_BASE}/api/`,
+      baseURL: `${URL_BASE}api/`,
+      responseType: 'json',
       ...configs,
     });
   },

@@ -1,7 +1,7 @@
+import Button from '@src/components/Button';
 import { PrimeIcons } from 'primereact/api';
 import { Menubar } from 'primereact/menubar';
 import React from 'react';
-import { Button } from 'react-bootstrap';
 
 const PrivateNavbar = () => {
   return (
@@ -14,7 +14,7 @@ const PrivateNavbar = () => {
       ]}
       end={
         <React.Fragment>
-          <Button>Salir</Button>
+          <Button outlined sm label="Salir" icon={PrimeIcons.POWER_OFF} variant="danger" href="/logout" />
         </React.Fragment>
       }
     />

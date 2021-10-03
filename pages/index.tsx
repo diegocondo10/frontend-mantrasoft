@@ -3,38 +3,9 @@ import type { NextPage } from 'next';
 
 const Home: NextPage = () => {
   return (
-    <PrivateLayout loading={{ loading: true }}>
-      <main>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
-        <h1 className="display-1">Hola mundo</h1>
+    <PrivateLayout loading={{ loading: false }}>
+      <main className="container">
+        <h1 className="display-6 text-center mt-5">Bienvenido</h1>
       </main>
     </PrivateLayout>
   );
