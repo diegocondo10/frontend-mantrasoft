@@ -73,6 +73,7 @@ const MedicamentosPage: NextPage<any> = () => {
               )}
             />
           </TablaPaginada>
+       
         </div>
       </main>
     </PrivateLayout>

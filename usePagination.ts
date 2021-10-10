@@ -83,6 +83,7 @@ const usePagination = ({ uri, key }) => {
         [evt.target.name]: evt?.target?.value || null,
       });
     },
+    setFilters,
     search,
   };
 };

@@ -48,6 +48,14 @@ const PrivateNavbar = () => {
             },
           ],
         },
+        {
+          icon: PrimeIcons.FOLDER,
+          label: 'Fichas',
+          items: [
+            { label: 'Pacientes', icon: PrimeIcons.FILE, url: '/fichas/pacientes' },
+            { label: 'Pacientes', icon: PrimeIcons.FILE, url: '/fichas/medicacion' },
+          ],
+        },
       ].map(mappItem),
     [],
   );

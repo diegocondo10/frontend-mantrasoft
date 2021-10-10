@@ -4,7 +4,8 @@ const USUARIOS = 'usuarios/';
 const PERSONAS = 'personas/';
 const HABITACIONES = 'habitaciones/';
 const MEDICAMENTOS = 'medicamentos/';
-
+const FICHAS_PACIENTES = 'fichas-ingreso/';
+const ALAS = 'alas/';
 /**
  * AUTH
  */
@@ -14,6 +15,12 @@ export const urlLogin = `${USUARIOS}login/`;
  * PERSONAS
  */
 export const urlListarPersonas = PERSONAS;
+
+/**
+ * ALAS
+ */
+//LIST PACIENTES
+export const urlListadoFilterPacientes = `${ALAS}listado-filter-pacientes/`;
 
 /**
  * HABITACIONES
@@ -28,3 +35,13 @@ export const urlCreateMedicamento = MEDICAMENTOS;
 export const urlUpdateMedicamento = (id: any) => `${MEDICAMENTOS}${id}/`;
 export const urlDeleteMedicamento = urlUpdateMedicamento;
 export const urlDetailMedicamento = urlUpdateMedicamento;
+
+/**
+ * FICHAS DE PACIENTES
+ */
+
+export const urlListarFichasPacientes = FICHAS_PACIENTES;
+export const urlCreateFichasPacientes = FICHAS_PACIENTES;
+export const urlUpdateFichasPacientes = (id: any) => `${FICHAS_PACIENTES}${id}/`;
+export const urlDeleteFichasPacientes = urlUpdateFichasPacientes;
+export const urlDetailFichasPacientes = urlUpdateFichasPacientes;
