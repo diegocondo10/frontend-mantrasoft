@@ -1,9 +1,10 @@
 import Button from '@src/components/Button';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
 import { CrudActions } from '@src/emuns/crudActions';
+import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlUpdateMedicamento } from '@src/services/urls';
+import { urlDetailMedicamento, urlUpdateMedicamento } from '@src/services/urls';
 import { AxiosResponse } from 'axios';
 import classNames from 'classnames';
 import { NextPage } from 'next';
@@ -14,14 +15,25 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 const FormMedicamentosPage: NextPage<any> = ({ crudAction, id }) => {
   const methods = useForm({ mode: 'onChange' });
-
   const router = useRouter();
+  const { addErrorToast } = useToasts();
+  const query = useQuery(['medicamento', crudAction, id], () => API.private().get(urlDetailMedicamento(id)), {
+    enabled: crudAction === CrudActions.UPDATE,
+    onSuccess(data) {
+      methods.reset(data?.data);
+    },
+    onError(err) {
+      addErrorToast('No se ha podido encontrar el registro');
+      router.push('/medicamentos');
+    },
+  });
 
   const updateMutation = useMutation<any>((formData: any) => API.private().put(urlUpdateMedicamento(id), formData));
+
   const createMutation = useMutation<any>((formData: any) => API.private().post(formData));
 
   const _onSubmit = async (formData) => {
@@ -38,7 +50,11 @@ const FormMedicamentosPage: NextPage<any> = ({ crudAction, id }) => {
   };
 
   return (
-    <PrivateLayout>
+    <PrivateLayout
+      loading={{
+        loading: query.isLoading || createMutation.isLoading || updateMutation.isLoading,
+      }}
+    >
       <main className="container-fluid">
         <div className="d-flex flex-row my-3 justify-content-center">
           <div className="align-self-center">

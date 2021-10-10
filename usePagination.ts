@@ -40,7 +40,7 @@ const usePagination = ({ uri, key }) => {
 
       const promise = API.private({
         cancelToken: source.token,
-      }).get(
+      }).get<any>(
         construirUrl({
           uri,
           page,
