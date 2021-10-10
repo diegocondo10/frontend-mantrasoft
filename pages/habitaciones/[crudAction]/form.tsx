@@ -1,30 +1,69 @@
 import Button from '@src/components/Button';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
+import { CrudActions } from '@src/emuns/crudActions';
+import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
+import API from '@src/services/api';
+import { urlDetailHabitacion, urlUpdateHabitacion } from '@src/services/urls';
+import { AxiosResponse } from 'axios';
 import classNames from 'classnames';
 import { NextPage } from 'next';
+import { useRouter } from 'next/dist/client/router';
 import { PrimeIcons } from 'primereact/api';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { useMutation, useQuery } from 'react-query';
 
-const HabitacionFormPage: NextPage<any> = (props) => {
+
+const HabitacionFormPage: NextPage<any> = ( crudAction, id) => {
 
   const methods = useForm({ mode: 'onChange' });
+  const router = useRouter();
+  const { addErrorToast } = useToasts();
+  const query = useQuery(['habitacion', CrudActions, id], () => API.private().get(urlDetailHabitacion(id)), {
+    enabled: crudAction === CrudActions.UPDATE,
+    onSuccess(data) {
+      methods.reset(data?.data);
+    },
+    onError(err) {
+      addErrorToast('No se ha podido encontrar el registro');
+      router.push('/habitaciones');
+    },
+  });
 
-  const _onSubmit = (formData) => {
-    console.log(formData);
+  const updateMutation = useMutation<any>((formData: any) => API.private().put(urlUpdateHabitacion(id), formData));
+
+  const createMutation = useMutation<any>((formData: any) => API.private().post(formData));
+
+  const _onSubmit = async (formData) => {
+    let res: AxiosResponse = null;
+
+    if (CrudActions.CREATE === crudAction) {
+      res = await createMutation.mutateAsync(formData);
+    } else if (CrudActions.UPDATE === crudAction) {
+      res = await updateMutation.mutateAsync(formData);
+    }
+    if (res.status === 201 || res.status === 200) {
+      router.push('/habitaciones');
+    }
   };
+  
 
   return(
-    <PrivateLayout title="Registro de habitaciones">
+    <PrivateLayout loading={{
+      loading: query.isLoading || createMutation.isLoading || updateMutation.isLoading,
+    }}>
       <main className="container-fluid">
         <div className="d-flex flex-row my-3 justify-content-center">
           <div className="align-self-center">
             <Button href="/habitaciones/" sm rounded icon={PrimeIcons.ARROW_LEFT} outlined />
           </div>
-          <h3 className="text-center align-self-center">Registro de información</h3>
+          {CrudActions.CREATE === crudAction && (
+            <h3 className="text-center align-self-center">Registro de información</h3>
+          )}
+          {CrudActions.UPDATE === crudAction && <h3 className="text-center align-self-center">Editar información</h3>}
         </div>
 
         <div className="row justify-content-center">

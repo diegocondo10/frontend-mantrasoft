@@ -37,7 +37,7 @@ const PrivateNavbar = () => {
           label: 'Catalogos',
           items: [
             {
-              label: 'Habicaciones',
+              label: 'Habitaciones',
               icon: PrimeIcons.LIST,
               url: '/habitaciones/',
             },

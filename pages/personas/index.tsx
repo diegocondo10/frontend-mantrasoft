@@ -26,7 +26,7 @@ const PersonasPage: NextPage<any> = () => {
     <PrivateLayout>
       <main className="container-fluid">
         <h1 className="text-center mt-3">
-          Listado de personas <Button icon={PrimeIcons.PLUS} variant="success" sm rounded href="/personas/create/" />
+          Listado de personas <Button icon={PrimeIcons.PLUS} variant="success" sm rounded href="/personas/form/" />
         </h1>
 
         <div className=" row row-cols-1">
