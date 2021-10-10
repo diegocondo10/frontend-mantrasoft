@@ -78,12 +78,10 @@ const usePagination = ({ uri, key }) => {
     },
     filters,
     changeFilter(evt: any) {
-      if (evt.target.name && evt.target.value) {
-        setFilters({
-          ...filters,
-          [evt.target.name]: evt.target.value || null,
-        });
-      }
+      setFilters({
+        ...filters,
+        [evt.target.name]: evt?.target?.value || null,
+      });
     },
     search,
   };

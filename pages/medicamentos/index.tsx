@@ -6,21 +6,30 @@ import { urlListarMedicamentos } from '@src/services/urls';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
+import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import React from 'react';
 import usePagination from 'usePagination';
 
 const MedicamentosPage: NextPage<any> = () => {
-  const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch } = usePagination({
-    uri: urlListarMedicamentos,
-    key: 'ListadoMedicamentos',
-  });
+  const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch, filters, changeFilter } =
+    usePagination({
+      uri: urlListarMedicamentos,
+      key: 'ListadoMedicamentos',
+    });
 
   const cabecera = (
     <div className="d-flex flex-row">
       <span className="p-inputgroup w-full lg:w-5">
         <InputText type="search" placeholder="Buscar" value={search} onChange={setSearch} />
-        {/* <Dropdown placeholder="Seleccione un ala" showClear /> */}
+        <Dropdown
+          placeholder="Seleccione"
+          name="via"
+          showClear
+          options={['VO', 'VA']}
+          value={filters.via}
+          onChange={changeFilter}
+        />
       </span>
     </div>
   );
@@ -46,6 +55,7 @@ const MedicamentosPage: NextPage<any> = () => {
             {ColumnaNo()}
             <Column header="Nombre" field="nombre" sortable />
             <Column header="Descripción" field="descripcion" sortable />
+            <Column header="Via" field="via" sortable />
             <Column
               header="Opciones"
               body={(rowData) => (
