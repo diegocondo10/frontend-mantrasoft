@@ -6,7 +6,7 @@ import { UrlObject } from 'url';
 
 export interface ButtonProps extends PropsWithoutRef<PrimeButtonProps> {
   href?: UrlObject | string;
-  variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'info' | 'help';
+  variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'info' | 'help' | 'success';
   outlined?: boolean;
   block?: boolean;
   sm?: boolean;
@@ -62,7 +62,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
           'p-button-outlined': outlined,
           'p-button-text': text,
           'p-button-sm': sm,
-          'p-button-lg': lg,
+          'p-button-lg': lg || false,
           'w-full': block,
         },
         className,

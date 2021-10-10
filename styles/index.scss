@@ -3,7 +3,7 @@
 @import '~primeflex/primeflex.css';
 @import '~primeicons/primeicons.css';
 @import '~primereact/resources/primereact.min.css';
-@import '~primereact/resources/themes/mdc-light-indigo/theme.css';
+@import '~primereact/resources/themes/tailwind-light/theme.css';
 
 .grid-container {
   height: 100vh !important;
@@ -14,4 +14,8 @@
     align-items: center;
     align-content: center;
   }
+}
+
+label {
+  font-size: 1.3rem;
 }
