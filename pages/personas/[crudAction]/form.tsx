@@ -9,22 +9,61 @@ import { InputText } from 'primereact/inputtext';
 import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { Calendar } from 'primereact/calendar';
+import { useRouter } from 'next/dist/client/router';
+import useToasts from '@src/hooks/useToasts';
+import { useMutation, useQuery } from 'react-query';
+import API from '@src/services/api';
+import { urlDetailPersona, urlUpdatePersona } from '@src/services/urls';
+import { CrudActions } from '@src/emuns/crudActions';
+import { AxiosResponse } from 'axios';
 
-const CreatePersonaPage: NextPage<any> = () => {
+const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
   const methods = useForm({ mode: 'onChange' });
 
-  const _onSubmit = (formData) => {
-    console.log(formData);
+  const router = useRouter();
+  const { addErrorToast } = useToasts();
+  const query = useQuery(['persona', crudAction, id], () => API.private().get(urlDetailPersona(id)), {
+    enabled: crudAction === CrudActions.UPDATE,
+    onSuccess(data) {
+      methods.reset(data?.data);
+    },
+    onError(err) {
+      addErrorToast('No se ha podido encontrar el registro');
+      router.push('/medicamentos');
+    },
+  });
+
+  const updateMutation = useMutation<any>((formData: any) => API.private().put(urlUpdatePersona(id), formData));
+
+  const createMutation = useMutation<any>((formData: any) => API.private().post(formData));
+
+  const _onSubmit = async (formData) => {
+    let res: AxiosResponse = null;
+
+    if (CrudActions.CREATE === crudAction) {
+      res = await createMutation.mutateAsync(formData);
+    } else if (CrudActions.UPDATE === crudAction) {
+      res = await updateMutation.mutateAsync(formData);
+    }
+    if (res.status === 201 || res.status === 200) {
+      router.push('/medicamentos');
+    }
   };
 
+
   return (
-    <PrivateLayout title="Registro de personas">
+    <PrivateLayout loading={{
+      loading: query.isLoading || createMutation.isLoading || updateMutation.isLoading,
+    }}>
       <main className="container-fluid">
         <div className="d-flex flex-row my-3 justify-content-center">
           <div className="align-self-center">
             <Button href="/personas" sm rounded icon={PrimeIcons.ARROW_LEFT} outlined />
           </div>
-          <h3 className="text-center align-self-center">Registro de información</h3>
+          {CrudActions.CREATE === crudAction && (
+            <h3 className="text-center align-self-center">Registro de información</h3>
+          )}
+          {CrudActions.UPDATE === crudAction && <h3 className="text-center align-self-center">Editar información</h3>}
         </div>
 
         <div className="row justify-content-center">

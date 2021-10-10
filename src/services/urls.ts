@@ -14,11 +14,19 @@ export const urlLogin = `${USUARIOS}login/`;
  * PERSONAS
  */
 export const urlListarPersonas = PERSONAS;
+export const urlCreatePersona = PERSONAS;
+export const urlUpdatePersona = (id: any) => `${PERSONAS}${id}/`;
+export const urlDeletePersona = urlUpdatePersona;
+export const urlDetailPersona = urlUpdatePersona;
 
 /**
  * HABITACIONES
  */
 export const urlListarHabitaciones = HABITACIONES;
+export const urlCreateHabitacion = HABITACIONES;
+export const urlUpdateHabitacion = (id: any) => `${HABITACIONES}${id}/`;
+export const urlDeleteHabitacion = urlUpdateHabitacion;
+export const urlDetailHabitacion = urlUpdateHabitacion;
 
 /**
  * MEDICAMENTOS
