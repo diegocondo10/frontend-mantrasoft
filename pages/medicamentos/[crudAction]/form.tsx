@@ -18,9 +18,10 @@ import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 
 const FormMedicamentosPage: NextPage<any> = ({ crudAction, id }) => {
-  const methods = useForm({ mode: 'onChange' });
+  const methods = useForm({ mode: 'onChange', shouldUnregister: true });
   const router = useRouter();
   const { addErrorToast } = useToasts();
+
   const query = useQuery(['medicamento', crudAction, id], () => API.private().get(urlDetailMedicamento(id)), {
     enabled: crudAction === CrudActions.UPDATE,
     onSuccess(data) {
@@ -37,15 +38,19 @@ const FormMedicamentosPage: NextPage<any> = ({ crudAction, id }) => {
   const createMutation = useMutation<any>((formData: any) => API.private().post(formData));
 
   const _onSubmit = async (formData) => {
-    let res: AxiosResponse = null;
+    try {
+      let res: AxiosResponse = null;
 
-    if (CrudActions.CREATE === crudAction) {
-      res = await createMutation.mutateAsync(formData);
-    } else if (CrudActions.UPDATE === crudAction) {
-      res = await updateMutation.mutateAsync(formData);
-    }
-    if (res.status === 201 || res.status === 200) {
-      router.push('/medicamentos');
+      if (CrudActions.CREATE === crudAction) {
+        res = await createMutation.mutateAsync(formData);
+      } else if (CrudActions.UPDATE === crudAction) {
+        res = await updateMutation.mutateAsync(formData);
+      }
+      if (res.status === 201 || res.status === 200) {
+        router.push('/medicamentos');
+      }
+    } catch (error) {
+      addErrorToast('Ha ocurrido un problema al guardar la información');
     }
   };
 
@@ -89,18 +94,19 @@ const FormMedicamentosPage: NextPage<any> = ({ crudAction, id }) => {
                     </div>
 
                     <div className="col-12">
-                      <label htmlFor="nombre">Via: *</label>
+                      <label htmlFor="via">Via: *</label>
                       <Controller
                         name="via"
                         rules={{ required: 'Este campo es obligatorio' }}
                         render={({ field, fieldState }) => (
                           <Dropdown
-                            id="via"
+                            inputId="via"
                             {...field}
                             placeholder="Seleccione"
                             options={['VO', 'VA']}
                             showClear
                             className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
+                            inputRef={field.ref}
                           />
                         )}
                       />
