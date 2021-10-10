@@ -29,7 +29,7 @@ const HabitacionesPage: NextPage<any> = () => {
     <PrivateLayout title="Habitaciones">
       <main className="container-fluid">
         <h1 className="text-center my-5">
-          Habitaciones <Button href="/habitaciones/create" variant="success" sm rounded icon={PrimeIcons.PLUS} />
+          Habitaciones <Button href="/habitaciones/create/form" variant="success" sm rounded icon={PrimeIcons.PLUS} />
         </h1>
         <div className="row row-cols-1">
           <TablaPaginada
