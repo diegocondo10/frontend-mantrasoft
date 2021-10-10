@@ -24,3 +24,7 @@ export const urlListarHabitaciones = HABITACIONES;
  * MEDICAMENTOS
  */
 export const urlListarMedicamentos = MEDICAMENTOS;
+export const urlCreateMedicamento = MEDICAMENTOS;
+export const urlUpdateMedicamento = (id: any) => `${MEDICAMENTOS}${id}/`;
+export const urlDeleteMedicamento = urlUpdateMedicamento;
+export const urlDetailMedicamento = urlUpdateMedicamento;

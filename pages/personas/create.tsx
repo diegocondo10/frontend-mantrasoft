@@ -78,12 +78,14 @@ const CreatePersonaPage: NextPage<any> = () => {
                         </div>
                       </div>
                     </div>
+                 
                   </form>
                 </FormProvider>
               </div>
             </div>
           </div>
         </div>
+      
       </main>
     </PrivateLayout>
   );
