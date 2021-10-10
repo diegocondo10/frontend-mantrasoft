@@ -8,23 +8,47 @@ import React, { useMemo } from 'react';
 const PrivateNavbar = () => {
   const router = useRouter();
 
+  const mappItem = (item: MenuItem) => ({
+    ...item,
+    command: () => {
+      if (item.url) {
+        router.push(item.url);
+      }
+    },
+    url: undefined,
+    items: item?.items?.map?.(mappItem) || undefined,
+  });
+
   const model = useMemo<MenuItem[]>(
-    () =>
+    (): MenuItem[] =>
       [
+        {
+          icon: PrimeIcons.HOME,
+          label: 'Inicio',
+          url: '/',
+        },
         {
           icon: PrimeIcons.USERS,
           label: 'Personas',
           url: '/personas/',
         },
-      ].map((item) => ({
-        ...item,
-        command: () => {
-          if (item.url) {
-            router.push(item.url);
-          }
+        {
+          icon: PrimeIcons.FOLDER,
+          label: 'Catalogos',
+          items: [
+            {
+              label: 'Habicaciones',
+              icon: PrimeIcons.LIST,
+              url: '/habitaciones/',
+            },
+            {
+              label: 'Medicamentos',
+              icon: PrimeIcons.LIST,
+              url: '/medicamentos/',
+            },
+          ],
         },
-        url: undefined,
-      })),
+      ].map(mappItem),
     [],
   );
 
