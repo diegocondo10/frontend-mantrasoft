@@ -3,7 +3,7 @@ import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import TablaPaginada from '@src/components/Tables/TablaPaginada';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlListadoFilterPacientes, urlListarFichasPacientes } from '@src/services/urls';
+import { urlListadoFilterPacientes, urlListarFichasIngreso } from '@src/services/urls';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
@@ -12,9 +12,8 @@ import { InputText } from 'primereact/inputtext';
 import React, { useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import usePagination from 'usePagination';
-import { SlideMenu } from 'primereact/slidemenu';
 
-const FichasPacientesPage: NextPage<any> = (props) => {
+const FichasIngresoPage: NextPage<any> = (props) => {
   const {
     isLoading,
     data,
@@ -28,8 +27,8 @@ const FichasPacientesPage: NextPage<any> = (props) => {
     changeFilter,
     setFilters,
   } = usePagination({
-    uri: urlListarFichasPacientes,
-    key: 'ListadoFichasPacientes',
+    uri: urlListarFichasIngreso,
+    key: 'ListadoFichasIngreso',
   });
 
   const query = useQuery(['alasHabitaciones'], () => API.private().get<any[]>(urlListadoFilterPacientes), {
@@ -89,15 +88,15 @@ const FichasPacientesPage: NextPage<any> = (props) => {
 
   return (
     <PrivateLayout
-      title="Fichas de pacientes"
+      title="Fichas de Ingreso"
       loading={{
         loading: isLoading || query.isLoading,
       }}
     >
       <main className="container-fluid">
         <h1 className="text-center my-5">
-          Fichas de pacientes
-          <Button href="/fichas/pacientes/create/form" variant="success" sm rounded icon={PrimeIcons.PLUS} />
+          Fichas de Ingreso
+          <Button href="/fichas/ingreso/create/form" variant="success" sm rounded icon={PrimeIcons.PLUS} />
         </h1>
 
         <div className="row row-cols-1">
@@ -125,7 +124,7 @@ const FichasPacientesPage: NextPage<any> = (props) => {
                     rounded
                     icon={PrimeIcons.PENCIL}
                     variant="info"
-                    href={`/fichas/pacientes/editar/form?id=${rowData?.id}`}
+                    href={`/fichas/ingreso/editar/form?id=${rowData?.id}`}
                   />
                   <Button sm rounded icon={PrimeIcons.INFO} variant="warning" />
                   <Button sm rounded icon={PrimeIcons.TRASH} variant="danger" />
@@ -140,4 +139,4 @@ const FichasPacientesPage: NextPage<any> = (props) => {
   );
 };
 
-export default FichasPacientesPage;
+export default FichasIngresoPage;

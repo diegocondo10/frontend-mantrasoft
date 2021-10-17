@@ -52,7 +52,7 @@ const PrivateNavbar = () => {
           icon: PrimeIcons.FOLDER,
           label: 'Fichas',
           items: [
-            { label: 'Pacientes', icon: PrimeIcons.FILE, url: '/fichas/pacientes' },
+            { label: 'Ingreso', icon: PrimeIcons.FILE, url: '/fichas/ingreso' },
             { label: 'Pacientes', icon: PrimeIcons.FILE, url: '/fichas/medicacion' },
           ],
         },

@@ -4,7 +4,7 @@ const USUARIOS = 'usuarios/';
 const PERSONAS = 'personas/';
 const HABITACIONES = 'habitaciones/';
 const MEDICAMENTOS = 'medicamentos/';
-const FICHAS_PACIENTES = 'fichas-ingreso/';
+const FICHAS_INGRESO = 'fichas-ingreso/';
 const ALAS = 'alas/';
 /**
  * AUTH
@@ -48,8 +48,9 @@ export const urlDetailMedicamento = urlUpdateMedicamento;
  * FICHAS DE PACIENTES
  */
 
-export const urlListarFichasPacientes = FICHAS_PACIENTES;
-export const urlCreateFichasPacientes = FICHAS_PACIENTES;
-export const urlUpdateFichasPacientes = (id: any) => `${FICHAS_PACIENTES}${id}/`;
-export const urlDeleteFichasPacientes = urlUpdateFichasPacientes;
-export const urlDetailFichasPacientes = urlUpdateFichasPacientes;
+export const urlListarFichasIngreso = FICHAS_INGRESO;
+export const urlCatalogoForm = `${FICHAS_INGRESO}catalogo-form-ficha/`;
+export const urlCreateFichasIngreso = FICHAS_INGRESO;
+export const urlUpdateFichasIngreso = (id: any) => `${FICHAS_INGRESO}${id}/`;
+export const urlDeleteFichasIngreso = urlUpdateFichasIngreso;
+export const urlDetailFichasIngreso = urlUpdateFichasIngreso;
