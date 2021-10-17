@@ -471,17 +471,8 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-vision"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-vision"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-
-                          <label htmlFor="input-cardiovascular" className="mx-2">
-                              5. CARDIOVASCULAR
+                          <label htmlFor="input-comportamiento" className="mx-2">
+                              6. ALTERACIONES DEL COMPORTAMIENTO
                             </label>
                             <input
                               className="align-self-center"
@@ -490,34 +481,6 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-vision"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                            />
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-vision"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-
-                            <label htmlFor="input-audicion" className="mx-2">
-                              6. DIGESTIVO
-                            </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-vision"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                            />
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-vision"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
                             />
                           </div>
                           
