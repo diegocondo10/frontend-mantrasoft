@@ -1,5 +1,6 @@
 import React from 'react';
 import { Controller } from 'react-hook-form';
+import HiddenField from './HiddenField';
 import { ControllerProps } from './types';
 
 export interface CheckBoxOption {
@@ -21,45 +22,53 @@ const CheckOptionsInlineCirculoCuadrado: React.FC<CheckOptionsInlineCirculoCuadr
         <div>
           {props.options.map((option) => (
             <Controller
-              key={option.controller.name}
+              key={option.labelText}
               {...option.controller}
+              defaultValue={{
+                circuloChecked: false,
+                cuadradoChecked: false,
+                ...option.controller.defaultValue,
+              }}
               render={({ field }) => (
-                <div className="d-inline-flex flex-wrap me-5">
+                <div className="d-inline-flex flex-wrap me-5 w-full md:w-max">
                   <div className="d-inline-flex flex-wrap">
                     <div>
-                      <label className="me-2">{option.labelText}</label>
-
-                      <input
-                        className="align-self-center checkbox-round"
-                        type="checkbox"
-                        id={`${option.labelText}-circulo`}
-                        checked={field.value?.circuloChecked}
-                        onChange={(evt) =>
-                          field.onChange({
-                            ...option.valueCirculo,
-                            label: option.labelText,
-                            circuloChecked: evt.target.checked,
-                            cuadradoChecked: false,
-                          })
-                        }
+                      <label style={{ fontSize: '1.25rem' }} className="me-2">
+                        {option.labelText}
+                      </label>
+                      <HiddenField name={`${option.controller.name}.label`} defaultValue={option.labelText} />
+                      <HiddenField name={`${option.controller.name}.valueCirculo`} defaultValue={option.valueCirculo} />
+                      <HiddenField
+                        name={`${option.controller.name}.valueCuadrado`}
+                        defaultValue={option.valueCuadrado}
                       />
 
-                      <input
-                        className="align-self-center ms-2 checkbox-cuadrado"
-                        type="checkbox"
-                        checked={field.value?.cuadradoChecked}
-                        style={{
-                          borderRadius: '50%',
-                        }}
-                        onChange={(evt) =>
-                          field.onChange({
-                            ...option.valueCirculo,
-                            label: option.labelText,
-                            cuadradoChecked: evt.target.checked,
-                            circuloChecked: false,
-                          })
-                        }
-                      />
+                      <div className="d-inline-block">
+                        <input
+                          className="align-self-center checkbox-round"
+                          type="checkbox"
+                          id={`${option.labelText}-circulo`}
+                          checked={field.value?.circuloChecked}
+                          onChange={(evt) =>
+                            field.onChange({
+                              circuloChecked: evt.target.checked,
+                              cuadradoChecked: false,
+                            })
+                          }
+                        />
+
+                        <input
+                          className="align-self-center ms-2 checkbox-cuadrado"
+                          type="checkbox"
+                          checked={field.value?.cuadradoChecked}
+                          onChange={(evt) =>
+                            field.onChange({
+                              cuadradoChecked: evt.target.checked,
+                              circuloChecked: false,
+                            })
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

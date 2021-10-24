@@ -1,5 +1,6 @@
 import React from 'react';
 import { Controller } from 'react-hook-form';
+import HiddenField from './HiddenField';
 import { ControllerProps } from './types';
 
 export interface CheckBoxOption {
@@ -20,21 +21,31 @@ const CheckOptionsMultipleInline: React.FC<CheckOptionsMultipleInlineProps> = (p
         <div>
           {props.options.map((option) => (
             <Controller
-              key={option.controller.name}
+              key={option.labelText}
               {...option.controller}
+              defaultValue={{
+                checked: false,
+                ...option.controller?.defaultValue,
+              }}
               render={({ field }) => (
-                <div className="d-inline-flex flex-wrap me-5">
+                <div className="d-inline-flex flex-wrap w-full md:w-max md:mr-5">
                   <div className="d-inline-flex flex-wrap">
-                    <div>
-                      <label htmlFor={option.labelText}>{option.labelText}</label>
+                    <label style={{ fontSize: '1.25rem' }} htmlFor={option.labelText}>
+                      {option.labelText}
+                      <HiddenField name={`${option.controller.name}.label`} defaultValue={option.labelText} />
+                      <HiddenField name={`${option.controller.name}.value`} defaultValue={option.value} />
                       <input
                         className="align-self-center ms-1"
                         type="checkbox"
                         id={option.labelText}
-                        checked={field.value}
-                        onChange={(evt) => field.onChange(evt.target.checked)}
+                        checked={field.value?.checked}
+                        onChange={(evt) => {
+                          field.onChange({
+                            checked: evt.target.checked,
+                          });
+                        }}
                       />
-                    </div>
+                    </label>
                   </div>
                 </div>
               )}

@@ -21,21 +21,21 @@ const CheckOptionsInline: React.FC<CheckOptionsInlineProps> = (props) => {
       render={({ field }) => (
         <div className="d-flex flex-column">
           <div className="d-inline-flex flex-wrap">
-            <label>{props.label}</label>
+            <label className="me-3 font-bold w-full md:w-max">{props.label}</label>
             <div className="d-inline-flex flex-wrap">
               {props.options.map((option) => (
-                <div key={option.labelText}>
-                  <label className="ms-4 me-2" htmlFor={option.labelText}>
+                <div key={option.labelText} className="w-full md:w-max">
+                  <label style={{ fontSize: '1.25rem' }} className="sm:mr-3" htmlFor={option.labelText}>
                     {option.labelText}
+                    <input
+                      className="align-self-center ms-2"
+                      type="checkbox"
+                      //   value={option.value}
+                      checked={field.value === option.value}
+                      id={option.labelText}
+                      onChange={() => field.onChange(option.value)}
+                    />
                   </label>
-                  <input
-                    className="align-self-center"
-                    type="checkbox"
-                    //   value={option.value}
-                    checked={field.value === option.value}
-                    id={option.labelText}
-                    onChange={() => field.onChange(option.value)}
-                  />
                 </div>
               ))}
             </div>

@@ -656,9 +656,6 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                       <hr />
                     </div>
 
-                    
-
-                    
                     <Controller
                       name="observaciones"
                       defaultValue=""
@@ -746,12 +743,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                       />
                       <hr />
                     </div>
-                    
-                  
 
-                    
-
-                    
                     <Controller
                       name="observaciones"
                       defaultValue=""
