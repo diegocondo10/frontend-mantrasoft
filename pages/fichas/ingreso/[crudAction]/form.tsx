@@ -753,6 +753,181 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             <div className="row justify-content-center my-3">
               <div className="col-11 border">
                 <div className="d-flex flex-column m-3">
+                  <div className="d-flex flex-row flex-wrap justify-content-between">
+                    <label className="my-1">7. EXAMEN FÍSICO: </label>
+                    <div className="my-1">
+                      <h6>REDONDO = CON PATOLOGÍA: DESCRIBIRCON EL NUMERO</h6>
+                      <h6>CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
+                    </div>
+
+                    <div className="w-100">
+                      <CheckOptionsInlineCirculoCuadrado
+                          label="REGIONAL (1-14)"
+                        options={[
+                          {
+                            labelText: '1. PIEL',
+                            controller: {
+                              name: 'examenFisico.regional.piel',
+                            },
+                          },
+                          {
+                            labelText: '2. CABEZA',
+                            controller: {
+                              name: 'examenFisico.regional.cabeza',
+                            },
+                          },
+                          {
+                            labelText: '3. OJOS',
+                            controller: {
+                              name: 'examenFisico.regional.ojos',
+                            },
+                          },
+                          {
+                            labelText: '4. OÍDOS',
+                            controller: {
+                              name: 'examenFisico.regional.oidos',
+                            },
+                          },
+                          {
+                            labelText: '5. BOCA',
+                            controller: {
+                              name: 'examenFisico.regional.boca',
+                            },
+                          },
+                          {
+                            labelText: '6. NARIZ',
+                            controller: {
+                              name: 'examenFisico.regional.nariz',
+                            },
+                          },
+                          {
+                            labelText: '7. CUELLO',
+                            controller: {
+                              name: 'examenFisico.regional.cuello',
+                            },
+                          },
+                          {
+                            labelText: '8. AXILA-MAMA',
+                            controller: {
+                              name: 'examenFisico.regional.axilamama',
+                            },
+                          },
+                          {
+                            labelText: '9. TORAX',
+                            controller: {
+                              name: 'examenFisico.regional.torax',
+                            },
+                          },
+                          {
+                            labelText: '10. ABDOMEN',
+                            controller: {
+                              name: 'examenFisico.regional.abdomen',
+                            },
+                          },
+                          {
+                            labelText: '11. COLUMNA',
+                            controller: {
+                              name: 'examenFisico.regional.columna',
+                            },
+                          },
+                          {
+                            labelText: '12. PERINÉ',
+                            controller: {
+                              name: 'examenFisico.regional.perine',
+                            },
+                          },
+                          {
+                            labelText: '13. M. SUPERIORES',
+                            controller: {
+                              name: 'examenFisico.regional.msuperiores',
+                            },
+                          },
+                          {
+                            labelText: '14. M. INFERIORES',
+                            controller: {
+                              name: 'examenFisico.regional.minferiores',
+                            },
+                          },
+                        ]}
+                      />
+
+                      <TextArea controller={{ name: 'antecedentesFamiliares.antecedentes.observaciones' }} block />
+                      <hr />
+                    </div>
+
+                    <div className="w-100">
+                      <CheckOptionsInlineCirculoCuadrado
+                          label="SISTEMATICO (1-9)"
+                        options={[
+                          {
+                            labelText: '1. ORG DE LOS SENTIDOS',
+                            controller: {
+                              name: 'examenFisico.sistematico.orgsentidos',
+                            },
+                          },
+                          {
+                            labelText: '2. RESPIRATORIO',
+                            controller: {
+                              name: 'examenFisico.sistematico.respiratorio',
+                            },
+                          },
+                          {
+                            labelText: '3. CARDIO VASCULAR',
+                            controller: {
+                              name: 'examenFisico.sistematico.cardiovascular',
+                            },
+                          },
+                          {
+                            labelText: '4. DIGESTIVO',
+                            controller: {
+                              name: 'examenFisico.sistematico.digestivo',
+                            },
+                          },
+                          {
+                            labelText: '5. DENITO URINARIO',
+                            controller: {
+                              name: 'examenFisico.sistematico.denitourinario',
+                            },
+                          },
+                          {
+                            labelText: '6. MUSCULO ESQUELETICO',
+                            controller: {
+                              name: 'examenFisico.sistematico.musculoesqueletico',
+                            },
+                          },
+                          {
+                            labelText: '7. ENDOCRINO',
+                            controller: {
+                              name: 'examenFisico.sistematico.endocrino',
+                            },
+                          },
+                          {
+                            labelText: '8. HEMO LINFATICO',
+                            controller: {
+                              name: 'examenFisico.sistematico.hemolinfatico',
+                            },
+                          },
+                          {
+                            labelText: '9. NEUROLÓGICO',
+                            controller: {
+                              name: 'examenFisico.sistematico.neurologico',
+                            },
+                          },
+
+                        ]}
+                      />
+                      <TextArea controller={{ name: 'examenFisico.observaciones' }} block />
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="row justify-content-center my-3">
+              <div className="col-11 border">
+                <div className="d-flex flex-column m-3">
                   <h4>9. PRUEBAS DIAGNÓSTICAS:</h4>
                   <h6>REGISTRAR LOS EXÁMENES DE LABORATORIO Y ESPECIALES SOLICITADOS</h6>
                   <div>
