@@ -9,7 +9,7 @@ import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
-import React, { useEffect, useMemo } from 'react';
+import React, { CSSProperties, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 import usePagination from 'usePagination';
 
@@ -112,13 +112,16 @@ const FichasIngresoPage: NextPage<any> = (props) => {
             loading={isLoading}
           >
             {ColumnaNo()}
-            <Column header="Paciente" field="paciente.str" sortable />
-            <Column header="Ala" field="habitacion.ala.str" sortable />
-            <Column header="Habitación" field="habitacion.numero" sortable />
+            <Column header="Código" field="id" sortable />
+            <Column header="Paciente" field="pacienteView.str" sortable />
+            <Column header="Ala" field="habitacionView.ala.str" sortable />
+            <Column header="Habitación" field="habitacionView.numero" sortable />
             <Column
               header="Opciones"
+              bodyClassName="p-0 m-0"
+              style={{ width: '250px' } as CSSProperties}
               body={(rowData) => (
-                <div className="d-flex flex-row justify-content-around">
+                <div className="d-flex flex-row flex-wrap justify-content-around">
                   <Button
                     sm
                     rounded
@@ -126,6 +129,7 @@ const FichasIngresoPage: NextPage<any> = (props) => {
                     variant="info"
                     href={`/fichas/ingreso/editar/form?id=${rowData?.id}`}
                   />
+                  <Button sm rounded icon={PrimeIcons.PRINT} variant="success" />
                   <Button sm rounded icon={PrimeIcons.INFO} variant="warning" />
                   <Button sm rounded icon={PrimeIcons.TRASH} variant="danger" />
                   <Button sm rounded icon={PrimeIcons.COG} variant="help" />

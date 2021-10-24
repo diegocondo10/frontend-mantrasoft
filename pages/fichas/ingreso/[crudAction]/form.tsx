@@ -9,20 +9,58 @@ import TextInput from '@src/components/Forms/TextInput';
 import { CrudActions } from '@src/emuns/crudActions';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlCatalogoForm } from '@src/services/urls';
+import {
+  urlCatalogoForm,
+  urlCreateFichasIngreso,
+  urlDetailFichasIngreso,
+  urlUpdateFichasIngreso,
+} from '@src/services/urls';
 import { NextPage } from 'next';
+import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
-const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActions }> = (props) => {
+const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActions }> = ({ id, crudAction }) => {
   const methods = useForm({ mode: 'onChange' });
 
-  const queryCatalogo = useQuery<any>(['pacientes-ficha'], () => API.private().get<any>(urlCatalogoForm));
+  const queryCatalogo = useQuery<any>(['pacientes-ficha-catalogo'], () => API.private().get<any>(urlCatalogoForm));
+  useQuery<any>(['pacientes-ficha', id], () => API.private().get<any>(urlDetailFichasIngreso(id)), {
+    enabled: id !== undefined && crudAction === CrudActions.UPDATE,
+    onSuccess: ({ data }) => {
+      console.log(data);
+      methods.reset(data);
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const method = useMemo(
+    () => ({
+      create: 'post',
+      editar: 'put',
+    }),
+    [],
+  );
+
+  const url = useMemo(
+    () => ({
+      create: urlCreateFichasIngreso,
+      editar: urlUpdateFichasIngreso(id),
+    }),
+    [],
+  );
+
+  const mutation = useMutation((formData) => API.private()[method[crudAction]](url[crudAction], formData));
 
   const onSubmit = async (formData) => {
-    console.log(formData);
+    try {
+      await mutation.mutateAsync(formData);
+      console.log(formData);
+      router.push('/fichas/ingreso');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -42,14 +80,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
         <FormProvider {...methods}>
           <form className="row justify-content-center" onSubmit={methods.handleSubmit(onSubmit)}>
             <div className="md:col-8 lg:col-6">
-              <label htmlFor="paciente" className="w-full">
+              <label htmlFor="paciente" className="w-full font-bold">
                 Buscar paciente: *
               </label>
 
               <DropDown
-                controller={{ name: 'paciente' }}
+                controller={{ name: 'paciente', rules: { required: 'Este campo es obligatorio' } }}
                 options={queryCatalogo?.data?.data?.pacientes || []}
                 block
+                filter
+                filterMatchMode="contains"
                 showClear
               />
 
@@ -57,18 +97,20 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="md:col-8 lg:col-5">
-              <label htmlFor="paciente" className="w-full">
+              <label htmlFor="paciente" className="w-full font-bold">
                 Buscar Habitación: *
               </label>
 
               <DropDown
-                controller={{ name: 'paciente' }}
+                controller={{ name: 'habitacion', rules: { required: 'Este campo es obligatorio' } }}
                 options={queryCatalogo?.data?.data?.habitaciones || []}
                 block
                 showClear
                 optionLabel="label"
                 optionGroupLabel="label"
                 optionGroupChildren="items"
+                filter
+                filterMatchMode="contains"
                 optionGroupTemplate={(option) => (
                   <div className="d-flex flex-column">
                     <div>{option.label}</div>
@@ -80,30 +122,56 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-11 border">
+              <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
                   <h3>INFORMACIÓN GENERAL</h3>
                   <div className="my-2">
-                    <label htmlFor="contenido.viveCon">VIVE CON: *</label>
-                    <TextInput controller={{ name: 'contenido.viveCon' }} block />
+                    <label htmlFor="contenido.viveCon" className="font-bold">
+                      VIVE CON: *
+                    </label>
+                    <TextInput
+                      controller={{ name: 'contenido.viveCon', rules: { required: 'Este campo es obligatorio' } }}
+                      block
+                    />
+                    <ErrorMessage name="contenido.viveCon" />
                   </div>
                   <div className="my-2">
-                    <label htmlFor="contenido.ocupacionAnterior">OCUPACIÓN ANTERIOR: *</label>
-                    <TextInput controller={{ name: 'contenido.ocupacionAnterior' }} block />
+                    <label htmlFor="contenido.ocupacionAnterior" className="font-bold">
+                      OCUPACIÓN ANTERIOR: *
+                    </label>
+                    <TextInput
+                      controller={{
+                        name: 'contenido.ocupacionAnterior',
+                        rules: { required: 'Este campo es obligatorio' },
+                      }}
+                      block
+                    />
+                    <ErrorMessage name="contenido.ocupacionAnterior" />
                   </div>
                   <div className="my-2">
-                    <label htmlFor="contenido.ocupacionActual">OCUPACIÓN ACTUAL: *</label>
-                    <TextInput controller={{ name: 'contenido.ocupacionActual' }} block />
+                    <label htmlFor="contenido.ocupacionActual" className="font-bold">
+                      OCUPACIÓN ACTUAL: *
+                    </label>
+                    <TextInput
+                      controller={{
+                        name: 'contenido.ocupacionActual',
+                        rules: { required: 'Este campo es obligatorio' },
+                      }}
+                      block
+                    />
+                    <ErrorMessage name="contenido.ocupacionActual" />
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-11 border">
+              <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
-                    <label htmlFor="contenido.motivoConsulta">MOTIVO DE CONSULTA: *</label>
+                    <label htmlFor="contenido.motivoConsulta" className="font-bold">
+                      MOTIVO DE CONSULTA: *
+                    </label>
                     <CheckOptionsInline
                       label="INFORMANTE: *"
                       controller={{
@@ -137,10 +205,10 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-11 border">
+              <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
                   <div className="row justify-content-between">
-                    <label className="col-12 md:col-6" htmlFor="contenido.enfermedades">
+                    <label className="col-12 font-bold md:col-6" htmlFor="contenido.enfermedades">
                       2. ENFERMEDADES O PROBLEMA ACTUAL: *
                     </label>
                     <h6 className="md:text-right col-12 md:col-6">
@@ -201,7 +269,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-11 border">
+              <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
                     <label className="my-1">3. REVISIÓN ACTUAL DE SISTEMAS: </label>
@@ -268,7 +336,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-11 border">
+              <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
                     <label className="my-1">4. ANTECEDENTES PERSONALES: </label>
@@ -683,7 +751,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-11 border">
+              <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
                     <label className="my-1">5. ANTECEDENTES FAMILIARES Y SOCIALES: </label>
@@ -768,7 +836,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-11 border">
+              <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
                   <label className="my-1">6. SIGNOS VITALES, ANTROPOMETRIA Y TAMIZAJE: </label>
                   <div className="d-flex flex-row flex-wrap justify-content-around">
@@ -995,7 +1063,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-11 border">
+              <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
                     <label className="my-1">7. EXAMEN FÍSICO: </label>
@@ -1169,7 +1237,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
               </div>
             </div>
             <div className="row justify-content-center my-3">
-              <div className="col-11 border">
+              <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
                   <h4>9. PRUEBAS DIAGNÓSTICAS:</h4>
                   <h6>REGISTRAR LOS EXÁMENES DE LABORATORIO Y ESPECIALES SOLICITADOS</h6>
@@ -1180,7 +1248,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
               </div>
             </div>
             <div className="row justify-content-center my-3">
-              <div className="col-11 border">
+              <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
                   <h4>10. DIAGNÓSTICO:</h4>
                   <h6>1.FUNCIONAL, 2.NUTRICIONAL, 3.PSICOLÓGICO, 4.SOCIAL, 5.EDUCATIVO, 6.FARMACOLÓGICO</h6>
