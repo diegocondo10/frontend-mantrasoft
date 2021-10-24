@@ -1,5 +1,11 @@
 import Button from '@src/components/Button';
+import CheckOptionsInline from '@src/components/Forms/CheckOptionsInline';
+import CheckOptionsInlineCirculoCuadrado from '@src/components/Forms/CheckOptionsInlineCirculoCuadrado';
+import CheckOptionsMultipleInline from '@src/components/Forms/CheckOptionsMultipleInline';
+import DropDown from '@src/components/Forms/DropDown';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
+import TextArea from '@src/components/Forms/TextArea';
+import TextInput from '@src/components/Forms/TextInput';
 import { CrudActions } from '@src/emuns/crudActions';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
@@ -7,7 +13,6 @@ import { urlCatalogoForm } from '@src/services/urls';
 import classNames from 'classnames';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
-import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import React from 'react';
@@ -43,22 +48,14 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
               <label htmlFor="paciente" className="w-full">
                 Buscar paciente: *
               </label>
-              <Controller
-                name="paciente"
-                rules={{
-                  required: 'Este campo es obligatorio',
-                }}
-                render={({ field, fieldState }) => (
-                  <Dropdown
-                    autoFocus
-                    options={queryCatalogo?.data?.data?.pacientes || []}
-                    className={classNames('w-full', {
-                      'p-invalid': fieldState.invalid,
-                    })}
-                    {...field}
-                  />
-                )}
+
+              <DropDown
+                controller={{ name: 'paciente' }}
+                options={queryCatalogo?.data?.data?.pacientes || []}
+                block
+                showClear
               />
+
               <ErrorMessage name="paciente" />
             </div>
 
@@ -66,29 +63,20 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
               <label htmlFor="paciente" className="w-full">
                 Buscar Habitación: *
               </label>
-              <Controller
-                name="habitacion"
-                rules={{
-                  required: 'Este campo es obligatorio',
-                }}
-                render={({ field, fieldState }) => (
-                  <Dropdown
-                    autoFocus
-                    options={queryCatalogo?.data?.data?.habitaciones || []}
-                    className={classNames('w-full', {
-                      'p-invalid': fieldState.invalid,
-                    })}
-                    optionLabel="label"
-                    optionGroupLabel="label"
-                    optionGroupChildren="items"
-                    optionGroupTemplate={(option) => (
-                      <div className="d-flex flex-column">
-                        <div>{option.label}</div>
-                        <div className="ms-1">Habitaciones:</div>
-                      </div>
-                    )}
-                    {...field}
-                  />
+
+              <DropDown
+                controller={{ name: 'paciente' }}
+                options={queryCatalogo?.data?.data?.habitaciones || []}
+                block
+                showClear
+                optionLabel="label"
+                optionGroupLabel="label"
+                optionGroupChildren="items"
+                optionGroupTemplate={(option) => (
+                  <div className="d-flex flex-column">
+                    <div>{option.label}</div>
+                    <div className="ms-1">Habitaciones:</div>
+                  </div>
                 )}
               />
               <ErrorMessage name="habitacion" />
@@ -97,18 +85,18 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             <div className="row justify-content-center my-3">
               <div className="col-11 border">
                 <div className="d-flex flex-column m-3">
-                  <h4>INFORMACIÓN GENERAL</h4>
-                  <div>
-                    <label htmlFor="">VIVE CON: *</label>
-                    <InputText className="w-full" />
+                  <h3>INFORMACIÓN GENERAL</h3>
+                  <div className="my-2">
+                    <label htmlFor="viveCon">VIVE CON: *</label>
+                    <TextInput controller={{ name: 'viveCon' }} block />
                   </div>
-                  <div>
-                    <label htmlFor="">OCUPACIÓN ANTERIOR: *</label>
-                    <InputText className="w-full" />
+                  <div className="my-2">
+                    <label htmlFor="ocupacionAnterior">OCUPACIÓN ANTERIOR: *</label>
+                    <TextInput controller={{ name: 'ocupacionAnterior' }} block />
                   </div>
-                  <div>
-                    <label htmlFor="">OCUPACIÓN ACTUAL: *</label>
-                    <InputText className="w-full" />
+                  <div className="my-2">
+                    <label htmlFor="ocupacionActual">OCUPACIÓN ACTUAL: *</label>
+                    <TextInput controller={{ name: 'ocupacionActual' }} block />
                   </div>
                 </div>
               </div>
@@ -118,56 +106,34 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
               <div className="col-11 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
-                    <label>MOTIVO DE CONSULTA: *</label>
-                    <Controller
-                      name="informante"
-                      rules={{
-                        required: 'Es necesario seleccionar un tipo de informante',
+                    <label htmlFor="motivoConsulta">MOTIVO DE CONSULTA: *</label>
+                    <CheckOptionsInline
+                      label="INFORMANTE: *"
+                      controller={{
+                        name: 'informante',
+                        rules: { required: 'Este campo es obligatorio' },
                       }}
-                      render={({ field }) => (
-                        <div className="d-flex flex-column">
-                          <div className="d-inline-flex">
-                            <label htmlFor="" className=" me-3">
-                              INFORMANTE: *
-                            </label>
-                            <label htmlFor="input-usuario" className="mx-2">
-                              USUARIO
-                            </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="USUARIO"
-                              checked={field.value === 'USUARIO'}
-                              id="input-usuario"
-                              onChange={() => field.onChange('USUARIO')}
-                            />
-
-                            <label className="ms-4 me-2" htmlFor="input-cuidador">
-                              CUIDADOR
-                            </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CUIDADOR"
-                              checked={field.value === 'CUIDADOR'}
-                              id="input-cuidador"
-                              onChange={() => field.onChange('CUIDADOR')}
-                            />
-                          </div>
-                          <ErrorMessage name="informante" />
-                        </div>
-                      )}
+                      options={[
+                        {
+                          labelText: 'USUARIO',
+                          value: 'USUARIO',
+                        },
+                        {
+                          labelText: 'CUIDADOR',
+                          value: 'CUIDADOR',
+                        },
+                      ]}
                     />
                   </div>
 
-                  <Controller
-                    name="motivoConsulta"
-                    rules={{ required: 'Este campo es obligatorio' }}
-                    defaultValue=""
-                    render={({ field, fieldState }) => (
-                      <InputTextarea className={classNames('w-full', { 'p-invalid': fieldState.invalid })} {...field} />
-                    )}
+                  <TextArea
+                    controller={{
+                      name: 'motivoConsulta',
+                      defaultValue: '',
+                      rules: { required: 'Este campo es obligatorio' },
+                    }}
                   />
+
                   <ErrorMessage name="motivoConsulta" />
                 </div>
               </div>
@@ -176,226 +142,60 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             <div className="row justify-content-center my-3">
               <div className="col-11 border">
                 <div className="d-flex flex-column m-3">
-                  <div className="d-flex flex-row flex-wrap justify-content-between">
-                    <label>2. ENFERMEDADES O PROBLEMA ACTUAL: *</label>
-                    <h6>CRONOLOGÍA, LOCALIZACIÓN, CARACTERÍSTICAS, INTENSIDAD, CAUSA APARENTE, FACTORES QUE AGRAVAN O MEJORAN, SÍNTOMAS ASOCIADOS, EVOLUCIÓN, RESULTADOS DE EXÁMENES ANTERIORES</h6>
-                    <Controller
-                    name="enfermedades"
-                    rules={{ required: 'Este campo es obligatorio' }}
-                    defaultValue=""
-                    render={({ field, fieldState }) => (
-                      <InputTextarea className={classNames('w-full', { 'p-invalid': fieldState.invalid })} {...field} />
-                    )}
-                  />
-                  <ErrorMessage name="enfermedades" />
-                  <label>MEDICAMENTOS QUE INGIERE: *</label>
-                  <Controller
-                    name="medicamentos"
-                    rules={{ required: 'Este campo es obligatorio' }}
-                    defaultValue=""
-                    render={({ field, fieldState }) => (
-                      <InputTextarea className={classNames('w-full', { 'p-invalid': fieldState.invalid })} {...field} />
-                    )}
-                  />
-                  <ErrorMessage name="medicamentos" />
-                    <Controller
-                      name="estadoGeneral"
-                      rules={{
-                        required: 'Es necesario seleccionar un tipo de estado general',
+                  <div className="row justify-content-between">
+                    <label className="col-12 md:col-6">2. ENFERMEDADES O PROBLEMA ACTUAL: *</label>
+                    <h6 className="md:text-right col-12 md:col-6">
+                      CRONOLOGÍA, LOCALIZACIÓN, CARACTERÍSTICAS, INTENSIDAD, CAUSA APARENTE, FACTORES QUE AGRAVAN O
+                      MEJORAN, SÍNTOMAS ASOCIADOS, EVOLUCIÓN, RESULTADOS DE EXÁMENES ANTERIORES
+                    </h6>
+                  </div>
+                  <div className="mb-3">
+                    <TextArea
+                      controller={{
+                        name: 'enfermedades',
+                        defaultValue: '',
+                        rules: { required: 'Este campo es obligatorio' },
                       }}
-                      render={({ field }) => (
-                        <div className="d-flex flex-column">
-                          <div className="d-inline-flex">
-                            <label htmlFor="" className=" me-3">
-                              ESTADO GENERAL: *
-                            </label>
-                            <label htmlFor="input-dependiente" className="mx-2">
-                              DEPENDIENTE
-                            </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="USUARIO"
-                              checked={field.value === 'DEPENDIENTE'}
-                              id="input-dependiente"
-                              onChange={() => field.onChange('DEPENDIENTE')}
-                            />
-
-                            <label className="ms-4 me-2" htmlFor="input-fragil">
-                              FRÁGIL
-                            </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="FRÁGIL"
-                              checked={field.value === 'FRÁGIL'}
-                              id="input-cuidador"
-                              onChange={() => field.onChange('FRÁGIL')}
-                            />
-
-                            <label className="ms-4 me-2" htmlFor="input-independiente">
-                              INDEPENDIENTE
-                            </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="INDEPENDIENTE"
-                              checked={field.value === 'INDEPENDIENTE'}
-                              id="input-cuidador"
-                              onChange={() => field.onChange('INDEPENDIENTE')}
-                            />
-                          </div>
-                          <ErrorMessage name="estadoGeneral" />
-                        </div>
-                      )}
+                      block
                     />
+                    <ErrorMessage name="enfermedades" />
                   </div>
-                </div>
-              </div>
-            </div>
 
-
-            <div className="row justify-content-center my-3">
-              <div className="col-11 border">
-                <div className="d-flex flex-column m-3">
-                  <div className="d-flex flex-row flex-wrap justify-content-between">
-                    <label>3. REVISIÓN ACTUAL DE SISTEMAS: </label>
-                    <h6>REDONDO= CON PATOLOGÍA: DESCRIBIR</h6>
-                    <h6>CUADRADO= SIN PATOLOGÍA: NO DESCRIBIR</h6>
-                    <Controller
-                      name="sistemas"
-                      render={({ field }) => (
-                        <div className="d-flex flex-column">
-                          <div className="d-inline-flex">
-                            <label htmlFor="input-vision" className="mx-2">
-                              1. VISIÓN
-                            </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-vision"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                            />
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-vision"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                             <label htmlFor="input-audicion" className="mx-2">
-                              2. AUDICIÓN
-                            </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-audicion"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                            />
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-audicion"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                            <label htmlFor="input-olfato-gusto" className="mx-2">
-                              3. OLFATO Y GUSTO
-                            </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-olfato-gusto"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                            />
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-olfato-gusto"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                            <label htmlFor="input-respiratorio" className="mx-2">
-                              4. RESPIRATORIO
-                            </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-respiratorio"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                            />
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-respiratorio"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-
-                          <label htmlFor="input-cardiovascular" className="mx-2">
-                              5. CARDIOVASCULAR
-                            </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-cardiovascular"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                            />
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-cardiovascular"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-
-                            <label htmlFor="input-digestivo" className="mx-2">
-                              6. DIGESTIVO
-                            </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-digestivo"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                            />
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-digestivo"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                          </div>
-                          
-
-                        </div>
-                      )}
+                  <div className="mb-3">
+                    <label htmlFor="medicamentos">MEDICAMENTOS QUE INGIERE: *</label>
+                    <TextArea
+                      controller={{
+                        name: 'medicamentos',
+                        defaultValue: '',
+                        rules: { required: 'Este campo es obligatorio' },
+                      }}
+                      block
                     />
-                    <Controller
-                    name="observaciones"
-                    defaultValue=""
-                    render={({ field, fieldState }) => (
-                      <InputTextarea className={classNames('w-full', { 'p-invalid': fieldState.invalid })} {...field} />
-                    )}
-                  />
+                    <ErrorMessage name="medicamentos" />
+                  </div>
+
+                  <div className="d-flex flex-row flex-wrap">
+                    <CheckOptionsInline
+                      label="ESTADO GENERAL: *"
+                      controller={{
+                        name: 'estadoGeneral',
+                        rules: { required: 'Es necesario seleccionar un tipo de estado general' },
+                      }}
+                      options={[
+                        {
+                          labelText: 'DEPENDIENTE',
+                          value: 'DEPENDIENTE',
+                        },
+                        {
+                          labelText: 'FRÁGIL',
+                          value: 'FRÁGIL',
+                        },
+                        {
+                          labelText: 'INDEPENDIENTE',
+                          value: 'INDEPENDIENTE',
+                        },
+                      ]}
+                    />
                   </div>
                 </div>
               </div>
@@ -405,321 +205,240 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
               <div className="col-11 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
-                    <label>4. ANTECEDENTES PERSONALES: </label>
-                    <h6>REDONDO= CON PATOLOGÍA: DESCRIBIR</h6>
-                    <h6>CUADRADO= SIN PATOLOGÍA: NO DESCRIBIR</h6>
+                    <label className="my-1">3. REVISIÓN ACTUAL DE SISTEMAS: </label>
+                    <div className="my-1">
+                      <h6>REDONDO = CON PATOLOGÍA: DESCRIBIR</h6>
+                      <h6>CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
+                    </div>
+                    <CheckOptionsInlineCirculoCuadrado
+                      options={[
+                        {
+                          labelText: '1. VISIÓN',
+                          controller: {
+                            name: 'sistemas.vision',
+                          },
+                          valueCirculo: 'VISIÓN-PATOLOGIA',
+                          valueCuadrado: 'VISIÓN-SIN-PATOLOGIA',
+                        },
+                        {
+                          labelText: '2. AUDICIÓN',
+                          controller: {
+                            name: 'sistemas.audicion',
+                          },
+                          valueCirculo: 'AUDICIÓN-PATOLOGIA',
+                          valueCuadrado: 'AUDICIÓN-SIN-PATOLOGIA',
+                        },
+                        {
+                          labelText: '3. OLFATO Y GUSTO',
+                          controller: {
+                            name: 'sistemas.olfatoGusto',
+                          },
+                          valueCirculo: 'OLFATO Y GUSTO-PATOLOGIA',
+                          valueCuadrado: 'OLFATO Y GUSTO-SIN-PATOLOGIA',
+                        },
+                        {
+                          labelText: '4. RESPIRATORIO',
+                          controller: {
+                            name: 'sistemas.respiratorio',
+                          },
+                          valueCirculo: 'RESPIRATORIO-PATOLOGIA',
+                          valueCuadrado: 'RESPIRATORIO-SIN-PATOLOGIA',
+                        },
+                        {
+                          labelText: '5. CARDIOVASCULAR',
+                          controller: {
+                            name: 'sistemas.cardiovascular',
+                          },
+                          valueCirculo: 'CARDIOVASCULAR-PATOLOGIA',
+                          valueCuadrado: 'CARDIOVASCULAR-SIN-PATOLOGIA',
+                        },
+                        {
+                          labelText: '6. DIGESTIVO',
+                          controller: {
+                            name: 'sistemas.digestivo',
+                          },
+                          valueCirculo: 'DIGESTIVO-PATOLOGIA',
+                          valueCuadrado: 'DIGESTIVO-SIN-PATOLOGIA',
+                        },
+                      ]}
+                    />
+                    <TextArea controller={{ name: 'sistemas.observaciones' }} block />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="row justify-content-center my-3">
+              <div className="col-11 border">
+                <div className="d-flex flex-column m-3">
+                  <div className="d-flex flex-row flex-wrap justify-content-between">
+                    <label className="my-1">4. ANTECEDENTES PERSONALES: </label>
+                    <div className="my-1">
+                      <h6>REDONDO = CON PATOLOGÍA: DESCRIBIR</h6>
+                      <h6>CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
+                    </div>
+                    <div className="w-100">
+                      <CheckOptionsMultipleInline
+                        label="ALERTAS DE RIESGO"
+                        options={[
+                          {
+                            labelText: '1. CAÍDA',
+                            controller: {
+                              name: 'antecedentesPersonales.alertasRiesgo.caida',
+                            },
+                            value: 'CAÍDA',
+                          },
+                          {
+                            labelText: '2. DISMOVILIDAD',
+                            controller: {
+                              name: 'antecedentesPersonales.alertasRiesgo.caida',
+                            },
+                            value: 'DISMOVILIDAD',
+                          },
+                          {
+                            labelText: '3. PÉRDIDA DE PESO',
+                            controller: {
+                              name: 'antecedentesPersonales.alertasRiesgo.caida',
+                            },
+                            value: 'PÉRDIDA DE PESO',
+                          },
+                          {
+                            labelText: '4. ASTENIA',
+                            controller: {
+                              name: 'antecedentesPersonales.alertasRiesgo.caida',
+                            },
+                            value: 'ASTENIA',
+                          },
+                          {
+                            labelText: '5. DESORIENTACIÓN',
+                            controller: {
+                              name: 'antecedentesPersonales.alertasRiesgo.caida',
+                            },
+                            value: 'DESORIENTACIÓN',
+                          },
+                          {
+                            labelText: '6. ALTERACIONES DEL COMPORTAMIENTO',
+                            controller: {
+                              name: 'antecedentesPersonales.alertasRiesgo.caida',
+                            },
+                            value: 'ALTERACIONES DEL COMPORTAMIENTO',
+                          },
+                        ]}
+                      />
+                      <hr />
+                    </div>
+                    <div className="w-100">
+                      <CheckOptionsInlineCirculoCuadrado
+                        label="GENERALES"
+                        options={[
+                          {
+                            labelText: '1. INMUNIZACIONES',
+                            controller: {
+                              name: 'antecedentesPersonales.generales.inmunizaciones',
+                            },
+                          },
+                          {
+                            labelText: '2. HIGIENE GENERAL',
+                            controller: {
+                              name: 'antecedentesPersonales.generales.higieneGeneral',
+                            },
+                          },
+                          {
+                            labelText: '3. HIGIENE ORAL',
+                            controller: {
+                              name: 'antecedentesPersonales.generales.higieneOral',
+                            },
+                          },
+                          {
+                            labelText: '4. EJERCICIO',
+                            controller: {
+                              name: 'antecedentesPersonales.generales.ejercicio',
+                            },
+                          },
+                          {
+                            labelText: '5. ALIMENTACIÓN',
+                            controller: {
+                              name: 'antecedentesPersonales.generales.alimentacion',
+                            },
+                          },
+                          {
+                            labelText: '6. ACTIVIDAD RECREATIVA',
+                            controller: {
+                              name: 'antecedentesPersonales.generales.actividadRecreativa',
+                            },
+                          },
+                          {
+                            labelText: '8. ALERGIAS',
+                            controller: {
+                              name: 'antecedentesPersonales.generales.alergias',
+                            },
+                          },
+                          {
+                            labelText: '9. OTROS',
+                            controller: {
+                              name: 'antecedentesPersonales.generales.otros',
+                            },
+                          },
+                        ]}
+                      />
+                      <hr />
+                    </div>
+
+                    <div className="w-100">
+                      <CheckOptionsMultipleInline
+                        label="HABITOS NOCIVOS"
+                        options={[
+                          {
+                            labelText: '1. TABASQUISMO',
+                            controller: {
+                              name: 'antecedentesPersonales.habitosNocivos.tabaquismo',
+                            },
+                            value: 'TABASQUISMO',
+                          },
+                          {
+                            labelText: '2. ALCOHOLISMO',
+                            controller: {
+                              name: 'antecedentesPersonales.habitosNocivos.alcoholismo',
+                            },
+                            value: 'ALCOHOLISMO',
+                          },
+                          {
+                            labelText: '3. ADICCIONES',
+                            controller: {
+                              name: 'antecedentesPersonales.habitosNocivos.adicciones',
+                            },
+                            value: 'ADICCIONES',
+                          },
+                          {
+                            labelText: '4. OTRO HABITO',
+                            controller: {
+                              name: 'antecedentesPersonales.habitosNocivos.otro',
+                            },
+                            value: 'OTRO HABITO',
+                          },
+                        ]}
+                      />
+                      <hr />
+                    </div>
+
                     <Controller
                       name="antecedentesPersonales"
                       render={({ field }) => (
                         <div className="d-flex flex-column">
                           <div className="d-inline-flex">
-                              <label className="ms-4 me-2">
-                              ALERTAS DE RIESGO
-                              </label>
-                              <label className="ms-4 me-2" htmlFor="input-caida">
-                              1. CAÍDA
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-caida"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <label htmlFor="input-dismovilidad" className="mx-2">
-                              2. DISMOVILIDAD
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-dismovilidad"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                             <label htmlFor="input-peso" className="mx-2">
-                              3. PÉRDIDA DE PESO
-                             </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-peso"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <label htmlFor="input-astenia" className="mx-2">
-                              4. ASTENIA
-                             </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-astenia"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                             />
-                              <label htmlFor="input-desorientacion" className="mx-2">
-                              5. DESORIENTACIÓN
-                              </label>
-                            <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-desorientacion"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                            />
-                             <label htmlFor="input-comportamiento" className="mx-2">
-                              6. ALTERACIONES DEL COMPORTAMIENTO
-                             </label>
-                             <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-comportamiento"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                            />
-
-                            <label className="ms-4 me-2">
-                              GENERALES
-                            </label>
-                              <label className="ms-4 me-2" htmlFor="input-inmunizacion">
-                              1. INMUNIZACIONES
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-inmunizacion"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-inmunizacion"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                            <label className="ms-4 me-2" htmlFor="input-higiene-general">
-                              2. HIGIENE GENERAL
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-higiene-general"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-higiene-general"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                              <label className="ms-4 me-2" htmlFor="input-higiene-oral">
-                              3. HIGIENE ORAL
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-higiene-oral"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-higiene-oral"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                            <label className="ms-4 me-2" htmlFor="input-ejercicio">
-                              4. EJERCICIO
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-ejercicio"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-ejercicio"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                            <label className="ms-4 me-2" htmlFor="input-alimentación">
-                              5. ALIMENTACIÓN
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-alimentacion"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-alimentacion"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                            <label className="ms-4 me-2" htmlFor="input-actividad-recreativa">
-                              6. ACTIVIDAD RECREATIVA
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-actividad-recreativa"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-actividad-recreativa"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                            <label className="ms-4 me-2" htmlFor="input-controles-salud">
-                              7. CONTROLES DE SALUD
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-controles-salud"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-controles-salud"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                            <label className="ms-4 me-2" htmlFor="input-alergias">
-                              8. ALERGIAS
-                            </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-alergias"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-alergias"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                            <label className="ms-4 me-2" htmlFor="input-otros">
-                              9. OTROS
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-otros"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="SIN PATOLOGIA"
-                              checked={field.value === 'SIN PATOLOGIA'}
-                              id="input-otros"
-                              onChange={() => field.onChange('SIN PATOLOGIA')}
-                            />
-                            <label className="ms-4 me-2">
-                              HABITOS NOCIVOS
-                            </label>
-                              <label className="ms-4 me-2" htmlFor="input-inmunizacion">
-                              1. TABASQUISMO
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-inmunizacion"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                            <label className="ms-4 me-2" htmlFor="input-higiene-general">
-                              2. ALCOHOLISMO
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-higiene-general"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <label className="ms-4 me-2" htmlFor="input-higiene-oral">
-                              3. ADICCIONES
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-higiene-oral"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                            <label className="ms-4 me-2" htmlFor="input-ejercicio">
-                              4. OTRO HABITO
-                              </label>
-                              <input
-                              className="align-self-center"
-                              type="checkbox"
-                              value="CON PATOLOGIA"
-                              checked={field.value === 'CON PATOLOGIA'}
-                              id="input-ejercicio"
-                              onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-
-                            <label className="ms-4 me-2">
-                             CLINICO QUIRURGICOS
-                              </label>
-                              <label className="ms-4 me-2" htmlFor="input-dermatologico">
+                            <label className="ms-4 me-2">CLINICO QUIRURGICOS</label>
+                            <label className="ms-4 me-2" htmlFor="input-dermatologico">
                               1. DERMATOLÓGICOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-dermatologico"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -729,16 +448,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-visual">
                               2. DERMATOLÓGICOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-visual"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -748,16 +467,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-otorrino">
                               3. OTORRINO
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-otorrino"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -767,16 +486,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-estomatologico">
                               4. ESTOMATOLOGICOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-estomatologico"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -786,16 +505,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-endocrino">
                               5. ENDOCRINOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-endocrino"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -805,16 +524,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-cardiovasculares">
                               6. CARDIOVASCULARES
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-cardiovasculares"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -824,16 +543,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-respiratorios">
                               7. RESPIRATORIOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-respiratorios"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -843,16 +562,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-digestivos">
                               8. DIGESTIVOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-digestivos"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -862,16 +581,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-neurológico">
                               9. NEUROLÓGICO
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-neurologico"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -881,16 +600,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-urologico">
                               10. UROLOGICOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-urologico"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -900,16 +619,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-hemolinfatico">
                               11. HEMO LINFÁTICOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-hemolinfatico"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -919,16 +638,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-infeccioso">
                               12. INFECCIOSOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-infecccioso"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -938,16 +657,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-troncologico">
                               13. TRONCOLOGICOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-troncologico"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -957,16 +676,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-musculo-esqueletico">
                               14. MUSCULO ESQUELÉTICOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-musculo-esqueletico"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -976,16 +695,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label className="ms-4 me-2" htmlFor="input-psiquiatrico">
                               15. PSIQUIÁTRICOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-psiquiatrico"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <input
+                            />
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -993,56 +712,54 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-psiquiatrico"
                               onChange={() => field.onChange('SIN PATOLOGIA')}
                             />
-                            <label className="ms-4 me-2">
-                              GINEO OBSTETRICOS
-                              </label>
-                              <label className="ms-4 me-2" htmlFor="input-menopausia">
+                            <label className="ms-4 me-2">GINEO OBSTETRICOS</label>
+                            <label className="ms-4 me-2" htmlFor="input-menopausia">
                               1. EDAD DE MENOPAUSIA
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-menopausia"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <label htmlFor="input-mamografia" className="mx-2">
+                            />
+                            <label htmlFor="input-mamografia" className="mx-2">
                               2. EDAD DE ÚLTIMA MONOGRAFÍA
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-mamografia"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                             <label htmlFor="input-citologia" className="mx-2">
+                            />
+                            <label htmlFor="input-citologia" className="mx-2">
                               3. EDAD DE ÚLTIMA CITOLOGIA
-                             </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-citologia"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <label htmlFor="input-embarazos" className="mx-2">
+                            />
+                            <label htmlFor="input-embarazos" className="mx-2">
                               4. EMBARAZOS
-                             </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-embarazos"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                             />
-                              <label htmlFor="input-partos" className="mx-2">
+                            />
+                            <label htmlFor="input-partos" className="mx-2">
                               5. PARTOS
-                              </label>
+                            </label>
                             <input
                               className="align-self-center"
                               type="checkbox"
@@ -1051,10 +768,10 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-partos"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                             <label htmlFor="input-cesarea" className="mx-2">
+                            <label htmlFor="input-cesarea" className="mx-2">
                               6. CESÁREAS
-                             </label>
-                             <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
@@ -1064,8 +781,8 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             />
                             <label htmlFor="input-terapia-hormonal" className="mx-2">
                               6. TERAPIA HORMONAL
-                             </label>
-                             <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
@@ -1073,149 +790,143 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-terapia-hormonal"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                            <label className="ms-4 me-2">
-                              ANDROLOGICOS
-                              </label>
-                              <label className="ms-4 me-2" htmlFor="input-antigeno-prostatico">
+                            <label className="ms-4 me-2">ANDROLOGICOS</label>
+                            <label className="ms-4 me-2" htmlFor="input-antigeno-prostatico">
                               1. EDAD DE ÚLTIMO ANTÍGENO PROSTÁTICO
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-antigeno-prostatico"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <label htmlFor="input-terapia-hormonal-ult" className="mx-2">
+                            />
+                            <label htmlFor="input-terapia-hormonal-ult" className="mx-2">
                               2. TERAPIA HORMONAL
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-terapia-hormonal-ult"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <label className="ms-4 me-2">
-                              FARMACOLÓGICOS
-                              </label>
-                              <label className="ms-4 me-2" htmlFor="input-aines">
+                            />
+                            <label className="ms-4 me-2">FARMACOLÓGICOS</label>
+                            <label className="ms-4 me-2" htmlFor="input-aines">
                               1. AINES
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-aines"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                              <label htmlFor="input-analgesicos" className="mx-2">
+                            />
+                            <label htmlFor="input-analgesicos" className="mx-2">
                               2. ANALGÉSICOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-analgesicos"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                               <label htmlFor="input-antidiabeticos" className="mx-2">
+                            />
+                            <label htmlFor="input-antidiabeticos" className="mx-2">
                               3. ANTIDIABETICOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-antidiabeticos"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                               <label htmlFor="input-antihipertensivos" className="mx-2">
+                            />
+                            <label htmlFor="input-antihipertensivos" className="mx-2">
                               4. ANTIHIPERTENSIVOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-antihipertensivos"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                               <label htmlFor="input-anticoagulantes" className="mx-2">
+                            />
+                            <label htmlFor="input-anticoagulantes" className="mx-2">
                               5. ANTICOAGULANTES
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-anticoagulantes"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                               <label htmlFor="input-psicofarmacos" className="mx-2">
+                            />
+                            <label htmlFor="input-psicofarmacos" className="mx-2">
                               6. PSICOFARMACOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-psicofarmacos"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                               <label htmlFor="input-antibioticos" className="mx-2">
+                            />
+                            <label htmlFor="input-antibioticos" className="mx-2">
                               7. ANTIBIOTICOS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-antibioticos"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                               <label htmlFor="input-otros-ult" className="mx-2">
+                            />
+                            <label htmlFor="input-otros-ult" className="mx-2">
                               8. OTROS
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-otros-ult"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
-                               <label htmlFor="input-numero-prescriptores" className="mx-2">
+                            />
+                            <label htmlFor="input-numero-prescriptores" className="mx-2">
                               9. NÚMERO DE PRESCRIPTORES
-                              </label>
-                              <input
+                            </label>
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="CON PATOLOGIA"
                               checked={field.value === 'CON PATOLOGIA'}
                               id="input-numero-prescriptores"
                               onChange={() => field.onChange('CON PATOLOGIA')}
-                              />
+                            />
                           </div>
                         </div>
                       )}
                     />
                     <Controller
-                    name="observaciones"
-                    defaultValue=""
-                    render={({ field }) => (
-                      <InputTextarea className={classNames('w-full')} {...field} />
-                    )}
-                  />
+                      name="observaciones"
+                      defaultValue=""
+                      render={({ field }) => <InputTextarea className={classNames('w-full')} {...field} />}
+                    />
                   </div>
                 </div>
               </div>
             </div>
-            
+
             <div className="row justify-content-center my-3">
               <div className="col-11 border">
                 <div className="d-flex flex-column m-3">
@@ -1223,7 +934,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                     <label>5. ANTECEDENTES FAMILIARES Y SOCIALES: </label>
                     <h6>CIRCULO= CON PATOLOGIA: DESCRIBIR ANOTANDO EL NÚMERO</h6>
                     <h6>CUADRADO= SIN PATOLOGIA: NO DESCRIBIR</h6>
-                  
+
                     <Controller
                       name="antecedentes-familiares-sociales"
                       render={({ field }) => (
@@ -1240,7 +951,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-cardipatias"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                             <input
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -1259,7 +970,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-diabetes"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                             <input
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -1278,7 +989,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-hipertension-arterial"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                             <input
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -1297,7 +1008,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-neoplasia"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                             <input
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -1316,7 +1027,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-alzheimer"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                             <input
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -1335,7 +1046,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-parkinson"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                             <input
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -1354,7 +1065,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-tuberculosis"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                             <input
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -1373,7 +1084,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-infrafamiliar"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                             <input
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -1392,7 +1103,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-sindrome-cuidador"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                             <input
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -1411,7 +1122,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               id="input-otros-ult1"
                               onChange={() => field.onChange('CON PATOLOGIA')}
                             />
-                             <input
+                            <input
                               className="align-self-center"
                               type="checkbox"
                               value="SIN PATOLOGIA"
@@ -1450,11 +1161,6 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                 </div>
               </div>
             </div>
-
-            
-
-
-
 
             <div className="col-md-8 mt-3">
               <div className="row justify-content-around">
