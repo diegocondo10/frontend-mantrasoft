@@ -325,6 +325,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           },
                         ]}
                       />
+                      <TextArea controller={{ name: 'antecedentesPersonales.alertasRiesgo.observaciones' }} block />
                       <hr />
                     </div>
                     <div className="w-100">
@@ -418,6 +419,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           },
                         ]}
                       />
+                      <TextArea controller={{ name: 'antecedentesPersonales.habitosNocivos.observaciones' }} block />
                       <hr />
                     </div>
 
@@ -517,6 +519,10 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           },
                         ]}
                       />
+                      <TextArea
+                        controller={{ name: 'antecedentesPersonales.clinicoquirurgicos.observaciones' }}
+                        block
+                      />
                       <hr />
                     </div>
 
@@ -569,6 +575,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           },
                         ]}
                       />
+                      <TextArea controller={{ name: 'antecedentesPersonales.ginecoobstetricos.observaciones' }} block />
                       <hr />
                     </div>
 
@@ -590,6 +597,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           },
                         ]}
                       />
+                      <TextArea controller={{ name: 'antecedentesPersonales.andrologicos.observaciones' }} block />
                       <hr />
                     </div>
 
@@ -653,14 +661,8 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           },
                         ]}
                       />
-                      <hr />
+                      <TextArea controller={{ name: 'antecedentesPersonales.famarcologicos.observaciones' }} block />
                     </div>
-
-                    <Controller
-                      name="observaciones"
-                      defaultValue=""
-                      render={({ field }) => <InputTextarea className={classNames('w-full')} {...field} />}
-                    />
                   </div>
                 </div>
               </div>
@@ -682,13 +684,13 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           {
                             labelText: '1. CARDIOPATAS',
                             controller: {
-                              name: 'antecedentesPersonales.antecedentes.cardiopata',
+                              name: 'antecedentesFamiliares.antecedentes.cardiopata',
                             },
                           },
                           {
                             labelText: '2. DIABETES',
                             controller: {
-                              name: 'antecedentesPersonales.antecedentes.diabetes',
+                              name: 'antecedentesFamiliares.antecedentes.diabetes',
                             },
                           },
                           {
@@ -700,55 +702,49 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           {
                             labelText: '4. NEOPLASIA',
                             controller: {
-                              name: 'antecedentesPersonales.antecedentes.neoplasia',
+                              name: 'antecedentesFamiliares.antecedentes.neoplasia',
                             },
                           },
                           {
                             labelText: '5. ALZHEIMER',
                             controller: {
-                              name: 'antecedentesPersonales.antecedentes.alzheimer',
+                              name: 'antecedentesFamiliares.antecedentes.alzheimer',
                             },
                           },
                           {
                             labelText: '6. PARKINSON',
                             controller: {
-                              name: 'antecedentesPersonales.antecedentes.parkinson',
+                              name: 'antecedentesFamiliares.antecedentes.parkinson',
                             },
                           },
                           {
                             labelText: '7. TUBERCULOSIS',
                             controller: {
-                              name: 'antecedentesPersonales.antecedentes.tuberculosis',
+                              name: 'antecedentesFamiliares.antecedentes.tuberculosis',
                             },
                           },
                           {
                             labelText: '8. VIOLENCIA INTRAFAMILIAR',
                             controller: {
-                              name: 'antecedentesPersonales.antecedentes.violenciaintrafamiliar',
+                              name: 'antecedentesFamiliares.antecedentes.violenciaintrafamiliar',
                             },
                           },
                           {
                             labelText: '9. SINDROME DEL CUIDADOR',
                             controller: {
-                              name: 'antecedentesPersonales.antecedentes.sindromecuidador',
+                              name: 'antecedentesFamiliares.antecedentes.sindromecuidador',
                             },
                           },
                           {
                             labelText: '10. OTROS',
                             controller: {
-                              name: 'antecedentesPersonales.antecedentes.otros',
+                              name: 'antecedentesFamiliares.antecedentes.otros',
                             },
                           },
                         ]}
                       />
-                      <hr />
+                      <TextArea controller={{ name: 'antecedentesFamiliares.antecedentes.observaciones' }} block />
                     </div>
-
-                    <Controller
-                      name="observaciones"
-                      defaultValue=""
-                      render={({ field }) => <InputTextarea className={classNames('w-full')} {...field} />}
-                    />
                   </div>
                 </div>
               </div>
@@ -760,7 +756,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                   <h4>9. PRUEBAS DIAGNÓSTICAS:</h4>
                   <h6>REGISTRAR LOS EXÁMENES DE LABORATORIO Y ESPECIALES SOLICITADOS</h6>
                   <div>
-                    <InputText className="w-full" />
+                    <TextArea controller={{ name: 'pruebasDiagnosticas.observaciones' }} block />
                   </div>
                 </div>
               </div>
@@ -769,9 +765,9 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
               <div className="col-11 border">
                 <div className="d-flex flex-column m-3">
                   <h4>10. DIAGNÓSTICO:</h4>
-                  <h6>1.FUNCIONAL, 2.NUTRICIONAL,3.PSICOLÓGICO,4.SOCIAL,5.EDUCATIVO, 6.FARMACOLÓGICO</h6>
+                  <h6>1.FUNCIONAL, 2.NUTRICIONAL, 3.PSICOLÓGICO, 4.SOCIAL, 5.EDUCATIVO, 6.FARMACOLÓGICO</h6>
                   <div>
-                    <InputText className="w-full" />
+                    <TextArea controller={{ name: 'diagnostico.observaciones' }} block />
                   </div>
                 </div>
               </div>
