@@ -10,13 +10,10 @@ import { CrudActions } from '@src/emuns/crudActions';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
 import { urlCatalogoForm } from '@src/services/urls';
-import classNames from 'classnames';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
-import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
 import React from 'react';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 
 const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActions }> = (props) => {
@@ -745,6 +742,233 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                       />
                       <TextArea controller={{ name: 'antecedentesFamiliares.antecedentes.observaciones' }} block />
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="row justify-content-center my-3">
+              <div className="col-11 border">
+                <div className="d-flex flex-column m-3">
+                  <label className="my-1">6. SIGNOS VITALES, ANTROPOMETRIA Y TAMIZAJE: </label>
+                  <div className="d-flex flex-row flex-wrap justify-content-around">
+                    {/* P. ARTERIAL ACOSTADO */}
+                    <div className="d-flex flex-column text-center">
+                      <label
+                        htmlFor="contenido.signosVitales.presionAterial.sentado.numerador"
+                        style={{ maxWidth: '10rem' }}
+                      >
+                        P. ARTERIAL ACOSTADO
+                      </label>
+                      <div className="w-100">
+                        <div className="p-inputgroup justify-content-center">
+                          <TextInput
+                            id="contenido.signosVitales.presionAterial.sentado.numerador"
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.presionAterial.acostado.numerador' }}
+                          />
+
+                          <TextInput
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.presionAterial.acostado.denominador' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* P. ARTERIAL SENTADO */}
+                    <div className="d-flex flex-column text-center">
+                      <label
+                        htmlFor="contenido.signosVitales.presionAterial.sentado.numerador"
+                        style={{ maxWidth: '10rem' }}
+                      >
+                        P. ARTERIAL SENTADO
+                      </label>
+                      <div className="w-100">
+                        <div className="p-inputgroup justify-content-center">
+                          <TextInput
+                            id="contenido.signosVitales.presionAterial.sentado.numerador"
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.presionAterial.sentado.numerador' }}
+                          />
+
+                          <TextInput
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.presionAterial.sentado.denominador' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* TEMPERATURA C */}
+                    <div className="d-flex flex-column text-center">
+                      <label htmlFor="contenido.signosVitales.temperatura" style={{ maxWidth: '10rem' }}>
+                        TEMPERATURA C
+                      </label>
+                      <div className="w-100">
+                        <div className="p-inputgroup justify-content-center">
+                          <TextInput
+                            id="contenido.signosVitales.temperatura"
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.temperatura' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* PULSO / mm */}
+                    <div className="d-flex flex-column text-center justify-content-between">
+                      <label htmlFor="contenido.signosVitales.pulSo" style={{ maxWidth: '10rem' }}>
+                        PULSO / mm
+                      </label>
+                      <div className="w-100">
+                        <div className="p-inputgroup justify-content-center">
+                          <TextInput
+                            id="contenido.signosVitales.pulSo"
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.pulSo' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* FRECUENCIA RESPIR. / mm */}
+                    <div className="d-flex flex-column text-center ">
+                      <label htmlFor="contenido.signosVitales.frecuencoaRespiratoria" style={{ maxWidth: '10rem' }}>
+                        FRECUENCIA RESPIR. / mm
+                      </label>
+                      <div className="w-100">
+                        <div className="p-inputgroup justify-content-center">
+                          <TextInput
+                            id="contenido.signosVitales.frecuencoaRespiratoria"
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.frecuencoaRespiratoria' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr />
+
+                  <div className="d-flex flex-row flex-wrap justify-content-around">
+                    {/* PESO / kg */}
+                    <div className="d-flex flex-column text-center justify-content-between">
+                      <label htmlFor="contenido.signosVitales.peso" style={{ maxWidth: '10rem' }}>
+                        PESO / kg
+                      </label>
+                      <div className="w-100">
+                        <div className="p-inputgroup justify-content-center">
+                          <TextInput
+                            id="contenido.signosVitales.peso"
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.peso' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* TALLA cm */}
+                    <div className="d-flex flex-column text-center justify-content-between">
+                      <label htmlFor="contenido.signosVitales.talla" style={{ maxWidth: '10rem' }}>
+                        TALLA / cm
+                      </label>
+                      <div className="w-100">
+                        <div className="p-inputgroup justify-content-center">
+                          <TextInput
+                            id="contenido.signosVitales.talla"
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.talla' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* IMC */}
+                    <div className="d-flex flex-column text-center justify-content-between">
+                      <label htmlFor="contenido.signosVitales.imc" style={{ maxWidth: '10rem' }}>
+                        IMC
+                      </label>
+                      <div className="w-100">
+                        <div className="p-inputgroup justify-content-center">
+                          <TextInput
+                            id="contenido.signosVitales.imc"
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.imc' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* PERIMETRO CINTURA */}
+                    <div className="d-flex flex-column text-center justify-content-between">
+                      <label htmlFor="contenido.signosVitales.perimetroCintura" style={{ maxWidth: '10rem' }}>
+                        PERIMETRO CINTURA
+                      </label>
+                      <div className="w-100">
+                        <div className="p-inputgroup justify-content-center">
+                          <TextInput
+                            id="contenido.signosVitales.perimetroCintura"
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.perimetroCintura' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* PERIMETRO CADERA */}
+                    <div className="d-flex flex-column text-center justify-content-between">
+                      <label htmlFor="contenido.signosVitales.perimetroCadera" style={{ maxWidth: '10rem' }}>
+                        PERIMETRO CADERA
+                      </label>
+                      <div className="w-100">
+                        <div className="p-inputgroup justify-content-center">
+                          <TextInput
+                            id="contenido.signosVitales.perimetroCadera"
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.perimetroCadera' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* PERIMETRO PANTORRILLA */}
+                    <div className="d-flex flex-column text-center justify-content-between">
+                      <label htmlFor="contenido.signosVitales.perimetroPantorrilla" style={{ maxWidth: '10rem' }}>
+                        PERIMETRO PANTORRILLA
+                      </label>
+                      <div className="w-100">
+                        <div className="p-inputgroup justify-content-center">
+                          <TextInput
+                            id="contenido.signosVitales.perimetroPantorrilla"
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.perimetroPantorrilla' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* RESPONSABLE SIGLAS */}
+                    <div className="d-flex flex-column text-center justify-content-between">
+                      <label htmlFor="contenido.signosVitales.responsableSiglas" style={{ maxWidth: '10rem' }}>
+                        RESPONSABLE SIGLAS
+                      </label>
+                      <div className="w-100">
+                        <div className="p-inputgroup justify-content-center">
+                          <TextInput
+                            id="contenido.signosVitales.responsableSiglas"
+                            className="text-center"
+                            style={{ maxWidth: '6rem' }}
+                            controller={{ name: 'contenido.signosVitales.responsableSiglas' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* FIN row */}
                   </div>
                 </div>
               </div>
