@@ -84,16 +84,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                 <div className="d-flex flex-column m-3">
                   <h3>INFORMACIÓN GENERAL</h3>
                   <div className="my-2">
-                    <label htmlFor="viveCon">VIVE CON: *</label>
-                    <TextInput controller={{ name: 'viveCon' }} block />
+                    <label htmlFor="contenido.viveCon">VIVE CON: *</label>
+                    <TextInput controller={{ name: 'contenido.viveCon' }} block />
                   </div>
                   <div className="my-2">
-                    <label htmlFor="ocupacionAnterior">OCUPACIÓN ANTERIOR: *</label>
-                    <TextInput controller={{ name: 'ocupacionAnterior' }} block />
+                    <label htmlFor="contenido.ocupacionAnterior">OCUPACIÓN ANTERIOR: *</label>
+                    <TextInput controller={{ name: 'contenido.ocupacionAnterior' }} block />
                   </div>
                   <div className="my-2">
-                    <label htmlFor="ocupacionActual">OCUPACIÓN ACTUAL: *</label>
-                    <TextInput controller={{ name: 'ocupacionActual' }} block />
+                    <label htmlFor="contenido.ocupacionActual">OCUPACIÓN ACTUAL: *</label>
+                    <TextInput controller={{ name: 'contenido.ocupacionActual' }} block />
                   </div>
                 </div>
               </div>
@@ -103,11 +103,11 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
               <div className="col-11 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
-                    <label htmlFor="motivoConsulta">MOTIVO DE CONSULTA: *</label>
+                    <label htmlFor="contenido.motivoConsulta">MOTIVO DE CONSULTA: *</label>
                     <CheckOptionsInline
                       label="INFORMANTE: *"
                       controller={{
-                        name: 'informante',
+                        name: 'contenido.informante',
                         rules: { required: 'Este campo es obligatorio' },
                       }}
                       options={[
@@ -125,13 +125,13 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
 
                   <TextArea
                     controller={{
-                      name: 'motivoConsulta',
+                      name: 'contenido.motivoConsulta',
                       defaultValue: '',
                       rules: { required: 'Este campo es obligatorio' },
                     }}
                   />
 
-                  <ErrorMessage name="motivoConsulta" />
+                  <ErrorMessage name="contenido.motivoConsulta" />
                 </div>
               </div>
             </div>
@@ -140,7 +140,9 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
               <div className="col-11 border">
                 <div className="d-flex flex-column m-3">
                   <div className="row justify-content-between">
-                    <label className="col-12 md:col-6">2. ENFERMEDADES O PROBLEMA ACTUAL: *</label>
+                    <label className="col-12 md:col-6" htmlFor="contenido.enfermedades">
+                      2. ENFERMEDADES O PROBLEMA ACTUAL: *
+                    </label>
                     <h6 className="md:text-right col-12 md:col-6">
                       CRONOLOGÍA, LOCALIZACIÓN, CARACTERÍSTICAS, INTENSIDAD, CAUSA APARENTE, FACTORES QUE AGRAVAN O
                       MEJORAN, SÍNTOMAS ASOCIADOS, EVOLUCIÓN, RESULTADOS DE EXÁMENES ANTERIORES
@@ -149,33 +151,33 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                   <div className="mb-3">
                     <TextArea
                       controller={{
-                        name: 'enfermedades',
+                        name: 'contenido.enfermedades',
                         defaultValue: '',
                         rules: { required: 'Este campo es obligatorio' },
                       }}
                       block
                     />
-                    <ErrorMessage name="enfermedades" />
+                    <ErrorMessage name="contenido.enfermedades" />
                   </div>
 
                   <div className="mb-3">
-                    <label htmlFor="medicamentos">MEDICAMENTOS QUE INGIERE: *</label>
+                    <label htmlFor="contenido.medicamentos">MEDICAMENTOS QUE INGIERE: *</label>
                     <TextArea
                       controller={{
-                        name: 'medicamentos',
+                        name: 'contenido.medicamentos',
                         defaultValue: '',
                         rules: { required: 'Este campo es obligatorio' },
                       }}
                       block
                     />
-                    <ErrorMessage name="medicamentos" />
+                    <ErrorMessage name="contenido.medicamentos" />
                   </div>
 
                   <div className="d-flex flex-row flex-wrap">
                     <CheckOptionsInline
                       label="ESTADO GENERAL: *"
                       controller={{
-                        name: 'estadoGeneral',
+                        name: 'contenido.estadoGeneral',
                         rules: { required: 'Es necesario seleccionar un tipo de estado general' },
                       }}
                       options={[
@@ -212,7 +214,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                         {
                           labelText: '1. VISIÓN',
                           controller: {
-                            name: 'sistemas.vision',
+                            name: 'contenido.sistemas.vision',
                           },
                           valueCirculo: 'VISIÓN-PATOLOGIA',
                           valueCuadrado: 'VISIÓN-SIN-PATOLOGIA',
@@ -220,7 +222,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                         {
                           labelText: '2. AUDICIÓN',
                           controller: {
-                            name: 'sistemas.audicion',
+                            name: 'contenido.sistemas.audicion',
                           },
                           valueCirculo: 'AUDICIÓN-PATOLOGIA',
                           valueCuadrado: 'AUDICIÓN-SIN-PATOLOGIA',
@@ -228,7 +230,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                         {
                           labelText: '3. OLFATO Y GUSTO',
                           controller: {
-                            name: 'sistemas.olfatoGusto',
+                            name: 'contenido.sistemas.olfatoGusto',
                           },
                           valueCirculo: 'OLFATO Y GUSTO-PATOLOGIA',
                           valueCuadrado: 'OLFATO Y GUSTO-SIN-PATOLOGIA',
@@ -236,7 +238,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                         {
                           labelText: '4. RESPIRATORIO',
                           controller: {
-                            name: 'sistemas.respiratorio',
+                            name: 'contenido.sistemas.respiratorio',
                           },
                           valueCirculo: 'RESPIRATORIO-PATOLOGIA',
                           valueCuadrado: 'RESPIRATORIO-SIN-PATOLOGIA',
@@ -244,7 +246,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                         {
                           labelText: '5. CARDIOVASCULAR',
                           controller: {
-                            name: 'sistemas.cardiovascular',
+                            name: 'contenido.sistemas.cardiovascular',
                           },
                           valueCirculo: 'CARDIOVASCULAR-PATOLOGIA',
                           valueCuadrado: 'CARDIOVASCULAR-SIN-PATOLOGIA',
@@ -252,14 +254,14 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                         {
                           labelText: '6. DIGESTIVO',
                           controller: {
-                            name: 'sistemas.digestivo',
+                            name: 'contenido.sistemas.digestivo',
                           },
                           valueCirculo: 'DIGESTIVO-PATOLOGIA',
                           valueCuadrado: 'DIGESTIVO-SIN-PATOLOGIA',
                         },
                       ]}
                     />
-                    <TextArea controller={{ name: 'sistemas.observaciones' }} block />
+                    <TextArea controller={{ name: 'contenido.sistemas.observaciones' }} block />
                   </div>
                 </div>
               </div>
@@ -281,48 +283,51 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           {
                             labelText: '1. CAÍDA',
                             controller: {
-                              name: 'antecedentesPersonales.alertasRiesgo.caida',
+                              name: 'contenido.antecedentesPersonales.alertasRiesgo.caida',
                             },
                             value: 'CAÍDA',
                           },
                           {
                             labelText: '2. DISMOVILIDAD',
                             controller: {
-                              name: 'antecedentesPersonales.alertasRiesgo.caida',
+                              name: 'contenido.antecedentesPersonales.alertasRiesgo.caida',
                             },
                             value: 'DISMOVILIDAD',
                           },
                           {
                             labelText: '3. PÉRDIDA DE PESO',
                             controller: {
-                              name: 'antecedentesPersonales.alertasRiesgo.caida',
+                              name: 'contenido.antecedentesPersonales.alertasRiesgo.caida',
                             },
                             value: 'PÉRDIDA DE PESO',
                           },
                           {
                             labelText: '4. ASTENIA',
                             controller: {
-                              name: 'antecedentesPersonales.alertasRiesgo.caida',
+                              name: 'contenido.antecedentesPersonales.alertasRiesgo.caida',
                             },
                             value: 'ASTENIA',
                           },
                           {
                             labelText: '5. DESORIENTACIÓN',
                             controller: {
-                              name: 'antecedentesPersonales.alertasRiesgo.caida',
+                              name: 'contenido.antecedentesPersonales.alertasRiesgo.caida',
                             },
                             value: 'DESORIENTACIÓN',
                           },
                           {
                             labelText: '6. ALTERACIONES DEL COMPORTAMIENTO',
                             controller: {
-                              name: 'antecedentesPersonales.alertasRiesgo.caida',
+                              name: 'contenido.antecedentesPersonales.alertasRiesgo.caida',
                             },
                             value: 'ALTERACIONES DEL COMPORTAMIENTO',
                           },
                         ]}
                       />
-                      <TextArea controller={{ name: 'antecedentesPersonales.alertasRiesgo.observaciones' }} block />
+                      <TextArea
+                        controller={{ name: 'contenido.antecedentesPersonales.alertasRiesgo.observaciones' }}
+                        block
+                      />
                       <hr />
                     </div>
                     <div className="w-100">
@@ -332,49 +337,49 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           {
                             labelText: '1. INMUNIZACIONES',
                             controller: {
-                              name: 'antecedentesPersonales.generales.inmunizaciones',
+                              name: 'contenido.antecedentesPersonales.generales.inmunizaciones',
                             },
                           },
                           {
                             labelText: '2. HIGIENE GENERAL',
                             controller: {
-                              name: 'antecedentesPersonales.generales.higieneGeneral',
+                              name: 'contenido.antecedentesPersonales.generales.higieneGeneral',
                             },
                           },
                           {
                             labelText: '3. HIGIENE ORAL',
                             controller: {
-                              name: 'antecedentesPersonales.generales.higieneOral',
+                              name: 'contenido.antecedentesPersonales.generales.higieneOral',
                             },
                           },
                           {
                             labelText: '4. EJERCICIO',
                             controller: {
-                              name: 'antecedentesPersonales.generales.ejercicio',
+                              name: 'contenido.antecedentesPersonales.generales.ejercicio',
                             },
                           },
                           {
                             labelText: '5. ALIMENTACIÓN',
                             controller: {
-                              name: 'antecedentesPersonales.generales.alimentacion',
+                              name: 'contenido.antecedentesPersonales.generales.alimentacion',
                             },
                           },
                           {
                             labelText: '6. ACTIVIDAD RECREATIVA',
                             controller: {
-                              name: 'antecedentesPersonales.generales.actividadRecreativa',
+                              name: 'contenido.antecedentesPersonales.generales.actividadRecreativa',
                             },
                           },
                           {
                             labelText: '8. ALERGIAS',
                             controller: {
-                              name: 'antecedentesPersonales.generales.alergias',
+                              name: 'contenido.antecedentesPersonales.generales.alergias',
                             },
                           },
                           {
                             labelText: '9. OTROS',
                             controller: {
-                              name: 'antecedentesPersonales.generales.otros',
+                              name: 'contenido.antecedentesPersonales.generales.otros',
                             },
                           },
                         ]}
@@ -389,34 +394,37 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           {
                             labelText: '1. TABASQUISMO',
                             controller: {
-                              name: 'antecedentesPersonales.habitosNocivos.tabaquismo',
+                              name: 'contenido.antecedentesPersonales.habitosNocivos.tabaquismo',
                             },
                             value: 'TABASQUISMO',
                           },
                           {
                             labelText: '2. ALCOHOLISMO',
                             controller: {
-                              name: 'antecedentesPersonales.habitosNocivos.alcoholismo',
+                              name: 'contenido.antecedentesPersonales.habitosNocivos.alcoholismo',
                             },
                             value: 'ALCOHOLISMO',
                           },
                           {
                             labelText: '3. ADICCIONES',
                             controller: {
-                              name: 'antecedentesPersonales.habitosNocivos.adicciones',
+                              name: 'contenido.antecedentesPersonales.habitosNocivos.adicciones',
                             },
                             value: 'ADICCIONES',
                           },
                           {
                             labelText: '4. OTRO HABITO',
                             controller: {
-                              name: 'antecedentesPersonales.habitosNocivos.otro',
+                              name: 'contenido.antecedentesPersonales.habitosNocivos.otro',
                             },
                             value: 'OTRO HABITO',
                           },
                         ]}
                       />
-                      <TextArea controller={{ name: 'antecedentesPersonales.habitosNocivos.observaciones' }} block />
+                      <TextArea
+                        controller={{ name: 'contenido.antecedentesPersonales.habitosNocivos.observaciones' }}
+                        block
+                      />
                       <hr />
                     </div>
 
@@ -427,97 +435,97 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           {
                             labelText: '1. DERMATOLOGICOS',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.dermatologicos',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.dermatologicos',
                             },
                           },
                           {
                             labelText: '2. VISUALES',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.visuales',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.visuales',
                             },
                           },
                           {
                             labelText: '3. OTORRINO',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.otorrino',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.otorrino',
                             },
                           },
                           {
                             labelText: '4. ESTOMATOLOGICOS',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.estomatologicos',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.estomatologicos',
                             },
                           },
                           {
                             labelText: '5. ENDOCRINOS',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.endocrinos',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.endocrinos',
                             },
                           },
                           {
                             labelText: '6. CARDIO VASCULARES',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.cardiovasculares',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.cardiovasculares',
                             },
                           },
                           {
                             labelText: '7. RESPIRATORIOS',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.respiratorios',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.respiratorios',
                             },
                           },
                           {
                             labelText: '8. DIGESTIVOS',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.digestivos',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.digestivos',
                             },
                           },
                           {
                             labelText: '9. NEUROLOGICO',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.neurologico',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.neurologico',
                             },
                           },
                           {
                             labelText: '10. UROLÓGICOS',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.urologico',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.urologico',
                             },
                           },
                           {
                             labelText: '11. HEMO LINFATICOS',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.hemolinfatico',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.hemolinfatico',
                             },
                           },
                           {
                             labelText: '12. INFECCIOSOS',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.infeccioso',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.infeccioso',
                             },
                           },
                           {
                             labelText: '13. TRONCOLOGICOS',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.troncologico',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.troncologico',
                             },
                           },
                           {
                             labelText: '14. MUSCULO ESQUELETICOS',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.musculoesqueletico',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.musculoesqueletico',
                             },
                           },
                           {
                             labelText: '15. PSIQUIATRICOS',
                             controller: {
-                              name: 'antecedentesPersonales.clinicoquirurgicos.psiquiatrico',
+                              name: 'contenido.antecedentesPersonales.clinicoquirurgicos.psiquiatrico',
                             },
                           },
                         ]}
                       />
                       <TextArea
-                        controller={{ name: 'antecedentesPersonales.clinicoquirurgicos.observaciones' }}
+                        controller={{ name: 'contenido.antecedentesPersonales.clinicoquirurgicos.observaciones' }}
                         block
                       />
                       <hr />
@@ -530,49 +538,52 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           {
                             labelText: '1. EDAD DE MENOPAUSIA',
                             controller: {
-                              name: 'antecedentesPersonales.ginecoobstetricos.edadmenopausia',
+                              name: 'contenido.antecedentesPersonales.ginecoobstetricos.edadmenopausia',
                             },
                           },
                           {
                             labelText: '2. EDAD DE ULTIMA MAMOGRAFIA',
                             controller: {
-                              name: 'antecedentesPersonales.ginecoobstetricos.edadmamografia',
+                              name: 'contenido.antecedentesPersonales.ginecoobstetricos.edadmamografia',
                             },
                           },
                           {
                             labelText: '3. EDAD DE ULTIMA CITOLOGIA',
                             controller: {
-                              name: 'antecedentesPersonales.ginecoobstetricos.edadcitologia',
+                              name: 'contenido.antecedentesPersonales.ginecoobstetricos.edadcitologia',
                             },
                             value: 'ADICCIONES',
                           },
                           {
                             labelText: '4. EMBARAZOS',
                             controller: {
-                              name: 'antecedentesPersonales.ginecoobstetricos.embarazo',
+                              name: 'contenido.antecedentesPersonales.ginecoobstetricos.embarazo',
                             },
                           },
                           {
                             labelText: '5. PARTOS',
                             controller: {
-                              name: 'antecedentesPersonales.ginecoobstetricos.parto',
+                              name: 'contenido.antecedentesPersonales.ginecoobstetricos.parto',
                             },
                           },
                           {
                             labelText: '6. CESAREAS',
                             controller: {
-                              name: 'antecedentesPersonales.ginecoobstetricos.cesarea',
+                              name: 'contenido.antecedentesPersonales.ginecoobstetricos.cesarea',
                             },
                           },
                           {
                             labelText: '7. TERAPIA HORMONAL',
                             controller: {
-                              name: 'antecedentesPersonales.ginecoobstetricos.terapiahormonal',
+                              name: 'contenido.antecedentesPersonales.ginecoobstetricos.terapiahormonal',
                             },
                           },
                         ]}
                       />
-                      <TextArea controller={{ name: 'antecedentesPersonales.ginecoobstetricos.observaciones' }} block />
+                      <TextArea
+                        controller={{ name: 'contenido.antecedentesPersonales.ginecoobstetricos.observaciones' }}
+                        block
+                      />
                       <hr />
                     </div>
 
@@ -583,18 +594,21 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           {
                             labelText: '1. EDAD DE ULTIMO ANTIGENO PROSTATICO',
                             controller: {
-                              name: 'antecedentesPersonales.andrologicos.antigenoprostatico',
+                              name: 'contenido.antecedentesPersonales.andrologicos.antigenoprostatico',
                             },
                           },
                           {
                             labelText: '2. TERAPIA HORMONAL',
                             controller: {
-                              name: 'antecedentesPersonales.andrologicos.terapiahormonal',
+                              name: 'contenido.antecedentesPersonales.andrologicos.terapiahormonal',
                             },
                           },
                         ]}
                       />
-                      <TextArea controller={{ name: 'antecedentesPersonales.andrologicos.observaciones' }} block />
+                      <TextArea
+                        controller={{ name: 'contenido.antecedentesPersonales.andrologicos.observaciones' }}
+                        block
+                      />
                       <hr />
                     </div>
 
@@ -605,60 +619,63 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           {
                             labelText: '1. AINES',
                             controller: {
-                              name: 'antecedentesPersonales.farmacologicos.aines',
+                              name: 'contenido.antecedentesPersonales.farmacologicos.aines',
                             },
                           },
                           {
                             labelText: '2. ANALGESICOS',
                             controller: {
-                              name: 'antecedentesPersonales.farmacologicos.analgesicos',
+                              name: 'contenido.antecedentesPersonales.farmacologicos.analgesicos',
                             },
                           },
                           {
                             labelText: '3. ANTIDIABETICOS',
                             controller: {
-                              name: 'antecedentesPersonales.farmacologicos.antidiabeticos',
+                              name: 'contenido.antecedentesPersonales.farmacologicos.antidiabeticos',
                             },
                           },
                           {
                             labelText: '4. ANTIHIPERTENSIVOS',
                             controller: {
-                              name: 'antecedentesPersonales.farmacologicos.antihipertensivos',
+                              name: 'contenido.antecedentesPersonales.farmacologicos.antihipertensivos',
                             },
                           },
                           {
                             labelText: '5. ANTICOAGULANTES',
                             controller: {
-                              name: 'antecedentesPersonales.farmacologicos.anticoagulantes',
+                              name: 'contenido.antecedentesPersonales.farmacologicos.anticoagulantes',
                             },
                           },
                           {
                             labelText: '6. PSICO FARMACOS',
                             controller: {
-                              name: 'antecedentesPersonales.farmacologicos.psicofarmacos',
+                              name: 'contenido.antecedentesPersonales.farmacologicos.psicofarmacos',
                             },
                           },
                           {
                             labelText: '7. ANTIBIOTICOS',
                             controller: {
-                              name: 'antecedentesPersonales.farmacologicos.antibioticos',
+                              name: 'contenido.antecedentesPersonales.farmacologicos.antibioticos',
                             },
                           },
                           {
                             labelText: '8. OTROS',
                             controller: {
-                              name: 'antecedentesPersonales.farmacologicos.otros',
+                              name: 'contenido.antecedentesPersonales.farmacologicos.otros',
                             },
                           },
                           {
                             labelText: '9. NUMERO DE PRESCRIPTORES',
                             controller: {
-                              name: 'antecedentesPersonales.farmacologicos.numeroprescriptores',
+                              name: 'contenido.antecedentesPersonales.farmacologicos.numeroprescriptores',
                             },
                           },
                         ]}
                       />
-                      <TextArea controller={{ name: 'antecedentesPersonales.famarcologicos.observaciones' }} block />
+                      <TextArea
+                        controller={{ name: 'contenido.antecedentesPersonales.famarcologicos.observaciones' }}
+                        block
+                      />
                     </div>
                   </div>
                 </div>
@@ -681,66 +698,69 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           {
                             labelText: '1. CARDIOPATAS',
                             controller: {
-                              name: 'antecedentesFamiliares.antecedentes.cardiopata',
+                              name: 'contenido.antecedentesFamiliares.antecedentes.cardiopata',
                             },
                           },
                           {
                             labelText: '2. DIABETES',
                             controller: {
-                              name: 'antecedentesFamiliares.antecedentes.diabetes',
+                              name: 'contenido.antecedentesFamiliares.antecedentes.diabetes',
                             },
                           },
                           {
                             labelText: '3. HIPERTENSION ARTERIAL',
                             controller: {
-                              name: 'antecedentesPersonales.antecedentes.hipertension arterial',
+                              name: 'contenido.antecedentesPersonales.antecedentes.hipertension arterial',
                             },
                           },
                           {
                             labelText: '4. NEOPLASIA',
                             controller: {
-                              name: 'antecedentesFamiliares.antecedentes.neoplasia',
+                              name: 'contenido.antecedentesFamiliares.antecedentes.neoplasia',
                             },
                           },
                           {
                             labelText: '5. ALZHEIMER',
                             controller: {
-                              name: 'antecedentesFamiliares.antecedentes.alzheimer',
+                              name: 'contenido.antecedentesFamiliares.antecedentes.alzheimer',
                             },
                           },
                           {
                             labelText: '6. PARKINSON',
                             controller: {
-                              name: 'antecedentesFamiliares.antecedentes.parkinson',
+                              name: 'contenido.antecedentesFamiliares.antecedentes.parkinson',
                             },
                           },
                           {
                             labelText: '7. TUBERCULOSIS',
                             controller: {
-                              name: 'antecedentesFamiliares.antecedentes.tuberculosis',
+                              name: 'contenido.antecedentesFamiliares.antecedentes.tuberculosis',
                             },
                           },
                           {
                             labelText: '8. VIOLENCIA INTRAFAMILIAR',
                             controller: {
-                              name: 'antecedentesFamiliares.antecedentes.violenciaintrafamiliar',
+                              name: 'contenido.antecedentesFamiliares.antecedentes.violenciaintrafamiliar',
                             },
                           },
                           {
                             labelText: '9. SINDROME DEL CUIDADOR',
                             controller: {
-                              name: 'antecedentesFamiliares.antecedentes.sindromecuidador',
+                              name: 'contenido.antecedentesFamiliares.antecedentes.sindromecuidador',
                             },
                           },
                           {
                             labelText: '10. OTROS',
                             controller: {
-                              name: 'antecedentesFamiliares.antecedentes.otros',
+                              name: 'contenido.antecedentesFamiliares.antecedentes.otros',
                             },
                           },
                         ]}
                       />
-                      <TextArea controller={{ name: 'antecedentesFamiliares.antecedentes.observaciones' }} block />
+                      <TextArea
+                        controller={{ name: 'contenido.antecedentesFamiliares.antecedentes.observaciones' }}
+                        block
+                      />
                     </div>
                   </div>
                 </div>
@@ -977,10 +997,184 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             <div className="row justify-content-center my-3">
               <div className="col-11 border">
                 <div className="d-flex flex-column m-3">
+                  <div className="d-flex flex-row flex-wrap justify-content-between">
+                    <label className="my-1">7. EXAMEN FÍSICO: </label>
+                    <div className="my-1">
+                      <h6>REDONDO = CON PATOLOGÍA: DESCRIBIRCON EL NUMERO</h6>
+                      <h6>CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
+                    </div>
+
+                    <div className="w-100">
+                      <CheckOptionsInlineCirculoCuadrado
+                        label="REGIONAL (1-14)"
+                        options={[
+                          {
+                            labelText: '1. PIEL',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.piel',
+                            },
+                          },
+                          {
+                            labelText: '2. CABEZA',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.cabeza',
+                            },
+                          },
+                          {
+                            labelText: '3. OJOS',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.ojos',
+                            },
+                          },
+                          {
+                            labelText: '4. OÍDOS',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.oidos',
+                            },
+                          },
+                          {
+                            labelText: '5. BOCA',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.boca',
+                            },
+                          },
+                          {
+                            labelText: '6. NARIZ',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.nariz',
+                            },
+                          },
+                          {
+                            labelText: '7. CUELLO',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.cuello',
+                            },
+                          },
+                          {
+                            labelText: '8. AXILA-MAMA',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.axilamama',
+                            },
+                          },
+                          {
+                            labelText: '9. TORAX',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.torax',
+                            },
+                          },
+                          {
+                            labelText: '10. ABDOMEN',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.abdomen',
+                            },
+                          },
+                          {
+                            labelText: '11. COLUMNA',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.columna',
+                            },
+                          },
+                          {
+                            labelText: '12. PERINÉ',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.perine',
+                            },
+                          },
+                          {
+                            labelText: '13. M. SUPERIORES',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.msuperiores',
+                            },
+                          },
+                          {
+                            labelText: '14. M. INFERIORES',
+                            controller: {
+                              name: 'contenido.examenFisico.regional.minferiores',
+                            },
+                          },
+                        ]}
+                      />
+
+                      <TextArea
+                        controller={{ name: 'contenido.antecedentesFamiliares.antecedentes.observaciones' }}
+                        block
+                      />
+                      <hr />
+                    </div>
+
+                    <div className="w-100">
+                      <CheckOptionsInlineCirculoCuadrado
+                        label="SISTEMATICO (1-9)"
+                        options={[
+                          {
+                            labelText: '1. ORG DE LOS SENTIDOS',
+                            controller: {
+                              name: 'contenido.examenFisico.sistematico.orgsentidos',
+                            },
+                          },
+                          {
+                            labelText: '2. RESPIRATORIO',
+                            controller: {
+                              name: 'contenido.examenFisico.sistematico.respiratorio',
+                            },
+                          },
+                          {
+                            labelText: '3. CARDIO VASCULAR',
+                            controller: {
+                              name: 'contenido.examenFisico.sistematico.cardiovascular',
+                            },
+                          },
+                          {
+                            labelText: '4. DIGESTIVO',
+                            controller: {
+                              name: 'contenido.examenFisico.sistematico.digestivo',
+                            },
+                          },
+                          {
+                            labelText: '5. DENITO URINARIO',
+                            controller: {
+                              name: 'contenido.examenFisico.sistematico.denitourinario',
+                            },
+                          },
+                          {
+                            labelText: '6. MUSCULO ESQUELETICO',
+                            controller: {
+                              name: 'contenido.examenFisico.sistematico.musculoesqueletico',
+                            },
+                          },
+                          {
+                            labelText: '7. ENDOCRINO',
+                            controller: {
+                              name: 'contenido.examenFisico.sistematico.endocrino',
+                            },
+                          },
+                          {
+                            labelText: '8. HEMO LINFATICO',
+                            controller: {
+                              name: 'contenido.examenFisico.sistematico.hemolinfatico',
+                            },
+                          },
+                          {
+                            labelText: '9. NEUROLÓGICO',
+                            controller: {
+                              name: 'contenido.examenFisico.sistematico.neurologico',
+                            },
+                          },
+                        ]}
+                      />
+                      <TextArea controller={{ name: 'contenido.examenFisico.observaciones' }} block />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row justify-content-center my-3">
+              <div className="col-11 border">
+                <div className="d-flex flex-column m-3">
                   <h4>9. PRUEBAS DIAGNÓSTICAS:</h4>
                   <h6>REGISTRAR LOS EXÁMENES DE LABORATORIO Y ESPECIALES SOLICITADOS</h6>
                   <div>
-                    <TextArea controller={{ name: 'pruebasDiagnosticas.observaciones' }} block />
+                    <TextArea controller={{ name: 'contenido.pruebasDiagnosticas.observaciones' }} block />
                   </div>
                 </div>
               </div>
@@ -991,7 +1185,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                   <h4>10. DIAGNÓSTICO:</h4>
                   <h6>1.FUNCIONAL, 2.NUTRICIONAL, 3.PSICOLÓGICO, 4.SOCIAL, 5.EDUCATIVO, 6.FARMACOLÓGICO</h6>
                   <div>
-                    <TextArea controller={{ name: 'diagnostico.observaciones' }} block />
+                    <TextArea controller={{ name: 'contenido.diagnostico.observaciones' }} block />
                   </div>
                 </div>
               </div>
