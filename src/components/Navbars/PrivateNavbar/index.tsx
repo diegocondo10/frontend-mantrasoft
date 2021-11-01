@@ -28,18 +28,28 @@ const PrivateNavbar = () => {
           url: '/',
         },
         {
-          icon: PrimeIcons.USERS,
-          label: 'Personas',
-          url: '/personas/',
-        },
-        {
           icon: PrimeIcons.FOLDER,
           label: 'Catalogos',
           items: [
             {
+              icon: PrimeIcons.USERS,
+              label: 'Personas',
+              url: '/personas/',
+            },
+            {
+              label: 'Personal',
+              icon: PrimeIcons.USERS,
+              url: '/personal',
+            },
+            {
               label: 'Habitaciones',
               icon: PrimeIcons.LIST,
               url: '/habitaciones/',
+            },
+            {
+              label: 'Horarios',
+              icon: PrimeIcons.LIST,
+              url: '/horarios/',
             },
             {
               label: 'Medicamentos',
@@ -54,6 +64,22 @@ const PrivateNavbar = () => {
           items: [
             { label: 'Ingreso', icon: PrimeIcons.FILE, url: '/fichas/ingreso' },
             { label: 'Pacientes', icon: PrimeIcons.FILE, url: '/fichas/medicacion' },
+          ],
+        },
+        {
+          icon: PrimeIcons.LOCK,
+          label: 'Auditoria',
+          items: [
+            {
+              label: 'Permisos',
+              icon: PrimeIcons.LOCK,
+              url: '/auditoria/permisos/',
+            },
+            {
+              label: 'Roles del sistema',
+              icon: PrimeIcons.LIST,
+              url: '/auditoria/roles-sistema/',
+            },
           ],
         },
       ].map(mappItem),

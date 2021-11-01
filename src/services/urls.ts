@@ -1,10 +1,14 @@
 export const URL_BASE = 'http://localhost:8000/';
 
+const PERMISOS = 'permisos/';
+const ROLES_SISTEMA = 'roles-sistema/';
 const USUARIOS = 'usuarios/';
 const PERSONAS = 'personas/';
 const HABITACIONES = 'habitaciones/';
 const MEDICAMENTOS = 'medicamentos/';
 const FICHAS_INGRESO = 'fichas-ingreso/';
+const PERSONAL = 'personal/';
+const ROLES_PERSONAL = 'roles-personal/';
 const ALAS = 'alas/';
 /**
  * AUTH
@@ -54,3 +58,42 @@ export const urlCreateFichasIngreso = FICHAS_INGRESO;
 export const urlUpdateFichasIngreso = (id: any) => `${FICHAS_INGRESO}${id}/`;
 export const urlDeleteFichasIngreso = urlUpdateFichasIngreso;
 export const urlDetailFichasIngreso = urlUpdateFichasIngreso;
+export const urlImprimirFichaIngreso = (id: any) => `${urlUpdateFichasIngreso(id)}imprimir-ficha/`;
+
+/**
+ * PERSONAL
+ */
+
+export const urlListarPersonal = PERSONAL;
+export const urlCreatePersonal = PERSONAL;
+export const urlCatalogoFormPersonal = `${PERSONAL}catalogo-form`;
+export const urlUpdatePersonal = (id: any) => `${PERSONAL}${id}/`;
+export const urlDeletePersonal = urlUpdateFichasIngreso;
+export const urlDetailPersonal = urlUpdateFichasIngreso;
+
+/**
+ * ROLES PERSONAL
+ */
+
+export const urlListarRolesPersonal = ROLES_PERSONAL;
+export const urlCreateRolesPersonal = ROLES_PERSONAL;
+export const urlUpdateRolesPersonal = (id: any) => `${ROLES_PERSONAL}${id}/`;
+export const urlDeleteRolesPersonal = urlUpdateFichasIngreso;
+export const urlDetailRolesPersonal = urlUpdateFichasIngreso;
+
+/**
+ * AUDITORIA
+ */
+//PERMISOS
+export const urlListarPermisos = PERMISOS;
+export const urlCreatePermiso = PERMISOS;
+export const urlUpdatePermiso = (id: any) => `${PERMISOS}${id}/`;
+export const urlDeletePermiso = urlUpdatePermiso;
+export const urlDetailPermiso = urlUpdatePermiso;
+//ROLES DEL SISTEMA
+export const urlListarRolesSistema = ROLES_SISTEMA;
+export const urlCreateRolesSistema = ROLES_SISTEMA;
+export const urlCatalogoFormRolesSistema = `${ROLES_SISTEMA}catalogo-form/`;
+export const urlUpdateRolesSistema = (id: any) => `${ROLES_SISTEMA}${id}/`;
+export const urlDeleteRolesSistema = urlUpdatePermiso;
+export const urlDetailRolesSistema = urlUpdatePermiso;

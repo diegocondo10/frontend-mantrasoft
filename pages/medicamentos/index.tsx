@@ -9,7 +9,7 @@ import { Column } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import React from 'react';
-import usePagination from 'usePagination';
+import usePagination from '@src/hooks/usePagination';
 
 const MedicamentosPage: NextPage<any> = () => {
   const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch, filters, changeFilter } =

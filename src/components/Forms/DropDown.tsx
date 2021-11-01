@@ -21,6 +21,9 @@ const DropDown: React.FC<DropDownProps> = (props) => {
           {...rest}
           className={classNames(rest.className, { 'p-invalid': fieldState.invalid, 'w-full': props.block })}
           {...field}
+          placeholder="SELECCIONAR"
+          emptyMessage="Sin resultados"
+          emptyFilterMessage="Sin resultados"
         />
       )}
     />

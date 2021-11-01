@@ -8,7 +8,7 @@ import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import React from 'react';
-import usePagination from 'usePagination';
+import usePagination from '@src/hooks/usePagination';
 
 const PersonasPage: NextPage<any> = () => {
   const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch } = usePagination({

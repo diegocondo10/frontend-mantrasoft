@@ -1,4 +1,5 @@
 import CONFIGS from '@src/constants/configs';
+import useToasts from '@src/hooks/useToasts';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { URL_BASE } from './urls';
 
@@ -17,6 +18,17 @@ const API = {
       },
       ...configs,
     });
+  },
+  getReporte(url: string) {
+    return async () => {
+      try {
+        const res = await API.private({ responseType: 'blob' }).get(url);
+        const objUrl = window.URL.createObjectURL(res.data);
+        window.open(objUrl);
+      } catch (error) {
+        alert('Ha ocurrido un problema al generar el reporte');
+      }
+    };
   },
 };
 

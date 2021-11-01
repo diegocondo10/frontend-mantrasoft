@@ -19,8 +19,9 @@ import { NextPage } from 'next';
 import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import React, { useMemo } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
+import uuid from 'uuid';
 
 const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActions }> = ({ id, crudAction }) => {
   const methods = useForm({ mode: 'onChange' });
@@ -353,42 +354,36 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             controller: {
                               name: 'contenido.antecedentesPersonales.alertasRiesgo.caida',
                             },
-                            value: 'CAÍDA',
                           },
                           {
                             labelText: '2. DISMOVILIDAD',
                             controller: {
-                              name: 'contenido.antecedentesPersonales.alertasRiesgo.caida',
+                              name: 'contenido.antecedentesPersonales.alertasRiesgo.dismovilidad',
                             },
-                            value: 'DISMOVILIDAD',
                           },
                           {
                             labelText: '3. PÉRDIDA DE PESO',
                             controller: {
-                              name: 'contenido.antecedentesPersonales.alertasRiesgo.caida',
+                              name: 'contenido.antecedentesPersonales.alertasRiesgo.perdidaPeso',
                             },
-                            value: 'PÉRDIDA DE PESO',
                           },
                           {
                             labelText: '4. ASTENIA',
                             controller: {
-                              name: 'contenido.antecedentesPersonales.alertasRiesgo.caida',
+                              name: 'contenido.antecedentesPersonales.alertasRiesgo.astenia',
                             },
-                            value: 'ASTENIA',
                           },
                           {
                             labelText: '5. DESORIENTACIÓN',
                             controller: {
-                              name: 'contenido.antecedentesPersonales.alertasRiesgo.caida',
+                              name: 'contenido.antecedentesPersonales.alertasRiesgo.desorientacion',
                             },
-                            value: 'DESORIENTACIÓN',
                           },
                           {
                             labelText: '6. ALTERACIONES DEL COMPORTAMIENTO',
                             controller: {
-                              name: 'contenido.antecedentesPersonales.alertasRiesgo.caida',
+                              name: 'contenido.antecedentesPersonales.alertasRiesgo.alteracionesComportamiento',
                             },
-                            value: 'ALTERACIONES DEL COMPORTAMIENTO',
                           },
                         ]}
                       />
@@ -464,28 +459,24 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                             controller: {
                               name: 'contenido.antecedentesPersonales.habitosNocivos.tabaquismo',
                             },
-                            value: 'TABASQUISMO',
                           },
                           {
                             labelText: '2. ALCOHOLISMO',
                             controller: {
                               name: 'contenido.antecedentesPersonales.habitosNocivos.alcoholismo',
                             },
-                            value: 'ALCOHOLISMO',
                           },
                           {
                             labelText: '3. ADICCIONES',
                             controller: {
                               name: 'contenido.antecedentesPersonales.habitosNocivos.adicciones',
                             },
-                            value: 'ADICCIONES',
                           },
                           {
                             labelText: '4. OTRO HABITO',
                             controller: {
                               name: 'contenido.antecedentesPersonales.habitosNocivos.otro',
                             },
-                            value: 'OTRO HABITO',
                           },
                         ]}
                       />
@@ -1058,6 +1049,58 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                     </div>
                     {/* FIN row */}
                   </div>
+
+                  <hr />
+
+                  <div className="d-flex flex-row flex-wrap justify-content-between">
+                    <div>
+                      <CheckOptionsInlineCirculoCuadrado
+                        label="TAMIZAJE RAPIDO"
+                        options={[
+                          {
+                            controller: { name: 'contenido.signos.tamizajeRapido.dificultadVisual' },
+                            labelText: '1. DIFICULTAD VISUAL',
+                          },
+                          {
+                            controller: { name: 'contenido.signos.tamizajeRapido.dificultadAuditiva' },
+                            labelText: '2. DIFICULTAD AUDITIVA',
+                          },
+                          {
+                            controller: { name: 'contenido.signos.tamizajeRapido.levantateAndaMayora15s' },
+                            labelText: '3. "LEVANTATE Y ANDA" MAYOR A 15s',
+                          },
+                          {
+                            controller: { name: 'contenido.signos.tamizajeRapido.perdidaInvoluntariaOrina' },
+                            labelText: '4. PERDIDA INVOLUNTARIA DE ORINA',
+                          },
+                          {
+                            controller: { name: 'contenido.signos.tamizajeRapido.perdidaMemoriaReciente' },
+                            labelText: '5. PERDIDA DE MEMORIA RECIENTE',
+                          },
+                          {
+                            controller: { name: 'contenido.signos.tamizajeRapido.pierdePeso' },
+                            labelText: '6. PIERDE PESO MAS DE 4.5KG EN 5 MESES',
+                          },
+                          {
+                            controller: { name: 'contenido.signos.tamizajeRapido.tristeDeprimido' },
+                            labelText: '7. SE SIENTE TRISTE DEPRIMIDO',
+                          },
+                          {
+                            controller: { name: 'contenido.signos.tamizajeRapido.baniarseSolo' },
+                            labelText: '8. PRUEBA BAÑARSE SOLO',
+                          },
+                          {
+                            controller: { name: 'contenido.signos.tamizajeRapido.saleComprasSola' },
+                            labelText: '9. SALE DE COMPRAS SOLO',
+                          },
+                          {
+                            controller: { name: 'contenido.signos.tamizajeRapido.viveSolo' },
+                            labelText: '10. VIVE SOLO',
+                          },
+                        ]}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1066,7 +1109,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
               <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
-                    <label className="my-1">7. EXAMEN FÍSICO: </label>
+                    <h4 className="my-1 font-bold">7. EXAMEN FÍSICO: </h4>
                     <div className="my-1">
                       <h6>REDONDO = CON PATOLOGÍA: DESCRIBIRCON EL NUMERO</h6>
                       <h6>CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
@@ -1079,94 +1122,91 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           {
                             labelText: '1. PIEL',
                             controller: {
-                              name: 'contenido.examenFisico.regional.piel',
+                              name: 'contenido.examenFisico.regional.opciones.piel',
                             },
                           },
                           {
                             labelText: '2. CABEZA',
                             controller: {
-                              name: 'contenido.examenFisico.regional.cabeza',
+                              name: 'contenido.examenFisico.regional.opciones.cabeza',
                             },
                           },
                           {
                             labelText: '3. OJOS',
                             controller: {
-                              name: 'contenido.examenFisico.regional.ojos',
+                              name: 'contenido.examenFisico.regional.opciones.ojos',
                             },
                           },
                           {
                             labelText: '4. OÍDOS',
                             controller: {
-                              name: 'contenido.examenFisico.regional.oidos',
+                              name: 'contenido.examenFisico.regional.opciones.oidos',
                             },
                           },
                           {
                             labelText: '5. BOCA',
                             controller: {
-                              name: 'contenido.examenFisico.regional.boca',
+                              name: 'contenido.examenFisico.regional.opciones.boca',
                             },
                           },
                           {
                             labelText: '6. NARIZ',
                             controller: {
-                              name: 'contenido.examenFisico.regional.nariz',
+                              name: 'contenido.examenFisico.regional.opciones.nariz',
                             },
                           },
                           {
                             labelText: '7. CUELLO',
                             controller: {
-                              name: 'contenido.examenFisico.regional.cuello',
+                              name: 'contenido.examenFisico.regional.opciones.cuello',
                             },
                           },
                           {
                             labelText: '8. AXILA-MAMA',
                             controller: {
-                              name: 'contenido.examenFisico.regional.axilamama',
+                              name: 'contenido.examenFisico.regional.opciones.axilamama',
                             },
                           },
                           {
                             labelText: '9. TORAX',
                             controller: {
-                              name: 'contenido.examenFisico.regional.torax',
+                              name: 'contenido.examenFisico.regional.opciones.torax',
                             },
                           },
                           {
                             labelText: '10. ABDOMEN',
                             controller: {
-                              name: 'contenido.examenFisico.regional.abdomen',
+                              name: 'contenido.examenFisico.regional.opciones.abdomen',
                             },
                           },
                           {
                             labelText: '11. COLUMNA',
                             controller: {
-                              name: 'contenido.examenFisico.regional.columna',
+                              name: 'contenido.examenFisico.regional.opciones.columna',
                             },
                           },
                           {
                             labelText: '12. PERINÉ',
                             controller: {
-                              name: 'contenido.examenFisico.regional.perine',
+                              name: 'contenido.examenFisico.regional.opciones.perine',
                             },
                           },
                           {
                             labelText: '13. M. SUPERIORES',
                             controller: {
-                              name: 'contenido.examenFisico.regional.msuperiores',
+                              name: 'contenido.examenFisico.regional.opciones.msuperiores',
                             },
                           },
                           {
                             labelText: '14. M. INFERIORES',
                             controller: {
-                              name: 'contenido.examenFisico.regional.minferiores',
+                              name: 'contenido.examenFisico.regional.opciones.minferiores',
                             },
                           },
                         ]}
                       />
 
-                      <TextArea
-                        controller={{ name: 'contenido.antecedentesFamiliares.antecedentes.observaciones' }}
-                        block
-                      />
+                      <TextArea controller={{ name: 'contenido.examenFisico.regional.observaciones' }} block />
                       <hr />
                     </div>
 
@@ -1177,69 +1217,245 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           {
                             labelText: '1. ORG DE LOS SENTIDOS',
                             controller: {
-                              name: 'contenido.examenFisico.sistematico.orgsentidos',
+                              name: 'contenido.examenFisico.sistematico.opciones.orgsentidos',
                             },
                           },
                           {
                             labelText: '2. RESPIRATORIO',
                             controller: {
-                              name: 'contenido.examenFisico.sistematico.respiratorio',
+                              name: 'contenido.examenFisico.sistematico.opciones.respiratorio',
                             },
                           },
                           {
                             labelText: '3. CARDIO VASCULAR',
                             controller: {
-                              name: 'contenido.examenFisico.sistematico.cardiovascular',
+                              name: 'contenido.examenFisico.sistematico.opciones.cardiovascular',
                             },
                           },
                           {
                             labelText: '4. DIGESTIVO',
                             controller: {
-                              name: 'contenido.examenFisico.sistematico.digestivo',
+                              name: 'contenido.examenFisico.sistematico.opciones.digestivo',
                             },
                           },
                           {
                             labelText: '5. DENITO URINARIO',
                             controller: {
-                              name: 'contenido.examenFisico.sistematico.denitourinario',
+                              name: 'contenido.examenFisico.sistematico.opciones.denitourinario',
                             },
                           },
                           {
                             labelText: '6. MUSCULO ESQUELETICO',
                             controller: {
-                              name: 'contenido.examenFisico.sistematico.musculoesqueletico',
+                              name: 'contenido.examenFisico.sistematico.opciones.musculoesqueletico',
                             },
                           },
                           {
                             labelText: '7. ENDOCRINO',
                             controller: {
-                              name: 'contenido.examenFisico.sistematico.endocrino',
+                              name: 'contenido.examenFisico.sistematico.opciones.endocrino',
                             },
                           },
                           {
                             labelText: '8. HEMO LINFATICO',
                             controller: {
-                              name: 'contenido.examenFisico.sistematico.hemolinfatico',
+                              name: 'contenido.examenFisico.sistematico.opciones.hemolinfatico',
                             },
                           },
                           {
                             labelText: '9. NEUROLÓGICO',
                             controller: {
-                              name: 'contenido.examenFisico.sistematico.neurologico',
+                              name: 'contenido.examenFisico.sistematico.opciones.neurologico',
                             },
                           },
                         ]}
                       />
-                      <TextArea controller={{ name: 'contenido.examenFisico.observaciones' }} block />
+                      <TextArea controller={{ name: 'contenido.examenFisico.sistematico.observaciones' }} block />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            {/* SECCION 8 */}
             <div className="row justify-content-center my-3">
               <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
-                  <h4>9. PRUEBAS DIAGNÓSTICAS:</h4>
+                  <h4 className="font-bold">8. DIAGNOSTICOS</h4>
+                  <Controller
+                    name="contenido.diagnosticos.items"
+                    defaultValue={[]}
+                    render={({ field: { value, onChange } }) => (
+                      <div className="table-responsive-sm">
+                        <table className="table table-bordered table-hover table-striped">
+                          <thead>
+                            <tr className="text-center">
+                              <th style={{ width: '50px' }}>#</th>
+                              <th>DIAGNOSTICO</th>
+                              <th style={{ width: '50px' }}>P</th>
+                              <th style={{ width: '50px' }}>D</th>
+                              <th>CIE</th>
+                              <th>OPCIONES</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {value?.map((item, index) => (
+                              <tr key={item.uuid}>
+                                <td className="text-center font-bold">{index + 1}</td>
+                                <td>
+                                  <input
+                                    className="w-100 form-control"
+                                    type="text"
+                                    name={`diagnostico.${index}`}
+                                    value={item.diagnostico}
+                                    onChange={(evt) => {
+                                      const itemIndex = value.findIndex((row) => row.uuid === item.uuid);
+                                      value[itemIndex].diagnostico = evt.target.value;
+                                      onChange([...value]);
+                                    }}
+                                  />
+                                </td>
+                                <td className="text-center">
+                                  <input
+                                    type="checkbox"
+                                    name={`estado.${index}`}
+                                    className="w-100 form-check"
+                                    checked={item.p}
+                                    onChange={(evt) => {
+                                      const itemIndex = value.findIndex((row) => row.uuid === item.uuid);
+                                      value[itemIndex].p = evt.target.checked;
+                                      value[itemIndex].d = false;
+                                      onChange([...value]);
+                                    }}
+                                  />
+                                </td>
+                                <td className="text-center">
+                                  <input
+                                    type="checkbox"
+                                    className="w-100 form-check"
+                                    name={`estado.${index}`}
+                                    checked={item.d}
+                                    onChange={(evt) => {
+                                      const itemIndex = value.findIndex((row) => row.uuid === item.uuid);
+                                      value[itemIndex].d = evt.target.checked;
+                                      value[itemIndex].p = false;
+                                      onChange([...value]);
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <input
+                                    className="w-100 form-control"
+                                    type="text"
+                                    name={`diagnostico.${index}`}
+                                    value={item.cie}
+                                    onChange={(evt) => {
+                                      const itemIndex = value.findIndex((row) => row.uuid === item.uuid);
+                                      value[itemIndex].cie = evt.target.value;
+                                      onChange([...value]);
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <select
+                                    className="w-100 form-control"
+                                    value={item.opcion}
+                                    onChange={(evt) => {
+                                      const itemIndex = value.findIndex((row) => row.uuid === item.uuid);
+                                      value[itemIndex].opcion = evt.target.value;
+                                      onChange([...value]);
+                                    }}
+                                    placeholder="SELECCIONE"
+                                  >
+                                    <option value="">SELECCIONE</option>
+                                    <option value="CLINICO">CLINICO</option>
+                                    <option value="SINDROMICO">SINDROMICO</option>
+                                    <option value="PSICOLOGICO">PSICOLOGICO</option>
+                                    <option value="FUNCIONAL">FUNCIONAL</option>
+                                    <option value="NUTRICIONAL">NUTRICIONAL</option>
+                                  </select>
+                                </td>
+                                <td style={{ width: '50px' }}>
+                                  <Button
+                                    icon={PrimeIcons.TRASH}
+                                    sm
+                                    outlined
+                                    rounded
+                                    onClick={() => onChange(value.filter((option) => option.uuid !== item.uuid))}
+                                  />
+                                </td>
+                              </tr>
+                            ))}
+                            <tr>
+                              <td colSpan={100}>
+                                <Button
+                                  block
+                                  label="AGREGAR DIAGNOSTICO"
+                                  outlined
+                                  sm
+                                  onClick={() => onChange([...value, { uuid: uuid.v4() }])}
+                                />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  />
+
+                  <CheckOptionsMultipleInline
+                    label="SINDROMES GERIATRICOS"
+                    options={[
+                      {
+                        controller: { name: 'contenido.diagnosticos.sindromes.fragilidad' },
+                        labelText: 'FRAGILIDAD',
+                      },
+                      {
+                        controller: { name: 'contenido.diagnosticos.sindromes.dismovilidad' },
+                        labelText: 'DISMOVILIDAD',
+                      },
+                      {
+                        controller: { name: 'contenido.diagnosticos.sindromes.depresion' },
+                        labelText: 'DEPRESION',
+                      },
+                      {
+                        controller: { name: 'contenido.diagnosticos.sindromes.caida' },
+                        labelText: 'CAIDA',
+                      },
+                      {
+                        controller: { name: 'contenido.diagnosticos.sindromes.delirio' },
+                        labelText: 'DELIRIO',
+                      },
+                      {
+                        controller: { name: 'contenido.diagnosticos.sindromes.malnutricion' },
+                        labelText: 'MALNUTRICION',
+                      },
+                      {
+                        controller: { name: 'contenido.diagnosticos.sindromes.ulcerasPorPresion' },
+                        labelText: 'ULCERAS POR PRESION',
+                      },
+                      {
+                        controller: { name: 'contenido.diagnosticos.sindromes.demencia' },
+                        labelText: 'DEMENCIA',
+                      },
+                      {
+                        controller: { name: 'contenido.diagnosticos.sindromes.incontinencia' },
+                        labelText: 'INCONTINENCIA',
+                      },
+                      {
+                        controller: { name: 'contenido.diagnosticos.sindromes.latrogenia' },
+                        labelText: 'LATROGENIA',
+                      },
+                    ]}
+                  />
+                </div>
+              </div>
+            </div>
+            {/* SECCION 9 */}
+            <div className="row justify-content-center my-3">
+              <div className="col-12 border">
+                <div className="d-flex flex-column m-3">
+                  <h4 className="font-bold">9. PRUEBAS DIAGNÓSTICAS:</h4>
                   <h6>REGISTRAR LOS EXÁMENES DE LABORATORIO Y ESPECIALES SOLICITADOS</h6>
                   <div>
                     <TextArea controller={{ name: 'contenido.pruebasDiagnosticas.observaciones' }} block />
@@ -1250,10 +1466,10 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             <div className="row justify-content-center my-3">
               <div className="col-12 border">
                 <div className="d-flex flex-column m-3">
-                  <h4>10. DIAGNÓSTICO:</h4>
+                  <h4>10. TRATAMIENTO</h4>
                   <h6>1.FUNCIONAL, 2.NUTRICIONAL, 3.PSICOLÓGICO, 4.SOCIAL, 5.EDUCATIVO, 6.FARMACOLÓGICO</h6>
                   <div>
-                    <TextArea controller={{ name: 'contenido.diagnostico.observaciones' }} block />
+                    <TextArea controller={{ name: 'contenido.tratamiento.observaciones' }} block />
                   </div>
                 </div>
               </div>

@@ -5,8 +5,9 @@ const ColumnaNo = () => {
   return (
     <Column
       header="No"
+      bodyClassName="text-center"
       body={(_, rowData) => (
-        <strong>
+        <strong className="text-center">
           {
             //@ts-ignore
             rowData?.rowIndex + 1

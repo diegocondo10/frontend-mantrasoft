@@ -1,17 +1,24 @@
 import Button from '@src/components/Button';
+import ButtonMenu from '@src/components/ButtonMenu';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import TablaPaginada from '@src/components/Tables/TablaPaginada';
+import usePagination from '@src/hooks/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlListadoFilterPacientes, urlListarFichasIngreso } from '@src/services/urls';
+import {
+  urlDeleteFichasIngreso,
+  urlImprimirFichaIngreso,
+  urlListadoFilterPacientes,
+  urlListarFichasIngreso,
+} from '@src/services/urls';
 import { NextPage } from 'next';
+import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import React, { CSSProperties, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
-import usePagination from 'usePagination';
 
 const FichasIngresoPage: NextPage<any> = (props) => {
   const {
@@ -26,6 +33,7 @@ const FichasIngresoPage: NextPage<any> = (props) => {
     filters,
     changeFilter,
     setFilters,
+    refetch,
   } = usePagination({
     uri: urlListarFichasIngreso,
     key: 'ListadoFichasIngreso',
@@ -119,21 +127,48 @@ const FichasIngresoPage: NextPage<any> = (props) => {
             <Column
               header="Opciones"
               bodyClassName="p-0 m-0"
-              style={{ width: '250px' } as CSSProperties}
+              style={{ width: '100px' } as CSSProperties}
               body={(rowData) => (
-                <div className="d-flex flex-row flex-wrap justify-content-around">
-                  <Button
-                    sm
-                    rounded
-                    icon={PrimeIcons.PENCIL}
-                    variant="info"
-                    href={`/fichas/ingreso/editar/form?id=${rowData?.id}`}
-                  />
-                  <Button sm rounded icon={PrimeIcons.PRINT} variant="success" />
-                  <Button sm rounded icon={PrimeIcons.INFO} variant="warning" />
-                  <Button sm rounded icon={PrimeIcons.TRASH} variant="danger" />
-                  <Button sm rounded icon={PrimeIcons.COG} variant="help" />
-                </div>
+                <ButtonMenu
+                  block
+                  label="Opciones"
+                  icon={PrimeIcons.COG}
+                  variant="info"
+                  items={[
+                    {
+                      label: 'Editar',
+                      icon: PrimeIcons.PENCIL,
+                      command: (e) => {
+                        router.push(`/fichas/ingreso/editar/form?id=${rowData?.id}`);
+                      },
+                    },
+                    {
+                      label: 'Dar de alta',
+                      icon: PrimeIcons.ANGLE_DOUBLE_RIGHT,
+                      command: async (e) => {
+                        if (confirm('Esta en dar de alta a este paciente?')) {
+                          // await API.private().delete(urlDeleteFichasIngreso(rowData.id));
+                          await refetch();
+                        }
+                      },
+                    },
+                    {
+                      label: 'Imprimir ficha de ingreso',
+                      icon: PrimeIcons.PRINT,
+                      command: API.getReporte(urlImprimirFichaIngreso(rowData.id)),
+                    },
+                    {
+                      label: 'Eliminar',
+                      icon: PrimeIcons.TRASH,
+                      command: async () => {
+                        if (confirm('Esta seguro de eliminar esta ficha?')) {
+                          await API.private().delete(urlDeleteFichasIngreso(rowData.id));
+                          await refetch();
+                        }
+                      },
+                    },
+                  ]}
+                />
               )}
             />
           </TablaPaginada>
