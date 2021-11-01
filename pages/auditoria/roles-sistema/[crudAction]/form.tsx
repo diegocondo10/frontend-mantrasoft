@@ -78,7 +78,7 @@ const FormRolSistemaPage: NextPage<{ id?: number | string; crudAction: CrudActio
                 <div className="col-11">
                   <form onSubmit={methods.handleSubmit(_onSubmit)} className="row justify-content-center py-5">
                     <div className="col-11 my-1">
-                      <label htmlFor="codigo">Nombre: *</label>
+                      <label htmlFor="nombre">Nombre: *</label>
                       <TextInput
                         block
                         controller={{ name: 'nombre', rules: { required: 'Este campo es obligatorio' } }}

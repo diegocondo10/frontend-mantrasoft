@@ -97,3 +97,11 @@ export const urlCatalogoFormRolesSistema = `${ROLES_SISTEMA}catalogo-form/`;
 export const urlUpdateRolesSistema = (id: any) => `${ROLES_SISTEMA}${id}/`;
 export const urlDeleteRolesSistema = urlUpdatePermiso;
 export const urlDetailRolesSistema = urlUpdatePermiso;
+//USUARIOS
+export const urlListarUsuarios = USUARIOS;
+export const urlCreateUsuarios = USUARIOS;
+export const urlCatalogoFormUsuarios = `${USUARIOS}catalogo-form/`;
+export const urlUpdateUsuarios = (id: any) => `${USUARIOS}${id}/`;
+export const urlDeleteUsuarios = urlUpdatePermiso;
+export const urlDetailUsuarios = urlUpdatePermiso;
+export const urlReiniciarPasswordUsuario = (id: any) => `${USUARIOS}${id}/reset-password/`;

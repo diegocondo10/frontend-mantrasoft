@@ -80,6 +80,11 @@ const PrivateNavbar = () => {
               icon: PrimeIcons.LIST,
               url: '/auditoria/roles-sistema/',
             },
+            {
+              label: 'Usuarios',
+              icon: PrimeIcons.USERS,
+              url: '/auditoria/usuarios/',
+            },
           ],
         },
       ].map(mappItem),
