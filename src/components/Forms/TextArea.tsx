@@ -1,11 +1,11 @@
 import classNames from 'classnames';
-import { InputTextProps } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
+
+import { InputTextarea, InputTextareaProps } from 'primereact/inputtextarea';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import { ControllerProps } from './types';
 
-export interface TextAreaProps extends Omit<InputTextProps, 'name' | 'defaultValue' | 'ref' | 'onChange'> {
+export interface TextAreaProps extends Omit<InputTextareaProps, 'name' | 'defaultValue' | 'ref' | 'onChange'> {
   controller: ControllerProps;
   block?: boolean;
 }

@@ -57,3 +57,7 @@ label {
   background-color: #1557e6;
   border: 1px solid #1557e6;
 }
+
+.p-connected-overlay-enter-done {
+  z-index: 10000 !important;
+}

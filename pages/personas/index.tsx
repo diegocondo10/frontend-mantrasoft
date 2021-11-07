@@ -26,7 +26,8 @@ const PersonasPage: NextPage<any> = () => {
     <PrivateLayout>
       <main className="container-fluid">
         <h1 className="text-center mt-3">
-          Listado de personas <Button icon={PrimeIcons.PLUS} variant="success" sm rounded href="/personas/form/" />
+          Listado de personas{' '}
+          <Button icon={PrimeIcons.PLUS} variant="success" sm rounded href="/personas/create/form/" />
         </h1>
 
         <div className=" row row-cols-1">
@@ -51,8 +52,14 @@ const PersonasPage: NextPage<any> = () => {
             <Column
               body={(rowData) => (
                 <div className="d-flex flex-row justify-content-around">
-                  <Button sm rounded icon={PrimeIcons.PENCIL} />
-                  <Button sm rounded icon={PrimeIcons.INFO} variant="warning" />
+                  <Button sm rounded icon={PrimeIcons.PENCIL} href={`/personas/editar/form?id=${rowData?.id}`} />
+                  <Button
+                    sm
+                    rounded
+                    icon={PrimeIcons.INFO}
+                    variant="warning"
+                    href={`/personas/detalle?id=${rowData.id}`}
+                  />
                   <Button sm rounded icon={PrimeIcons.TRASH} variant="danger" />
                 </div>
               )}

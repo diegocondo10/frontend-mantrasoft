@@ -1,23 +1,24 @@
 import Button from '@src/components/Button';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
+import { CrudActions } from '@src/emuns/crudActions';
+import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
+import API from '@src/services/api';
+import { urlDetailPersona, urlUpdatePersona } from '@src/services/urls';
+import { formatearFechaBackend } from '@src/utils/date';
+import { AxiosResponse } from 'axios';
 import classNames from 'classnames';
 import { NextPage } from 'next';
+import { useRouter } from 'next/dist/client/router';
 import { PrimeIcons } from 'primereact/api';
+import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { Calendar } from 'primereact/calendar';
-import { useRouter } from 'next/dist/client/router';
-import useToasts from '@src/hooks/useToasts';
 import { useMutation, useQuery } from 'react-query';
-import API from '@src/services/api';
-import { urlDetailPersona, urlUpdatePersona } from '@src/services/urls';
-import { CrudActions } from '@src/emuns/crudActions';
-import { AxiosResponse } from 'axios';
 
-const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
+const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ crudAction, id }) => {
   const methods = useForm({ mode: 'onChange' });
 
   const router = useRouter();
@@ -39,38 +40,47 @@ const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
 
   const _onSubmit = async (formData) => {
     let res: AxiosResponse = null;
-
-    if (CrudActions.CREATE === crudAction) {
-      res = await createMutation.mutateAsync(formData);
-    } else if (CrudActions.UPDATE === crudAction) {
-      res = await updateMutation.mutateAsync(formData);
-    }
-    if (res.status === 201 || res.status === 200) {
-      router.push('/medicamentos');
+    const Data = {
+      ...formData,
+      fechaNacimiento: formatearFechaBackend(formData.fechaNacimiento),
+    };
+    try {
+      if (CrudActions.CREATE === crudAction) {
+        res = await createMutation.mutateAsync(Data);
+      } else if (CrudActions.UPDATE === crudAction) {
+        res = await updateMutation.mutateAsync(Data);
+      }
+      if (res.status === 201 || res.status === 200) {
+        router.push('/personas');
+      }
+    } catch (error) {
+      methods.reset(formData);
+      alert('Ha ocurrido un problema al guardar la información');
     }
   };
 
-
   return (
-    <PrivateLayout loading={{
-      loading: query.isLoading || createMutation.isLoading || updateMutation.isLoading,
-    }}>
-      <main className="container-fluid">
-        <div className="d-flex flex-row my-3 justify-content-center">
-          <div className="align-self-center">
-            <Button href="/personas" sm rounded icon={PrimeIcons.ARROW_LEFT} outlined />
+    <FormProvider {...methods}>
+      <PrivateLayout
+        loading={{
+          loading: query.isLoading || createMutation.isLoading || updateMutation.isLoading,
+        }}
+      >
+        <main className="container-fluid">
+          <div className="d-flex flex-row my-3 justify-content-center">
+            <div className="align-self-center">
+              <Button href="/personas" sm rounded icon={PrimeIcons.ARROW_LEFT} outlined />
+            </div>
+            {CrudActions.CREATE === crudAction && (
+              <h3 className="text-center align-self-center">Registro de información</h3>
+            )}
+            {CrudActions.UPDATE === crudAction && <h3 className="text-center align-self-center">Editar información</h3>}
           </div>
-          {CrudActions.CREATE === crudAction && (
-            <h3 className="text-center align-self-center">Registro de información</h3>
-          )}
-          {CrudActions.UPDATE === crudAction && <h3 className="text-center align-self-center">Editar información</h3>}
-        </div>
 
-        <div className="row justify-content-center">
-          <div className="col-11 border">
-            <div className="row justify-content-center">
-              <div className="col-11">
-                <FormProvider {...methods}>
+          <div className="row justify-content-center">
+            <div className="col-11 border">
+              <div className="row justify-content-center">
+                <div className="col-11">
                   <form onSubmit={methods.handleSubmit(_onSubmit)} className="row">
                     <div className="col-md-6">
                       <label htmlFor="tipoIdentificacion">Tipo de identificación: *</label>
@@ -124,7 +134,6 @@ const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
                       <label>Segundo Nombre: *</label>
                       <Controller
                         name="segundoNombre"
-                        rules={{ required: 'Este campo es obligatorio' }}
                         render={({ field, fieldState }) => (
                           <InputText
                             id="segundoNombre"
@@ -154,7 +163,6 @@ const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
                       <label>Segundo Apellido: *</label>
                       <Controller
                         name="segundoApellido"
-                        rules={{ required: 'Este campo es obligatorio' }}
                         render={({ field, fieldState }) => (
                           <InputText
                             id="segundoApellido"
@@ -173,12 +181,12 @@ const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
                         render={({ field, fieldState }) => (
                           <Calendar
                             id="fechaNacimiento"
-                            dateFormat="dd/mm/yy" 
+                            dateFormat="dd/mm/yy"
                             monthNavigator
                             yearNavigator
                             yearRange="1930:2030"
                             {...field}
-                            className={classNames('w-full', { 'p-invalid': fieldState.invalid })} 
+                            className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
                           />
                         )}
                       />
@@ -239,7 +247,7 @@ const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
                         render={({ field, fieldState }) => (
                           <Dropdown
                             inputId="estadoCivil"
-                            options={['SOLTERO', 'CASADO', 'DIVORCIADO','VIUDO','UNION LIBRE']}
+                            options={['SOLTERO', 'CASADO', 'DIVORCIADO', 'VIUDO', 'UNION LIBRE']}
                             {...field}
                             showClear
                             placeholder="Seleccione"
@@ -275,7 +283,7 @@ const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
                         render={({ field, fieldState }) => (
                           <Dropdown
                             inputId="sexo"
-                            options={['HOMBRE','MUJER','OTRO']}
+                            options={['HOMBRE', 'MUJER', 'OTRO']}
                             {...field}
                             showClear
                             placeholder="Seleccione"
@@ -289,10 +297,10 @@ const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
                       <label htmlFor="sexo">Tipo de Sangre: *</label>
                       <Controller
                         name="tipoSangre"
-                        render={({field}) => (
+                        render={({ field }) => (
                           <Dropdown
                             inputId="tipoSangre"
-                            options={['A+', 'A-','B+','B-','O+','O-','AB+','AB-']}
+                            options={['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']}
                             {...field}
                             showClear
                             placeholder="Seleccione"
@@ -321,11 +329,7 @@ const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
                       <Controller
                         name="numeroCasa"
                         render={({ field }) => (
-                          <InputText
-                            id="NumeroCasa"
-                            {...field}
-                            className={classNames('w-full')}
-                          />
+                          <InputText id="NumeroCasa" {...field} className={classNames('w-full')} />
                         )}
                       />
                     </div>
@@ -333,7 +337,6 @@ const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
                       <label>Calle Secundaria: *</label>
                       <Controller
                         name="calleSecundaria"
-                        rules={{ required: 'Este campo es obligatorio' }}
                         render={({ field, fieldState }) => (
                           <InputText
                             id="calleSecundaria"
@@ -349,11 +352,7 @@ const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
                       <Controller
                         name="referencia"
                         render={({ field }) => (
-                          <InputText
-                            id="referencia"
-                            {...field}
-                            className={classNames('w-full')}
-                          />
+                          <InputText id="referencia" {...field} className={classNames('w-full')} />
                         )}
                       />
                     </div>
@@ -361,16 +360,10 @@ const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
                       <label>Sector:</label>
                       <Controller
                         name="sector"
-                        render={({ field }) => (
-                          <InputText
-                            id="sector"
-                            {...field}
-                            className={classNames('w-full')}
-                          />
-                        )}
+                        render={({ field }) => <InputText id="sector" {...field} className={classNames('w-full')} />}
                       />
                     </div>
-                    
+
                     <div className="row mt-3">
                       <div className="col-12">
                         <div className="row">
@@ -383,17 +376,17 @@ const CreatePersonaPage: NextPage<any> = (crudAction, id) => {
                         </div>
                       </div>
                     </div>
-                 
                   </form>
-                </FormProvider>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      
-      </main>
-    </PrivateLayout>
+        </main>
+      </PrivateLayout>
+    </FormProvider>
   );
 };
+
+CreatePersonaPage.getInitialProps = ({ query }) => query as any;
 
 export default CreatePersonaPage;

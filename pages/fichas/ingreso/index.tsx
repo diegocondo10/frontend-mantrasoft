@@ -158,6 +158,13 @@ const FichasIngresoPage: NextPage<any> = (props) => {
                       command: API.getReporte(urlImprimirFichaIngreso(rowData.id)),
                     },
                     {
+                      label: 'Registro de pertenencias',
+                      icon: PrimeIcons.LIST,
+                      command: () => {
+                        router.push(`/fichas/ingreso/pertenencias?id=${rowData.id}`);
+                      },
+                    },
+                    {
                       label: 'Eliminar',
                       icon: PrimeIcons.TRASH,
                       command: async () => {

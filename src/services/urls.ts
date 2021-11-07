@@ -7,6 +7,7 @@ const PERSONAS = 'personas/';
 const HABITACIONES = 'habitaciones/';
 const MEDICAMENTOS = 'medicamentos/';
 const FICHAS_INGRESO = 'fichas-ingreso/';
+const PERTENENECIAS = 'pertenencias/';
 const PERSONAL = 'personal/';
 const ROLES_PERSONAL = 'roles-personal/';
 const ALAS = 'alas/';
@@ -49,16 +50,20 @@ export const urlDeleteMedicamento = urlUpdateMedicamento;
 export const urlDetailMedicamento = urlUpdateMedicamento;
 
 /**
- * FICHAS DE PACIENTES
+ * PACIENTES
  */
-
+//FICHAS DE INGRESO
 export const urlListarFichasIngreso = FICHAS_INGRESO;
 export const urlCatalogoForm = `${FICHAS_INGRESO}catalogo-form-ficha/`;
+export const urlInfoPacienteFichaIngreso = (id: any) => `${FICHAS_INGRESO}${id}/info-paciente/`;
 export const urlCreateFichasIngreso = FICHAS_INGRESO;
 export const urlUpdateFichasIngreso = (id: any) => `${FICHAS_INGRESO}${id}/`;
 export const urlDeleteFichasIngreso = urlUpdateFichasIngreso;
 export const urlDetailFichasIngreso = urlUpdateFichasIngreso;
 export const urlImprimirFichaIngreso = (id: any) => `${urlUpdateFichasIngreso(id)}imprimir-ficha/`;
+
+//PERTENENCIAS
+export const urlListarPertenencias = (id: any) => `${PERTENENECIAS}?id_registro=${id}`;
 
 /**
  * PERSONAL
