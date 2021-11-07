@@ -8,7 +8,7 @@ import TextInput from '@src/components/Forms/TextInput';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlInfoPacienteFichaIngreso } from '@src/services/urls';
+import { urlCreatePertenencia, urlInfoPacienteFichaIngreso, urlUpdatePertenencia } from '@src/services/urls';
 import { AxiosResponse } from 'axios';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
@@ -17,7 +17,7 @@ import { DataTable } from 'primereact/datatable';
 import React, { useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
   const query = useQuery<AxiosResponse<any>>(['info', props.id], () =>
@@ -26,29 +26,53 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
 
   const [id, setId] = useState(null);
 
-  const methods = useForm({ mode: 'onChange' });
+  const methods = useForm({ mode: 'onChange', shouldUnregister: true });
 
   const [modalShow, setModalShow] = useState(false);
+
+  const mutation = useMutation((ws: any) => ws);
 
   const toggle = () => {
     setModalShow(!modalShow);
     methods.reset({});
+    setId(null);
   };
 
   const onSubmit = async (formData) => {
     console.log(formData);
+    formData.registro = props.id;
+    try {
+      if (id) {
+        await mutation.mutateAsync(API.private().put(urlUpdatePertenencia(id), formData));
+      } else {
+        await mutation.mutateAsync(API.private().post(urlCreatePertenencia, formData));
+      }
+      query.refetch();
+      toggle();
+    } catch (error) {
+      console.log(error);
+      query.refetch();
+      toggle();
+    }
   };
 
   const referencias = query?.data?.data?.pertenencias
     ?.filter?.((pertenencia) => pertenencia?.tipo === 'INGRESO' && !pertenencia?.referencia && pertenencia.id !== id)
     ?.map?.((referencia) => ({ label: referencia?.descripcion, value: referencia?.id }));
+
   return (
     <PrivateLayout title="Ficha de salida" loading={{ loading: query.isLoading }}>
       <main className="container">
         <div className="d-flex flex-row justify-content-center mt-5">
-          <Button className="align-self-center" href="/fichas/ingreso" icon={PrimeIcons.ARROW_LEFT} outlined rounded />
           <h1 className="text-center align-self-center">
-            Registro de cosas del paciente{' '}
+            <Button
+              className="align-self-center"
+              href="/fichas/ingreso"
+              icon={PrimeIcons.ARROW_LEFT}
+              outlined
+              rounded
+            />
+            Registro de pertenencias del paciente
             <Button
               outlined
               variant="success"
@@ -74,13 +98,20 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
               rowsPerPageOptions={[20, 30, 50]}
             >
               {ColumnaNo()}
-              <Column header="Código" field="codigo" />
-              <Column header="Tipo" field="tipo" />
-              <Column header="Cantidad" field="cantidad" />
-              <Column header="Descripción" field="descripcion" />
+              <Column header="Código" field="codigo" headerClassName="text-center" />
+              <Column header="Tipo" field="tipo" headerClassName="text-center" />
+              <Column header="Cantidad" field="cantidad" headerClassName="text-center" />
+              <Column header="Descripción" field="descripcion" headerClassName="text-center" />
+              <Column
+                header="Código de referencia del ingreso"
+                style={{ width: '150px' } as CSSProperties}
+                headerClassName="text-center"
+                field="codigoReferencia"
+              />
               <Column
                 style={{ width: '160px' } as CSSProperties}
                 header="Opciones"
+                headerClassName="text-center"
                 bodyClassName="p-1 m-1"
                 body={(rowData) => (
                   <ButtonMenu
@@ -143,7 +174,10 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
                   <label>Referencia: *</label>
                   <DropDown
                     className="w-full"
-                    controller={{ name: 'tipo', rules: { required: 'Este campo es obligatorio' } }}
+                    controller={{
+                      name: 'referencia',
+                      rules: { required: 'Este campo es obligatorio', shouldUnregister: true },
+                    }}
                     options={referencias}
                   />
                 </div>

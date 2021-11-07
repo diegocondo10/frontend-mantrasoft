@@ -6,6 +6,7 @@ const ColumnaNo = () => {
     <Column
       header="No"
       bodyClassName="text-center"
+      headerClassName="text-center"
       body={(_, rowData) => (
         <strong className="text-center">
           {

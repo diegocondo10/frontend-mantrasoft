@@ -65,7 +65,8 @@ export const urlImprimirFichaIngreso = (id: any) => `${urlUpdateFichasIngreso(id
 
 //PERTENENCIAS
 export const urlListarPertenencias = (id: any) => `${PERTENENECIAS}?id_registro=${id}`;
-
+export const urlCreatePertenencia = PERTENENECIAS;
+export const urlUpdatePertenencia = (id: string | any) => `${PERTENENECIAS}${id}/`;
 /**
  * PERSONAL
  */
