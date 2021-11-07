@@ -1,6 +1,7 @@
 import Button from '@src/components/Button';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import TablaPaginada from '@src/components/Tables/TablaPaginada';
+import usePagination from '@src/hooks/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import { urlListarHabitaciones } from '@src/services/urls';
 import { NextPage } from 'next';
@@ -8,7 +9,6 @@ import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import React from 'react';
-import usePagination from '@src/hooks/usePagination';
 
 const HabitacionesPage: NextPage<any> = () => {
   const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch } = usePagination({
@@ -52,8 +52,20 @@ const HabitacionesPage: NextPage<any> = () => {
               header="Opciones"
               body={(rowData) => (
                 <div className="d-flex flex-row justify-content-around">
-                  <Button sm rounded icon={PrimeIcons.PENCIL} variant="info" />
-                  <Button sm rounded icon={PrimeIcons.INFO} variant="warning" />
+                  <Button
+                    sm
+                    rounded
+                    icon={PrimeIcons.PENCIL}
+                    variant="info"
+                    href={`/habitaciones/editar/form?id=${rowData?.id}`}
+                  />
+                  <Button
+                    sm
+                    rounded
+                    icon={PrimeIcons.INFO}
+                    variant="warning"
+                    href={`/habitaciones/detalle?id=${rowData?.id}`}
+                  />
                   <Button sm rounded icon={PrimeIcons.TRASH} variant="danger" />
                 </div>
               )}

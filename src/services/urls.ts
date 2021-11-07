@@ -35,6 +35,7 @@ export const urlListadoFilterPacientes = `${ALAS}listado-filter-pacientes/`;
  * HABITACIONES
  */
 export const urlListarHabitaciones = HABITACIONES;
+export const urlListarAlasLabelValueHabitaciones = `${HABITACIONES}listar-alas/`;
 export const urlCreateHabitacion = HABITACIONES;
 export const urlUpdateHabitacion = (id: any) => `${HABITACIONES}${id}/`;
 export const urlDeleteHabitacion = urlUpdateHabitacion;

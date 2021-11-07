@@ -4,7 +4,12 @@ import { CrudActions } from '@src/emuns/crudActions';
 import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlDetailHabitacion, urlUpdateHabitacion } from '@src/services/urls';
+import {
+  urlCreateHabitacion,
+  urlDetailHabitacion,
+  urlListarAlasLabelValueHabitaciones,
+  urlUpdateHabitacion,
+} from '@src/services/urls';
 import { AxiosResponse } from 'axios';
 import classNames from 'classnames';
 import { NextPage } from 'next';
@@ -16,16 +21,17 @@ import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 
-
-const HabitacionFormPage: NextPage<any> = ( crudAction, id) => {
-
+const HabitacionFormPage: NextPage<{ crudAction: CrudActions; id?: string | number }> = ({ crudAction, id }) => {
   const methods = useForm({ mode: 'onChange' });
   const router = useRouter();
   const { addErrorToast } = useToasts();
+  const queryAlas = useQuery(['alas', crudAction, id], () => API.private().get(urlListarAlasLabelValueHabitaciones));
+
   const query = useQuery(['habitacion', CrudActions, id], () => API.private().get(urlDetailHabitacion(id)), {
     enabled: crudAction === CrudActions.UPDATE,
     onSuccess(data) {
-      methods.reset(data?.data);
+      console.log(data?.data);
+      methods.reset({ ...data?.data });
     },
     onError(err) {
       addErrorToast('No se ha podido encontrar el registro');
@@ -35,7 +41,7 @@ const HabitacionFormPage: NextPage<any> = ( crudAction, id) => {
 
   const updateMutation = useMutation<any>((formData: any) => API.private().put(urlUpdateHabitacion(id), formData));
 
-  const createMutation = useMutation<any>((formData: any) => API.private().post(formData));
+  const createMutation = useMutation<any>((formData: any) => API.private().post(urlCreateHabitacion, formData));
 
   const _onSubmit = async (formData) => {
     let res: AxiosResponse = null;
@@ -49,12 +55,13 @@ const HabitacionFormPage: NextPage<any> = ( crudAction, id) => {
       router.push('/habitaciones');
     }
   };
-  
 
-  return(
-    <PrivateLayout loading={{
-      loading: query.isLoading || createMutation.isLoading || updateMutation.isLoading,
-    }}>
+  return (
+    <PrivateLayout
+      loading={{
+        loading: query.isLoading || createMutation.isLoading || updateMutation.isLoading,
+      }}
+    >
       <main className="container-fluid">
         <div className="d-flex flex-row my-3 justify-content-center">
           <div className="align-self-center">
@@ -80,7 +87,7 @@ const HabitacionFormPage: NextPage<any> = ( crudAction, id) => {
                         render={({ field, fieldState }) => (
                           <Dropdown
                             inputId="ala"
-                            options={['1', '2']}
+                            options={queryAlas?.data?.data || []}
                             {...field}
                             showClear
                             placeholder="Seleccione"
@@ -93,34 +100,34 @@ const HabitacionFormPage: NextPage<any> = ( crudAction, id) => {
                     <div className="col-md-6">
                       <label>N° de Habitación: *</label>
                       <Controller
-                        name="numeroHabitacion"
+                        name="numero"
                         rules={{ required: 'Este campo es obligatorio' }}
                         render={({ field, fieldState }) => (
                           <InputText
-                            id="numeroHabitacion"
+                            id="numero"
                             {...field}
                             className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
                           />
                         )}
                       />
-                      <ErrorMessage name="numeroHabitacion" />
+                      <ErrorMessage name="numero" />
                     </div>
                     <div className="col-md-6">
                       <label>Capacidad: *</label>
                       <Controller
-                        name="capacidad"
+                        name="capacidadPacientes"
                         rules={{ required: 'Este campo es obligatorio' }}
                         render={({ field, fieldState }) => (
                           <InputText
-                            id="capacidad"
+                            id="capacidadPacientes"
                             {...field}
                             className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
                           />
                         )}
                       />
-                      <ErrorMessage name="capacidad" />
+                      <ErrorMessage name="capacidadPacientes" />
                     </div>
-                              
+
                     <div className="row mt-3">
                       <div className="col-12">
                         <div className="row">
@@ -141,15 +148,9 @@ const HabitacionFormPage: NextPage<any> = ( crudAction, id) => {
         </div>
       </main>
     </PrivateLayout>
-
   );
-
-
-
-
-  
-
-
 };
+
+HabitacionFormPage.getInitialProps = ({ query }) => query as any;
 
 export default HabitacionFormPage;
