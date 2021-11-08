@@ -30,16 +30,24 @@ const DetallePersonaPage: NextPage<{ id: string }> = ({ id }) => {
                   {persona?.tipoIdentificacion}
                 </p>
                 <p>
-                  <strong>Identificación: </strong>
-                  {persona?.identificacion}
+                  <strong>Nombres y Apellidos: </strong>
+                  {persona?.nombresApellidos}
                 </p>
                 <p>
-                  <strong>Identificación: </strong>
-                  {persona?.identificacion}
+                  <strong>Correo: </strong>
+                  {persona?.correo}
                 </p>
                 <p>
-                  <strong>Identificación: </strong>
-                  {persona?.identificacion}
+                  <strong>Teléfono: </strong>
+                  {persona?.telefono}
+                </p>
+                <p>
+                  <strong>Celular: </strong>
+                  {persona?.celular}
+                </p>
+                <p>
+                  <strong>Dirección: </strong>
+                  {persona?.direccion}
                 </p>
               </div>
             </div>
