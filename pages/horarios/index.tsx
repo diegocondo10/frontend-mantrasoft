@@ -10,9 +10,10 @@ import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
 import { Dropdown } from 'primereact/dropdown';
 import { Toolbar } from 'primereact/toolbar';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
+import ReactToPrint from 'react-to-print';
 
 const HorariosPage: NextPage<any> = () => {
   const methods = useForm({ mode: 'onChange' });
@@ -22,7 +23,7 @@ const HorariosPage: NextPage<any> = () => {
   const [filas, setFilas] = useState([]);
 
   const [fechas, setFechas] = useState({});
-
+  const componentRef = useRef(null);
   const query = useQuery(['parametros'], () => API.private().get(urlParametrosGeneracionHorario));
   const queryHorarios = useQuery(
     ['horarios', startDate, endDate],
@@ -70,7 +71,12 @@ const HorariosPage: NextPage<any> = () => {
   };
   const leftContents = (
     <React.Fragment>
-      <Button label="Imprimir" icon={PrimeIcons.PRINT} sm outlined className="p-mr-2" />
+      <ReactToPrint
+        documentTitle="Horario"
+        // pageStyle={`@media print{@page {size: landscape}}`}
+        trigger={() => <Button label="Imprimir" icon={PrimeIcons.PRINT} sm outlined className="p-mr-2" />}
+        content={() => componentRef.current}
+      />
     </React.Fragment>
   );
 
@@ -142,10 +148,14 @@ const HorariosPage: NextPage<any> = () => {
           </div>
         </div>
         <Loading className="mt-5" loading={queryHorarios?.isFetching} texto="Consultando horario...">
+          <div className="row">
+            <div className="col-12 p-0 m-0 w-full">
+              <Toolbar left={leftContents} className="w-full" />
+            </div>
+          </div>
           <div className="row justify-content-center mb-5">
-            <Toolbar left={leftContents} className="w-full" />
             <div className="col-12 p-0 m-0" style={{ overflowX: 'auto' }}>
-              <table className="table table-bordered table-responsive-xl">
+              <table className="table table-bordered table-responsive-xl" ref={componentRef}>
                 <thead>
                   <tr>
                     <th className="text-center align-vertical-middle" rowSpan={3}>

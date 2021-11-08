@@ -100,10 +100,22 @@ const PersonalFormPage: NextPage<{ id?: string | number; crudAction: CrudActions
                       <div className="col-12">
                         <div className="row">
                           <div className="col-md-6 my-2">
-                            <Button label="Regresar" block href="/personal/" variant="info" />
+                            <Button
+                              label="Regresar"
+                              block
+                              loading={mutation.isLoading}
+                              href="/personal/"
+                              variant="info"
+                            />
                           </div>
                           <div className="col-md-6 my-2">
-                            <Button label="Guardar" block type="submit" onClick={methods.handleSubmit(_onSubmit)} />
+                            <Button
+                              label="Guardar"
+                              block
+                              type="submit"
+                              loading={mutation.isLoading}
+                              onClick={methods.handleSubmit(_onSubmit)}
+                            />
                           </div>
                         </div>
                       </div>
