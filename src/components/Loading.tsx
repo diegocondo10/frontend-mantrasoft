@@ -1,9 +1,11 @@
+import classNames from 'classnames';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import React from 'react';
 
 export interface LoadingWrapperProps {
   loading?: boolean;
   texto?: string;
+  className?: string;
 }
 
 const Loading: React.FC<LoadingWrapperProps> = (props) => {
@@ -13,7 +15,7 @@ const Loading: React.FC<LoadingWrapperProps> = (props) => {
   return (
     <div
       style={{ height: '100%', overflow: 'hidden' }}
-      className="d-flex flex-column justify-content-center text-center"
+      className={classNames('d-flex flex-column justify-content-center text-center', props?.className)}
     >
       <ProgressSpinner />
       <h4>{props.texto}</h4>

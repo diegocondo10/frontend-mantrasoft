@@ -11,6 +11,7 @@ const PERTENENECIAS = 'pertenencias/';
 const PERSONAL = 'personal/';
 const ROLES_PERSONAL = 'roles-personal/';
 const ALAS = 'alas/';
+const HORARIOS = 'horarios/';
 /**
  * AUTH
  */
@@ -112,3 +113,13 @@ export const urlUpdateUsuarios = (id: any) => `${USUARIOS}${id}/`;
 export const urlDeleteUsuarios = urlUpdatePermiso;
 export const urlDetailUsuarios = urlUpdatePermiso;
 export const urlReiniciarPasswordUsuario = (id: any) => `${USUARIOS}${id}/reset-password/`;
+
+/**
+ * HORARIOS
+ */
+
+export const urlParametrosGeneracionHorario = `${HORARIOS}parametros-generacion/`;
+export const urlConsultarHorarios = (startDate: any, endDate: any) => {
+  return `${HORARIOS}personal/${startDate}/${endDate}/`;
+};
+export const urlUpdateOrCreateHorario = `${HORARIOS}update-or-create/`;

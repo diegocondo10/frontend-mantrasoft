@@ -4,7 +4,7 @@ import { CrudActions } from '@src/emuns/crudActions';
 import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlDetailPersona, urlUpdatePersona } from '@src/services/urls';
+import { urlCreatePersona, urlDetailPersona, urlUpdatePersona } from '@src/services/urls';
 import { formatearFechaBackend } from '@src/utils/date';
 import { AxiosResponse } from 'axios';
 import classNames from 'classnames';
@@ -36,7 +36,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
 
   const updateMutation = useMutation<any>((formData: any) => API.private().put(urlUpdatePersona(id), formData));
 
-  const createMutation = useMutation<any>((formData: any) => API.private().post(formData));
+  const createMutation = useMutation<any>((formData: any) => API.private().post(urlCreatePersona, formData));
 
   const _onSubmit = async (formData) => {
     let res: AxiosResponse = null;
@@ -54,6 +54,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
         router.push('/personas');
       }
     } catch (error) {
+      console.log(error);
       methods.reset(formData);
       alert('Ha ocurrido un problema al guardar la información');
     }
