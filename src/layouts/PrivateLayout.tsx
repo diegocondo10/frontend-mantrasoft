@@ -1,37 +1,34 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useQuery } from '@apollo/client';
 import PrivateNavbar from '@src/components/Navbars/PrivateNavbar';
-import { myPerfil } from '@src/graphql/Auth.queries.gql';
+import API from '@src/services/api';
+import { urlPerfil } from '@src/services/urls';
 import useUsuario from '@src/store/usuario/useUsuario';
-import { useRouter } from 'next/dist/client/router';
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useQuery } from 'react-query';
 import BaseLayout, { BaseLayoutProps } from './BaseLayout';
 
 export interface PrivateLayoutProps extends BaseLayoutProps {}
 
 const PrivateLayout: React.FC<PrivateLayoutProps> = (props) => {
   const { children, ...rest } = props;
-  const { isValidSession } = useUsuario();
+  const { isValidSession, setUsuario } = useUsuario();
 
-  const router = useRouter();
-
-  const { loading } = useQuery(myPerfil, {
-    onCompleted: ({ perfil }) => {
-      if (!perfil?.username) {
-        router.replace('/logout');
-      }
+  const { isLoading } = useQuery(['perfil'], () => API.private().post(urlPerfil), {
+    refetchOnWindowFocus: false,
+    onError: () => {
+      console.log('ERROR');
     },
+    onSuccess: ({ data }) => {
+      setUsuario(data);
+    },
+    enabled: isValidSession(),
   });
-
-  useEffect(() => {
-    isValidSession();
-  }, []);
 
   return (
     <BaseLayout
       {...rest}
       loading={{
-        loading: loading || props?.loading?.loading,
+        loading: isLoading || props?.loading?.loading,
         texto: props?.loading?.texto,
       }}
     >

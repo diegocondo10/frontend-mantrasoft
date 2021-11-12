@@ -8,10 +8,9 @@ const HABITACIONES = 'habitaciones/';
 const MEDICAMENTOS = 'medicamentos/';
 const FICHAS_INGRESO = 'fichas-ingreso/';
 const PERTENENECIAS = 'pertenencias/';
-const PERSONAL = 'personal/';
-const ROLES_PERSONAL = 'roles-personal/';
 const ALAS = 'alas/';
 const HORARIOS = 'horarios/';
+const SEGUIMIENTOS_ENFERMERIA = `seguimientos-enfermeria/`;
 /**
  * AUTH
  */
@@ -68,26 +67,6 @@ export const urlImprimirFichaIngreso = (id: any) => `${urlUpdateFichasIngreso(id
 export const urlListarPertenencias = (id: any) => `${PERTENENECIAS}?id_registro=${id}`;
 export const urlCreatePertenencia = PERTENENECIAS;
 export const urlUpdatePertenencia = (id: string | any) => `${PERTENENECIAS}${id}/`;
-/**
- * PERSONAL
- */
-
-export const urlListarPersonal = PERSONAL;
-export const urlCreatePersonal = PERSONAL;
-export const urlCatalogoFormPersonal = `${PERSONAL}catalogo-form`;
-export const urlUpdatePersonal = (id: any) => `${PERSONAL}${id}/`;
-export const urlDeletePersonal = urlUpdateFichasIngreso;
-export const urlDetailPersonal = urlUpdateFichasIngreso;
-
-/**
- * ROLES PERSONAL
- */
-
-export const urlListarRolesPersonal = ROLES_PERSONAL;
-export const urlCreateRolesPersonal = ROLES_PERSONAL;
-export const urlUpdateRolesPersonal = (id: any) => `${ROLES_PERSONAL}${id}/`;
-export const urlDeleteRolesPersonal = urlUpdateFichasIngreso;
-export const urlDetailRolesPersonal = urlUpdateFichasIngreso;
 
 /**
  * AUDITORIA
@@ -113,13 +92,28 @@ export const urlUpdateUsuarios = (id: any) => `${USUARIOS}${id}/`;
 export const urlDeleteUsuarios = urlUpdatePermiso;
 export const urlDetailUsuarios = urlUpdatePermiso;
 export const urlReiniciarPasswordUsuario = (id: any) => `${USUARIOS}${id}/reset-password/`;
+export const urlPerfil = `${USUARIOS}perfil/`;
 
 /**
  * HORARIOS
  */
-
 export const urlParametrosGeneracionHorario = `${HORARIOS}parametros-generacion/`;
 export const urlConsultarHorarios = (startDate: any, endDate: any) => {
   return `${HORARIOS}personal/${startDate}/${endDate}/`;
 };
 export const urlUpdateOrCreateHorario = `${HORARIOS}update-or-create/`;
+export const urlDetalleHorario = (id: any, startDate: any, endDate: any) => {
+  return `${HORARIOS}detalle/${id}/${startDate}/${endDate}/`;
+};
+
+/**
+ * SEGUIMIENTOS DE ENFERMERIA
+ */
+export const urlSeguimientosPacienteHorarios = (fecha: string, idPaciente: string | number) => {
+  return `${HORARIOS}seguimientos-paciente-horario/${fecha}/${idPaciente}/`;
+};
+export const urlCreateSeguimientoEnfermeria = SEGUIMIENTOS_ENFERMERIA;
+export const urlUpdateSeguimientoEnfermeria = (id: string | number) => {
+  return `${SEGUIMIENTOS_ENFERMERIA}${id}/`;
+};
+export const urlDeleteSeguimientoEnfermeria = urlUpdateSeguimientoEnfermeria;

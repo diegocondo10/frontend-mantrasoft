@@ -1,8 +1,9 @@
 import CONFIGS from '@src/constants/configs';
-import { useRouter } from 'next/dist/client/router';
+import router from 'next/router';
 
 const useUsuario = () => {
-  const router = useRouter();
+  const usuarioJSON: any = localStorage.getItem('usuario') || null;
+  const usuario = usuarioJSON !== null ? JSON.parse(usuarioJSON) : null;
 
   const isValidSession = () => {
     const access = localStorage.getItem(CONFIGS.TOKEN_KEY);
@@ -14,8 +15,20 @@ const useUsuario = () => {
     return false;
   };
 
+  const tienePermiso = (permiso: string) => {
+    return usuario?.permisos?.some?.(permiso);
+  };
+  const tieneRol = (rol: string) => {
+    return usuario?.roles?.some?.((item) => item?.codigo === rol);
+  };
   return {
     isValidSession,
+    setUsuario: (data: any) => {
+      localStorage.setItem('usuario', JSON.stringify(data));
+    },
+    usuario,
+    tienePermiso,
+    tieneRol,
   };
 };
 

@@ -37,11 +37,6 @@ const PrivateNavbar = () => {
               url: '/personas/',
             },
             {
-              label: 'Personal',
-              icon: PrimeIcons.USERS,
-              url: '/personal',
-            },
-            {
               label: 'Habitaciones',
               icon: PrimeIcons.LIST,
               url: '/habitaciones/',

@@ -85,8 +85,22 @@ label {
   }
 }
 
+.d-print {
+  display: none;
+}
+
 @media print {
   @page {
     size: landscape;
+  }
+  .d-print {
+    display: flex;
+  }
+  .d-print-none {
+    display: none;
+  }
+  & {
+    margin-left: 1rem;
+    margin-left: 1rem;
   }
 }

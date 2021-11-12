@@ -1,14 +1,15 @@
 import { Column } from 'primereact/column';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
-const ColumnaNo = () => {
+const ColumnaNo = (props = null) => {
   return (
     <Column
       header="No"
       bodyClassName="text-center"
       headerClassName="text-center"
+      style={{ width: props?.width } as CSSProperties}
       body={(_, rowData) => (
-        <strong className="text-center">
+        <strong className="text-center" style={{ width: props?.width } as CSSProperties}>
           {
             //@ts-ignore
             rowData?.rowIndex + 1

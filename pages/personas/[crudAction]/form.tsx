@@ -1,5 +1,7 @@
 import Button from '@src/components/Button';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
+import Toggle from '@src/components/Forms/Toggle';
+import { PAISES } from '@src/constants/paises';
 import { CrudActions } from '@src/emuns/crudActions';
 import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
@@ -295,20 +297,23 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       <ErrorMessage name="sexo" />
                     </div>
                     <div className="col-md-6">
-                      <label htmlFor="sexo">Tipo de Sangre: *</label>
+                      <label htmlFor="pais">País: *</label>
                       <Controller
-                        name="tipoSangre"
+                        name="pais"
                         render={({ field }) => (
                           <Dropdown
-                            inputId="tipoSangre"
-                            options={['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']}
+                            inputId="pais"
+                            options={PAISES}
                             {...field}
                             showClear
+                            filter
+                            filterMatchMode="contains"
                             placeholder="Seleccione"
                             className={classNames('w-full')}
                           />
                         )}
                       />
+                      <ErrorMessage name="pais" />
                     </div>
                     <div className="col-md-6">
                       <label>Calle Principal: *</label>
@@ -363,6 +368,45 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                         name="sector"
                         render={({ field }) => <InputText id="sector" {...field} className={classNames('w-full')} />}
                       />
+                    </div>
+                    <hr className="mt-5" />
+                    <div className="col-12">
+                      <div className="row">
+                        <div className="col-md-6">
+                          <label htmlFor="sexo">Tipo de Sangre: *</label>
+                          <Controller
+                            name="tipoSangre"
+                            render={({ field }) => (
+                              <Dropdown
+                                inputId="tipoSangre"
+                                options={['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']}
+                                {...field}
+                                showClear
+                                placeholder="Seleccione"
+                                className={classNames('w-full')}
+                              />
+                            )}
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <label htmlFor="tieneIess" className="w-full">
+                            Tiene seguro de IESS?
+                          </label>
+                          <Toggle name="tieneIess" size="lg" />
+                        </div>
+                        <div className="col-md-6">
+                          <label htmlFor="tieneHipertencion" className="w-full">
+                            Tiene Hipertención?
+                          </label>
+                          <Toggle name="tieneHipertencion" size="lg" />
+                        </div>
+                        <div className="col-md-6">
+                          <label htmlFor="tieneDiabetes" className="w-full">
+                            Tiene diabetes?
+                          </label>
+                          <Toggle name="tieneDiabetes" size="lg" />
+                        </div>
+                      </div>
                     </div>
 
                     <div className="row mt-3">
