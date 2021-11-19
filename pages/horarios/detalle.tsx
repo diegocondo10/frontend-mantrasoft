@@ -50,9 +50,9 @@ const DetalleHorarioPage: NextPage<any> = ({ id, startDate, endDate }) => {
             <ul className="list-group list-group-flush w-full">
               {fechas?.length > 0 &&
                 fechas?.map((item) => (
-                  <React.Fragment>
+                  <React.Fragment key={item?.fecha}>
                     {item?.habitaciones?.length > 0 && (
-                      <li className="list-group-item" key={item?.fecha}>
+                      <li className="list-group-item">
                         <h6>
                           <strong>
                             Fecha: {item?.fecha} | {item?.nombre} | Jornada: {item?.jornada?.codigo}

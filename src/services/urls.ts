@@ -62,6 +62,7 @@ export const urlUpdateFichasIngreso = (id: any) => `${FICHAS_INGRESO}${id}/`;
 export const urlDeleteFichasIngreso = urlUpdateFichasIngreso;
 export const urlDetailFichasIngreso = urlUpdateFichasIngreso;
 export const urlImprimirFichaIngreso = (id: any) => `${urlUpdateFichasIngreso(id)}imprimir-ficha/`;
+export const urlImprimirReporteEnfermeria = (id: any) => `${urlUpdateFichasIngreso(id)}imprimir-reporte-enfermeria/`;
 
 //PERTENENCIAS
 export const urlListarPertenencias = (id: any) => `${PERTENENECIAS}?id_registro=${id}`;

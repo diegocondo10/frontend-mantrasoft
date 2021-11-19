@@ -4,7 +4,7 @@ import { CrudActions } from '@src/emuns/crudActions';
 import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlDetailMedicamento, urlUpdateMedicamento } from '@src/services/urls';
+import { urlCreateMedicamento, urlDetailMedicamento, urlUpdateMedicamento } from '@src/services/urls';
 import { AxiosResponse } from 'axios';
 import classNames from 'classnames';
 import { NextPage } from 'next';
@@ -35,7 +35,7 @@ const FormMedicamentosPage: NextPage<any> = ({ crudAction, id }) => {
 
   const updateMutation = useMutation<any>((formData: any) => API.private().put(urlUpdateMedicamento(id), formData));
 
-  const createMutation = useMutation<any>((formData: any) => API.private().post(formData));
+  const createMutation = useMutation<any>((formData: any) => API.private().post(urlCreateMedicamento, formData));
 
   const _onSubmit = async (formData) => {
     try {
@@ -55,22 +55,22 @@ const FormMedicamentosPage: NextPage<any> = ({ crudAction, id }) => {
   };
 
   return (
-    <PrivateLayout
-      loading={{
-        loading: query.isLoading || createMutation.isLoading || updateMutation.isLoading,
-      }}
-    >
-      <main className="container-fluid">
-        <div className="d-flex flex-row my-3 justify-content-center">
-          <div className="align-self-center">
-            <Button href="/medicamentos" sm rounded icon={PrimeIcons.ARROW_LEFT} outlined />
+    <FormProvider {...methods}>
+      <PrivateLayout
+        loading={{
+          loading: query.isLoading || createMutation.isLoading || updateMutation.isLoading,
+        }}
+      >
+        <main className="container-fluid">
+          <div className="d-flex flex-row my-3 justify-content-center">
+            <div className="align-self-center">
+              <Button href="/medicamentos" sm rounded icon={PrimeIcons.ARROW_LEFT} outlined />
+            </div>
+            {CrudActions.CREATE === crudAction && (
+              <h3 className="text-center align-self-center">Registro de información</h3>
+            )}
+            {CrudActions.UPDATE === crudAction && <h3 className="text-center align-self-center">Editar información</h3>}
           </div>
-          {CrudActions.CREATE === crudAction && (
-            <h3 className="text-center align-self-center">Registro de información</h3>
-          )}
-          {CrudActions.UPDATE === crudAction && <h3 className="text-center align-self-center">Editar información</h3>}
-        </div>
-        <FormProvider {...methods}>
           <div className="row justify-content-center">
             <div className="col-11 border">
               <div className="row justify-content-center">
@@ -144,9 +144,9 @@ const FormMedicamentosPage: NextPage<any> = ({ crudAction, id }) => {
               </div>
             </div>
           </div>
-        </FormProvider>
-      </main>
-    </PrivateLayout>
+        </main>
+      </PrivateLayout>
+    </FormProvider>
   );
 };
 

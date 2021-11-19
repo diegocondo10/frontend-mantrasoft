@@ -1,6 +1,7 @@
 import Button from '@src/components/Button';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import TablaPaginada from '@src/components/Tables/TablaPaginada';
+import usePagination from '@src/hooks/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import { urlListarMedicamentos } from '@src/services/urls';
 import { NextPage } from 'next';
@@ -9,7 +10,6 @@ import { Column } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import React from 'react';
-import usePagination from '@src/hooks/usePagination';
 
 const MedicamentosPage: NextPage<any> = () => {
   const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch, filters, changeFilter } =
@@ -67,13 +67,11 @@ const MedicamentosPage: NextPage<any> = () => {
                     variant="info"
                     href={`/medicamentos/editar/form?id=${rowData?.id}`}
                   />
-                  <Button sm rounded icon={PrimeIcons.INFO} variant="warning" />
                   <Button sm rounded icon={PrimeIcons.TRASH} variant="danger" />
                 </div>
               )}
             />
           </TablaPaginada>
-       
         </div>
       </main>
     </PrivateLayout>

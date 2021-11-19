@@ -8,6 +8,7 @@ import API from '@src/services/api';
 import {
   urlDeleteFichasIngreso,
   urlImprimirFichaIngreso,
+  urlImprimirReporteEnfermeria,
   urlListadoFilterPacientes,
   urlListarFichasIngreso,
 } from '@src/services/urls';
@@ -156,6 +157,11 @@ const FichasIngresoPage: NextPage<any> = (props) => {
                       label: 'Imprimir ficha de ingreso',
                       icon: PrimeIcons.PRINT,
                       command: API.getReporte(urlImprimirFichaIngreso(rowData.id)),
+                    },
+                    {
+                      label: 'Imprimir Reporte de enfermeria',
+                      icon: PrimeIcons.PRINT,
+                      command: API.getReporte(urlImprimirReporteEnfermeria(rowData.id)),
                     },
                     {
                       label: 'Registro de pertenencias',
