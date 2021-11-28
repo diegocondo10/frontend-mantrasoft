@@ -1,8 +1,8 @@
 import { CSSProperties } from '@emotion/react/node_modules/@emotion/serialize';
 import Button from '@src/components/Button';
 import ButtonMenu from '@src/components/ButtonMenu';
-import DropDown from '@src/components/Forms/DropDown';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
+import HiddenField from '@src/components/Forms/HiddenField';
 import TextArea from '@src/components/Forms/TextArea';
 import TextInput from '@src/components/Forms/TextInput';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
@@ -10,6 +10,7 @@ import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
 import { urlCreatePertenencia, urlInfoPacienteFichaIngreso, urlUpdatePertenencia } from '@src/services/urls';
 import { AxiosResponse } from 'axios';
+import moment from 'moment';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
@@ -23,7 +24,7 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
   const query = useQuery<AxiosResponse<any>>(['info', props.id], () =>
     API.private().get(urlInfoPacienteFichaIngreso(props.id)),
   );
-
+  const [expandedRows, setExpandedRows] = useState(null);
   const [id, setId] = useState(null);
 
   const methods = useForm({ mode: 'onChange', shouldUnregister: true });
@@ -56,9 +57,35 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
     }
   };
 
-  const referencias = query?.data?.data?.pertenencias
-    ?.filter?.((pertenencia) => pertenencia?.tipo === 'INGRESO' && !pertenencia?.referencia && pertenencia.id !== id)
-    ?.map?.((referencia) => ({ label: referencia?.descripcion, value: referencia?.id }));
+  const rowExpandTemplate = (rowData) => {
+    return (
+      <div className="w-full">
+        <h4 className="text-center">Registros de sálida</h4>
+        <ul className="list-group list-group-flush">
+          <li className="list-group-item d-flex flex-row justify-content-between border">
+            <div style={{ width: '100px' }} className="text-center font-bold">
+              Cantidad
+            </div>
+            <div className="w-full text-center font-bold">Descripción</div>
+            <div style={{ width: '250px' }} className="text-center font-bold">
+              Fecha | Hora
+            </div>
+          </li>
+          {rowData?.salidas?.map?.((salida) => (
+            <li className="list-group-item d-flex flex-row justify-content-between border" key={salida.id}>
+              <div style={{ width: '100px' }} className="text-center">
+                {salida.cantidad}
+              </div>
+              <div className="w-full">{salida.descripcion}</div>
+              <div style={{ width: '250px' }} className="text-center">
+                {salida.fechaRegistro}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
 
   return (
     <PrivateLayout title="Ficha de salida" loading={{ loading: query.isLoading }}>
@@ -80,6 +107,7 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
               rounded
               onClick={() => {
                 toggle();
+                methods.setValue('tipo', 'INGRESO');
               }}
             />
           </h1>
@@ -96,18 +124,16 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
               paginator
               rows={20}
               rowsPerPageOptions={[20, 30, 50]}
+              expandedRows={expandedRows}
+              onRowToggle={(e) => setExpandedRows(e.data)}
+              rowExpansionTemplate={rowExpandTemplate}
             >
+              <Column expander style={{ width: '3em' }} />
               {ColumnaNo()}
               <Column header="Código" field="codigo" headerClassName="text-center" />
-              <Column header="Tipo" field="tipo" headerClassName="text-center" />
-              <Column header="Cantidad" field="cantidad" headerClassName="text-center" />
+              <Column header="Cantidad inicial" field="cantidad" headerClassName="text-center" />
+              <Column header="Cantidad actual" field="cantidadActual" headerClassName="text-center" />
               <Column header="Descripción" field="descripcion" headerClassName="text-center" />
-              <Column
-                header="Código de referencia del ingreso"
-                style={{ width: '150px' } as CSSProperties}
-                headerClassName="text-center"
-                field="codigoReferencia"
-              />
               <Column
                 style={{ width: '160px' } as CSSProperties}
                 header="Opciones"
@@ -129,6 +155,19 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
                           methods.reset(rowData);
                         },
                       },
+                      {
+                        icon: PrimeIcons.SIGN_OUT,
+                        label: 'Registrar salida',
+                        command: () => {
+                          if (rowData.cantidadActual === 0) {
+                            return alert('No se puede registrar una salida más, porque la cantidad actual es 0');
+                          }
+                          toggle();
+                          methods.setValue('tipo', 'SALIDA');
+                          methods.setValue('referencia', rowData.id);
+                          methods.setValue('referenciaObj', rowData);
+                        },
+                      },
                     ]}
                   />
                 )}
@@ -145,18 +184,20 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
               <Modal.Title>Formulario</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <div className="d-flex flex-row">
-                <div className="w-50 my-3">
-                  <label htmlFor="tipo">Tipo: *</label>
-                  <DropDown
-                    className="w-full"
-                    controller={{ name: 'tipo', rules: { required: 'Este campo es obligatorio' } }}
-                    options={['INGRESO', 'SALIDA']}
-                  />
-                  <ErrorMessage name="tipo" />
-                </div>
-                <div className="w-50 my-3">
-                  <label htmlFor="cantidad">Cantidad: *</label>
+              <HiddenField name="referencia" defaultValue={null} />
+              <HiddenField name="referenciaObj" defaultValue={null} />
+              <div className="w-full my-3">
+                <TextInput
+                  className="w-full text-800 font-bold"
+                  controller={{ name: 'tipo', rules: { required: 'Este campo es obligatorio' } }}
+                  disabled
+                />
+                <ErrorMessage name="tipo" />
+              </div>
+
+              <div className="w-full my-3">
+                <label htmlFor="cantidad">Cantidad: *</label>
+                {!methods.watch('referenciaObj') && (
                   <TextInput
                     block
                     min={1}
@@ -165,21 +206,36 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
                     controller={{ name: 'cantidad', rules: { required: 'Este campo es obligatorio' }, defaultValue: 1 }}
                     type="number"
                   />
-                  <ErrorMessage name="cantidad" />
-                </div>
+                )}
+                {methods.watch('referenciaObj') && (
+                  <TextInput
+                    block
+                    min={1}
+                    max={methods.watch('referenciaObj')?.cantidadActual}
+                    keyfilter="int"
+                    controller={{ name: 'cantidad', rules: { required: 'Este campo es obligatorio' }, defaultValue: 1 }}
+                    type="number"
+                  />
+                )}
+                <ErrorMessage name="cantidad" />
               </div>
 
-              {methods.watch('tipo') === 'SALIDA' && referencias?.length > 0 && (
-                <div>
-                  <label>Referencia: *</label>
-                  <DropDown
-                    className="w-full"
+              {id && (
+                <div className="w-full my-3">
+                  <label htmlFor="cantidadActual">Cantidad actual: *</label>
+                  <TextInput
+                    block
+                    min={1}
+                    max={9999}
+                    keyfilter="int"
                     controller={{
-                      name: 'referencia',
-                      rules: { required: 'Este campo es obligatorio', shouldUnregister: true },
+                      name: 'cantidadActual',
+                      rules: { required: 'Este campo es obligatorio' },
+                      defaultValue: 1,
                     }}
-                    options={referencias}
+                    type="number"
                   />
+                  <ErrorMessage name="cantidadActual" />
                 </div>
               )}
 

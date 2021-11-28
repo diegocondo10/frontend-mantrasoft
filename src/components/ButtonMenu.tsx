@@ -2,17 +2,24 @@ import { Menu } from 'primereact/menu';
 import { MenuItem } from 'primereact/menuitem';
 import React, { useRef } from 'react';
 import HrefButton, { ButtonProps } from './Button';
-
+import { TieredMenu } from 'primereact/tieredmenu';
 export interface ButtonMenuProps extends ButtonProps {
   label?: string;
   icon?: string;
   items?: MenuItem[];
 }
 const ButtonMenu: React.FC<ButtonMenuProps> = (props) => {
-  const ref = useRef<Menu>(null);
+  const ref = useRef<TieredMenu>(null);
   return (
     <React.Fragment>
-      <Menu popup id={props.label} ref={ref} model={props.items} />
+      <TieredMenu
+        popup
+        id={props.label}
+        ref={ref}
+        // viewportHeight={220}
+        // menuWidth={175}
+        model={props.items}
+      />
       <HrefButton
         label={props.label}
         icon={props.icon}

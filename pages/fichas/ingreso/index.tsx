@@ -137,37 +137,62 @@ const FichasIngresoPage: NextPage<any> = (props) => {
                   variant="info"
                   items={[
                     {
-                      label: 'Editar',
-                      icon: PrimeIcons.PENCIL,
-                      command: (e) => {
-                        router.push(`/fichas/ingreso/editar/form?id=${rowData?.id}`);
-                      },
-                    },
-                    {
                       label: 'Dar de alta',
                       icon: PrimeIcons.ANGLE_DOUBLE_RIGHT,
                       command: async (e) => {
-                        if (confirm('Esta en dar de alta a este paciente?')) {
+                        if (confirm('Esta seguro en dar de alta a este paciente?')) {
                           // await API.private().delete(urlDeleteFichasIngreso(rowData.id));
                           await refetch();
                         }
                       },
                     },
                     {
-                      label: 'Imprimir ficha de ingreso',
+                      label: 'Reportes',
                       icon: PrimeIcons.PRINT,
-                      command: API.getReporte(urlImprimirFichaIngreso(rowData.id)),
+                      items: [
+                        {
+                          label: 'Imprimir ficha de ingreso',
+                          icon: PrimeIcons.PRINT,
+                          command: API.getReporte(urlImprimirFichaIngreso(rowData.id)),
+                        },
+                        {
+                          label: 'Imprimir Reporte de enfermeria',
+                          icon: PrimeIcons.PRINT,
+                          command: API.getReporte(urlImprimirReporteEnfermeria(rowData.id)),
+                        },
+                      ],
                     },
                     {
-                      label: 'Imprimir Reporte de enfermeria',
-                      icon: PrimeIcons.PRINT,
-                      command: API.getReporte(urlImprimirReporteEnfermeria(rowData.id)),
+                      label: 'Tratamiento inicial',
+                      items: [
+                        {
+                          label: 'Ingresar tratamiento inicial',
+                          icon: PrimeIcons.LIST,
+                          command: () => {
+                            router.push(`/fichas/ingreso/tratamiento/inicial?idFicha=${rowData.id}`);
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      label: 'Bitacora de enfermeria',
+                      icon: PrimeIcons.LIST,
+                      command: () => {
+                        router.push(`/fichas/ingreso/seguimientos?id=${rowData.id}`);
+                      },
                     },
                     {
                       label: 'Registro de pertenencias',
                       icon: PrimeIcons.LIST,
                       command: () => {
                         router.push(`/fichas/ingreso/pertenencias?id=${rowData.id}`);
+                      },
+                    },
+                    {
+                      label: 'Editar',
+                      icon: PrimeIcons.PENCIL,
+                      command: (e) => {
+                        router.push(`/fichas/ingreso/editar/form?id=${rowData?.id}`);
                       },
                     },
                     {

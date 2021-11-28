@@ -11,6 +11,7 @@ const PERTENENECIAS = 'pertenencias/';
 const ALAS = 'alas/';
 const HORARIOS = 'horarios/';
 const SEGUIMIENTOS_ENFERMERIA = `seguimientos-enfermeria/`;
+const TRATAMIENTOS = `tratamientos/`;
 /**
  * AUTH
  */
@@ -63,6 +64,7 @@ export const urlDeleteFichasIngreso = urlUpdateFichasIngreso;
 export const urlDetailFichasIngreso = urlUpdateFichasIngreso;
 export const urlImprimirFichaIngreso = (id: any) => `${urlUpdateFichasIngreso(id)}imprimir-ficha/`;
 export const urlImprimirReporteEnfermeria = (id: any) => `${urlUpdateFichasIngreso(id)}imprimir-reporte-enfermeria/`;
+export const urlSeguimientosEnfermeriaPaciente = (id: any) => `${urlUpdateFichasIngreso(id)}seguimientos/`;
 
 //PERTENENCIAS
 export const urlListarPertenencias = (id: any) => `${PERTENENECIAS}?id_registro=${id}`;
@@ -118,3 +120,11 @@ export const urlUpdateSeguimientoEnfermeria = (id: string | number) => {
   return `${SEGUIMIENTOS_ENFERMERIA}${id}/`;
 };
 export const urlDeleteSeguimientoEnfermeria = urlUpdateSeguimientoEnfermeria;
+
+/**
+ *
+ * TRATAMIENTOS
+ *
+ */
+export const urlCreateOrUpdateTratamientoInicial = (idFicha: string) => `${TRATAMIENTOS}crear-o-editar/${idFicha}/`;
+export const urlGetTratamientoInicial = (idFicha: string) => `${TRATAMIENTOS}inicial-por-id-ficha/${idFicha}/`;

@@ -1,0 +1,6 @@
+{
+  "extends": ["eslint:recommended", "next", "prettier"],
+  "rules": {
+    "prettier/prettier": 0
+  }
+}
