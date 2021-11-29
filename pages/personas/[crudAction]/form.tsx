@@ -6,7 +6,7 @@ import { CrudActions } from '@src/emuns/crudActions';
 import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlCreatePersona, urlDetailPersona, urlUpdatePersona } from '@src/services/urls';
+import { urlCatalogoCreate, urlCreatePersona, urlDetailPersona, urlUpdatePersona } from '@src/services/urls';
 import { formatearFechaBackend } from '@src/utils/date';
 import { AxiosResponse } from 'axios';
 import classNames from 'classnames';
@@ -25,15 +25,20 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
 
   const router = useRouter();
   const { addErrorToast } = useToasts();
+
   const query = useQuery(['persona', crudAction, id], () => API.private().get(urlDetailPersona(id)), {
     enabled: crudAction === CrudActions.UPDATE,
-    onSuccess(data) {
+    onSuccess: (data) => {
       methods.reset(data?.data);
     },
-    onError(err) {
+    onError: () => {
       addErrorToast('No se ha podido encontrar el registro');
       router.push('/medicamentos');
     },
+  });
+
+  const queryCatalogo = useQuery(['catalogo-create'], () => API.private().get(urlCatalogoCreate), {
+    enabled: crudAction === CrudActions.CREATE,
   });
 
   const updateMutation = useMutation<any>((formData: any) => API.private().put(urlUpdatePersona(id), formData));
@@ -61,7 +66,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
       alert('Ha ocurrido un problema al guardar la información');
     }
   };
-
+  console.log(queryCatalogo);
   return (
     <FormProvider {...methods}>
       <PrivateLayout
@@ -80,11 +85,11 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
             {CrudActions.UPDATE === crudAction && <h3 className="text-center align-self-center">Editar información</h3>}
           </div>
 
-          <div className="row justify-content-center">
-            <div className="col-11 border">
+          <div className="row justify-content-center mb-5">
+            <div className="col-11 border mb-5">
               <div className="row justify-content-center">
-                <div className="col-11">
-                  <form onSubmit={methods.handleSubmit(_onSubmit)} className="row">
+                <div className="col-11 mb-5">
+                  <form onSubmit={methods.handleSubmit(_onSubmit)} className="row mb-5">
                     <div className="col-md-6">
                       <label htmlFor="tipoIdentificacion">Tipo de identificación: *</label>
                       <Controller
@@ -369,7 +374,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                         render={({ field }) => <InputText id="sector" {...field} className={classNames('w-full')} />}
                       />
                     </div>
-                    <hr className="mt-5" />
+                    <hr className="my-5" />
                     <div className="col-12">
                       <div className="row">
                         <div className="col-md-6">
@@ -408,6 +413,50 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                         </div>
                       </div>
                     </div>
+
+                    {crudAction === CrudActions.CREATE && (
+                      <React.Fragment>
+                        <hr className="my-5" />
+
+                        <div className="col-12">
+                          <label htmlFor="usuario.generar" className="w-full">
+                            Generar un usuario?
+                          </label>
+                          <Toggle name="usuario.generar" size="lg" defaultValue={false} />
+                        </div>
+
+                        {methods.watch('usuario.generar') && (
+                          <React.Fragment>
+                            <div className="col-md-6">
+                              <label className="w-full">Seleccione el rol para el usuario:</label>
+                              <ErrorMessage name="usuario.rol" />
+                              <Controller
+                                name="usuario.rol"
+                                rules={{ required: 'Es necesario seleccionar un rol!' }}
+                                render={({ field }) => (
+                                  <React.Fragment>
+                                    {queryCatalogo?.data?.data?.roles?.map((rol) => (
+                                      <div className="w-full" key={rol.value}>
+                                        <input
+                                          type="radio"
+                                          name="usuario.rol"
+                                          id={rol.value}
+                                          checked={field.value === rol.value}
+                                          onChange={() => field.onChange(rol.value)}
+                                        />
+                                        <label className="font-bold" htmlFor={rol.value}>
+                                          {rol.label}
+                                        </label>
+                                      </div>
+                                    ))}
+                                  </React.Fragment>
+                                )}
+                              />
+                            </div>
+                          </React.Fragment>
+                        )}
+                      </React.Fragment>
+                    )}
 
                     <div className="row mt-3">
                       <div className="col-12">
