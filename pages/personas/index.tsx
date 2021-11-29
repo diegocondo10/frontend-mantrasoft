@@ -1,20 +1,23 @@
 import Button from '@src/components/Button';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import TablaPaginada from '@src/components/Tables/TablaPaginada';
+import usePagination from '@src/hooks/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
-import { urlListarPersonas } from '@src/services/urls';
+import API from '@src/services/api';
+import { urlDeletePersona, urlListarPersonas } from '@src/services/urls';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
-import React from 'react';
-import usePagination from '@src/hooks/usePagination';
+import React, { useState } from 'react';
 
 const PersonasPage: NextPage<any> = () => {
-  const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch } = usePagination({
+  const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch, refetch } = usePagination({
     uri: urlListarPersonas,
     key: 'ListadoPersonas',
   });
+
+  const [eliminando, setEliminando] = useState(false);
 
   const cabecera = (
     <div>
@@ -40,7 +43,7 @@ const PersonasPage: NextPage<any> = () => {
             onChangePage={setPage}
             onOrdering={setOrdering}
             multiSortMeta={ordering}
-            loading={isLoading}
+            loading={isLoading || eliminando}
           >
             {ColumnaNo()}
             <Column header="Tipo de identificación" field="tipoIdentificacion" sortable />
@@ -60,7 +63,24 @@ const PersonasPage: NextPage<any> = () => {
                     variant="warning"
                     href={`/personas/detalle?id=${rowData.id}`}
                   />
-                  <Button sm rounded icon={PrimeIcons.TRASH} variant="danger" />
+                  <Button
+                    sm
+                    rounded
+                    icon={PrimeIcons.TRASH}
+                    variant="danger"
+                    onClick={async () => {
+                      if (confirm(`Esta seguro eliminar la información de la persona ${rowData.nombresApellidos}?`)) {
+                        try {
+                          setEliminando(true);
+                          await API.private().delete(urlDeletePersona(rowData.id));
+                          refetch();
+                        } catch (error) {
+                          alert('Se ha eliminado el registro exitosamente');
+                        }
+                        setEliminando(false);
+                      }
+                    }}
+                  />
                 </div>
               )}
             />
