@@ -3,15 +3,16 @@ import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import TablaPaginada from '@src/components/Tables/TablaPaginada';
 import usePagination from '@src/hooks/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
-import { urlListarHabitaciones } from '@src/services/urls';
+import API from '@src/services/api';
+import { urlDeleteHabitacion, urlListarHabitaciones } from '@src/services/urls';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
-import React from 'react';
+import React, { useState } from 'react';
 
 const HabitacionesPage: NextPage<any> = () => {
-  const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch } = usePagination({
+  const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch, refetch } = usePagination({
     uri: urlListarHabitaciones,
     key: 'ListadoHabitaciones',
   });
@@ -24,6 +25,8 @@ const HabitacionesPage: NextPage<any> = () => {
       </span>
     </div>
   );
+
+  const [eliminando, setEliminando] = useState(false);
 
   return (
     <PrivateLayout title="Habitaciones">
@@ -41,7 +44,7 @@ const HabitacionesPage: NextPage<any> = () => {
             onChangePage={setPage}
             onOrdering={setOrdering}
             multiSortMeta={ordering}
-            loading={isLoading}
+            loading={isLoading || eliminando}
           >
             {ColumnaNo()}
             <Column header="Ala" field="alaTitulo" sortField="ala__titulo" sortable />
@@ -66,7 +69,20 @@ const HabitacionesPage: NextPage<any> = () => {
                     variant="warning"
                     href={`/habitaciones/detalle?id=${rowData?.id}`}
                   />
-                  <Button sm rounded icon={PrimeIcons.TRASH} variant="danger" />
+                  <Button sm rounded icon={PrimeIcons.TRASH} variant="danger"
+                  onClick={async () => {
+                    if (confirm(`Esta seguro eliminar la información ${rowData.habitación.numero}?`)) {
+                      try {
+                        setEliminando(true);
+                        await API.private().delete(urlDeleteHabitacion(rowData.id));
+                        refetch();
+                      } catch (error) {
+                        alert('Se ha eliminado el registro exitosamente');
+                      }
+                      setEliminando(false);
+                    }
+                  }}
+                  />
                 </div>
               )}
             />

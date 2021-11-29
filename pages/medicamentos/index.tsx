@@ -3,20 +3,23 @@ import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import TablaPaginada from '@src/components/Tables/TablaPaginada';
 import usePagination from '@src/hooks/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
-import { urlListarMedicamentos } from '@src/services/urls';
+import API from '@src/services/api';
+import { urlDeleteMedicamento, urlListarMedicamentos } from '@src/services/urls';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
-import React from 'react';
+import React, { useState } from 'react';
 
 const MedicamentosPage: NextPage<any> = () => {
-  const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch, filters, changeFilter } =
+  const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch, filters, changeFilter, refetch } =
     usePagination({
       uri: urlListarMedicamentos,
       key: 'ListadoMedicamentos',
     });
+
+  
 
   const cabecera = (
     <div className="d-flex flex-row">
@@ -33,6 +36,7 @@ const MedicamentosPage: NextPage<any> = () => {
       </span>
     </div>
   );
+  const [eliminando, setEliminando] = useState(false);
 
   return (
     <PrivateLayout title="Medicamentos">
@@ -50,7 +54,7 @@ const MedicamentosPage: NextPage<any> = () => {
             onChangePage={setPage}
             onOrdering={setOrdering}
             multiSortMeta={ordering}
-            loading={isLoading}
+            loading={isLoading || eliminando}
           >
             {ColumnaNo()}
             <Column header="Nombre" field="nombre" sortable />
@@ -67,7 +71,20 @@ const MedicamentosPage: NextPage<any> = () => {
                     variant="info"
                     href={`/medicamentos/editar/form?id=${rowData?.id}`}
                   />
-                  <Button sm rounded icon={PrimeIcons.TRASH} variant="danger" />
+                  <Button sm rounded icon={PrimeIcons.TRASH} variant="danger" 
+                  onClick={async () => {
+                    if (confirm(`Esta seguro eliminar la información de la persona ${rowData.nombre}?`)) {
+                      try {
+                        setEliminando(true);
+                        await API.private().delete(urlDeleteMedicamento(rowData.id));
+                        refetch();
+                      } catch (error) {
+                        alert('Se ha eliminado el registro exitosamente');
+                      }
+                      setEliminando(false);
+                    }
+                  }}
+                  />
                 </div>
               )}
             />
