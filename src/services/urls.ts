@@ -25,6 +25,7 @@ export const urlCreatePersona = PERSONAS;
 export const urlUpdatePersona = (id: any) => `${PERSONAS}${id}/`;
 export const urlDeletePersona = urlUpdatePersona;
 export const urlDetailPersona = urlUpdatePersona;
+export const urlCatalogoCreate = `${PERSONAS}catalogo-create/`;
 
 /**
  * ALAS

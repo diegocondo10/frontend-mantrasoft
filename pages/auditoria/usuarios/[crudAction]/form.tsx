@@ -1,4 +1,5 @@
 import Button from '@src/components/Button';
+import DropDown from '@src/components/Forms/DropDown';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
 import TextInput from '@src/components/Forms/TextInput';
 import Toggle from '@src/components/Forms/Toggle';
@@ -26,14 +27,18 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
     },
   );
 
-  useQuery(['usuario', props.id, props.crudAction], () => API.private().get(urlUpdateUsuarios(props.id)), {
-    enabled: props.id !== undefined,
-    refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      console.log(data);
-      methods.reset(data?.data);
+  const query = useQuery(
+    ['usuario', props.id, props.crudAction],
+    () => API.private().get(urlUpdateUsuarios(props.id)),
+    {
+      enabled: props.id !== undefined,
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        console.log(data);
+        methods.reset(data?.data);
+      },
     },
-  });
+  );
 
   const { id, crudAction } = props;
 
@@ -57,8 +62,10 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
 
   const _onSubmit = async (formData) => {
     try {
+      if (!formData?.persona) {
+        formData.persona = null;
+      }
       await mutation.mutateAsync(formData);
-      console.log(formData);
       router.push('/auditoria/usuarios/');
     } catch (error) {
       console.log(error);
@@ -66,7 +73,7 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
   };
   return (
     <FormProvider {...methods}>
-      <PrivateLayout title="Usuario">
+      <PrivateLayout title="Usuario" loading={{ loading: query.isFetching || catalogo.isFetching }}>
         <main className="container">
           <h1 className="text-center my-5">
             <Button outlined rounded href="/auditoria/usuarios" icon={PrimeIcons.ARROW_LEFT} />
@@ -86,6 +93,17 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
                       <ErrorMessage name="username" />
                     </div>
 
+                    <div className="col-10 my-1">
+                      <label htmlFor="persona">Persona:</label>
+                      <DropDown
+                        filter
+                        filterMatchMode="contains"
+                        showClear
+                        block
+                        controller={{ name: 'persona' }}
+                        options={catalogo?.data?.data?.personas || []}
+                      />
+                    </div>
                     <div className="col-10 md:col-5 my-1">
                       <label htmlFor="firstName">Primer nombre: *</label>
                       <TextInput
@@ -97,10 +115,7 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
 
                     <div className="col-10 md:col-5 my-1">
                       <label htmlFor="secondName">Segundo nombre: *</label>
-                      <TextInput
-                        block
-                        controller={{ name: 'secondName', rules: { required: 'Este campo es obligatorio' } }}
-                      />
+                      <TextInput block controller={{ name: 'secondName' }} />
                       <ErrorMessage name="secondName" />
                     </div>
 
@@ -115,10 +130,7 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
 
                     <div className="col-10 md:col-5 my-1">
                       <label htmlFor="secondLastName">Segundo apellido: *</label>
-                      <TextInput
-                        block
-                        controller={{ name: 'secondLastName', rules: { required: 'Este campo es obligatorio' } }}
-                      />
+                      <TextInput block controller={{ name: 'secondLastName' }} />
                       <ErrorMessage name="secondLastName" />
                     </div>
 
