@@ -85,8 +85,8 @@ export const urlListarRolesSistema = ROLES_SISTEMA;
 export const urlCreateRolesSistema = ROLES_SISTEMA;
 export const urlCatalogoFormRolesSistema = `${ROLES_SISTEMA}catalogo-form/`;
 export const urlUpdateRolesSistema = (id: any) => `${ROLES_SISTEMA}${id}/`;
-export const urlDeleteRolesSistema = urlUpdatePermiso;
-export const urlDetailRolesSistema = urlUpdatePermiso;
+export const urlDeleteRolesSistema = urlUpdateRolesSistema;
+export const urlDetailRolesSistema = urlUpdateRolesSistema;
 //USUARIOS
 export const urlListarUsuarios = USUARIOS;
 export const urlCreateUsuarios = USUARIOS;

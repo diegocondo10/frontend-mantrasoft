@@ -70,13 +70,13 @@ const HabitacionesPage: NextPage<any> = () => {
                     href={`/habitaciones/detalle?id=${rowData?.id}`}
                   />
                   <Button sm rounded icon={PrimeIcons.TRASH} variant="danger"
-                  onClick={async () => {
-                    if (confirm(`Esta seguro eliminar la información ${rowData.habitación.numero}?`)) {
+                 onClick={async () => {
+                    if (confirm(`Esta seguro eliminar la información de la habitación ${rowData.alaNumeroHabitacion}?`)) {
                       try {
                         setEliminando(true);
                         await API.private().delete(urlDeleteHabitacion(rowData.id));
                         refetch();
-                      } catch (error) {
+                       } catch (error) {
                         alert('Se ha eliminado el registro exitosamente');
                       }
                       setEliminando(false);

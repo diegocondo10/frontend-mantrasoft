@@ -4,12 +4,13 @@ import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import TablaPaginada from '@src/components/Tables/TablaPaginada';
 import usePagination from '@src/hooks/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
-import { urlListarRolesSistema } from '@src/services/urls';
+import API from '@src/services/api';
+import { urlDeleteRolesSistema, urlListarRolesSistema } from '@src/services/urls';
 import { NextPage } from 'next';
 import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useState } from 'react';
 
 const RolesSistemaPage: NextPage<any> = () => {
   const {
@@ -29,6 +30,8 @@ const RolesSistemaPage: NextPage<any> = () => {
     uri: urlListarRolesSistema,
     key: 'Roles-sistemas',
   });
+
+  const [eliminando, setEliminando] = useState(false);
 
   return (
     <PrivateLayout title="Permisos">
@@ -56,7 +59,7 @@ const RolesSistemaPage: NextPage<any> = () => {
               onChangePage={setPage}
               onOrdering={setOrdering}
               multiSortMeta={ordering}
-              loading={isLoading}
+              loading={isLoading || eliminando}
             >
               {ColumnaNo()}
               <Column header="Nombre" field="nombre" sortable />
@@ -78,6 +81,22 @@ const RolesSistemaPage: NextPage<any> = () => {
                         icon: PrimeIcons.PENCIL,
                         command: (e) => {
                           router.push(`/auditoria/roles-sistema/editar/form?id=${rowData?.id}`);
+                        },
+                      },
+                      {
+                        label: 'Eliminar',
+                        icon: PrimeIcons.TRASH,
+                        command: async () => {
+                          if (confirm(`Esta seguro eliminar la información del rol ${rowData.nombre}?`)) {
+                            try {
+                              setEliminando(true);
+                              await API.private().delete(urlDeleteRolesSistema(rowData.id));
+                              refetch();
+                             } catch (error) {
+                              alert('Se ha eliminado el registro exitosamente');
+                            }
+                            setEliminando(false);
+                          }
                         },
                       },
                     ]}
