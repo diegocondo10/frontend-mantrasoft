@@ -103,7 +103,7 @@ const FormMedicamentosPage: NextPage<any> = ({ crudAction, id }) => {
                             inputId="via"
                             {...field}
                             placeholder="Seleccione"
-                            options={['VO', 'VA']}
+                            options={['VO', 'VR', 'VI']}
                             showClear
                             className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
                             inputRef={field.ref}
