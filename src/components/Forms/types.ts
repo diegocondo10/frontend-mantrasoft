@@ -5,4 +5,5 @@ export interface ControllerProps {
   rules?: RegisterOptions;
   shouldUnregister?: boolean;
   defaultValue?: any;
+  control?: any;
 }

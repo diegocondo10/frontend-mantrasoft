@@ -9,12 +9,12 @@ import { urlCreateOrUpdateTratamientoInicial, urlGetTratamientoInicial } from '@
 import { formatearFechaBackend, formatearFechaFronend } from '@src/utils/date';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 
 const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
-  console.log(idFicha);
+  const [guardando, setGuardando] = useState(false);
 
   const methods = useForm({ mode: 'onChange' });
 
@@ -35,13 +35,21 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
   });
 
   const onSubmit = async (formData) => {
-    console.log(formData);
-    formData.inicio = formatearFechaBackend(formData.inicio);
-    formData.fin = formatearFechaBackend(formData.fin);
-    const res = await API.private().post(urlCreateOrUpdateTratamientoInicial(idFicha), formData);
-    console.log(res);
+    try {
+      setGuardando(true);
+      console.log(formData);
+      formData.inicio = formatearFechaBackend(formData.inicio);
+      formData.fin = formatearFechaBackend(formData.fin);
+      formData.medicamentosDisponibles = undefined;
+
+      await API.private().post(urlCreateOrUpdateTratamientoInicial(idFicha), formData);
+      alert('Se ha guardado la información');
+    } catch (error) {
+      alert('Ha ocurrido un problema al guardar la información');
+    }
+    setGuardando(false);
   };
-  console.log(query?.data?.data);
+
   return (
     <FormProvider {...methods}>
       <PrivateLayout loading={{ loading: query.isFetching }}>
@@ -76,7 +84,7 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
 
                   <Controller
                     name="medicamentos"
-                    defaultValue={{}}
+                    defaultValue={[]}
                     render={({ field, fieldState }: any) => (
                       <Medicamentos
                         medicamentos={query?.data?.data?.medicamentosDisponibles || []}
@@ -91,7 +99,7 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
                   <div className="col-12">
                     <div className="row justify-content-center">
                       <div className="col-md-5">
-                        <Button type="submit" label="Guardar" block outlined />
+                        <Button loading={guardando} type="submit" label="Guardar" block outlined />
                       </div>
                     </div>
                   </div>
