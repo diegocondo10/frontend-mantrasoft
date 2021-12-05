@@ -60,6 +60,7 @@ const MedicamentosPage: NextPage<any> = () => {
             <Column header="Nombre" field="nombre" sortable />
             <Column header="Descripción" field="descripcion" sortable />
             <Column header="Via" field="via" sortable />
+            <Column header="Variante" field="variante" sortable/>
             <Column
               header="Opciones"
               body={(rowData) => (

@@ -113,6 +113,25 @@ const FormMedicamentosPage: NextPage<any> = ({ crudAction, id }) => {
                       <ErrorMessage name="via" />
                     </div>
                     <div className="col-12">
+                      <label htmlFor="via">Variante: *</label>
+                      <Controller
+                        name="variante"
+                        rules={{ required: 'Este campo es obligatorio' }}
+                        render={({ field, fieldState }) => (
+                          <Dropdown
+                            inputId="variante"
+                            {...field}
+                            placeholder="Seleccione"
+                            options={['TABLETA', 'GOTAS', 'INYECTABLE']}
+                            showClear
+                            className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
+                            inputRef={field.ref}
+                          />
+                        )}
+                      />
+                      <ErrorMessage name="variante" />
+                    </div>
+                    <div className="col-12">
                       <label htmlFor="descripcion">Descripción: *</label>
                       <Controller
                         name="descripcion"
