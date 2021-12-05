@@ -1,17 +1,21 @@
 import Button from '@src/components/Button';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
 import TextArea from '@src/components/Forms/TextArea';
+import TextInput from '@src/components/Forms/TextInput';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import API from '@src/services/api';
 import {
   urlCreateSeguimientoEnfermeria,
   urlDeleteSeguimientoEnfermeria,
+  urlGetSignos,
+  urlRegistrarSignoVital,
   urlSeguimientosPacienteHorarios,
   urlUpdateSeguimientoEnfermeria,
 } from '@src/services/urls';
 import useUsuario from '@src/store/usuario/useUsuario';
 import _ from 'lodash';
 import moment from 'moment';
+import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { confirmPopup } from 'primereact/confirmpopup';
@@ -20,6 +24,31 @@ import React, { CSSProperties, useState } from 'react';
 import { Accordion, Modal } from 'react-bootstrap';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
+
+const TIME_FORMAT = 'HH:mm';
+const AM_VALIDATION = (value) => {
+  const momentValue = moment(value, TIME_FORMAT);
+  if (
+    momentValue.isSameOrAfter(moment('00:00', TIME_FORMAT)) &&
+    momentValue.isSameOrBefore(moment('11:59', TIME_FORMAT))
+  ) {
+    return true;
+  }
+
+  return 'Ingrese una hora entre 00:00 y 11:59';
+};
+const PM_VALIDATION = (value) => {
+  const momentValue = moment(value, TIME_FORMAT);
+  if (
+    momentValue.isSameOrAfter(moment('12:00', TIME_FORMAT)) &&
+    momentValue.isSameOrBefore(moment('23:59', TIME_FORMAT))
+  ) {
+    return true;
+  }
+
+  return 'Ingrese una hora entre 12:00 y 23:59';
+};
+
 const DetallePacienteItem = ({ paciente, index }) => {
   const { usuario } = useUsuario();
   const [data, setData] = useState([]);
@@ -28,6 +57,15 @@ const DetallePacienteItem = ({ paciente, index }) => {
   const [guardando, setGuardando] = useState(false);
   const [id, setId] = useState(null);
   const methods = useForm({ mode: 'onChange' });
+
+  const methodsSignoVitales = {
+    'AM-1': useForm({ mode: 'onChange' }),
+    'AM-2': useForm({ mode: 'onChange' }),
+    'PM-1': useForm({ mode: 'onChange' }),
+    'PM-2': useForm({ mode: 'onChange' }),
+  };
+
+  const [showModalSignos, setShowModalSignos] = useState(false);
 
   const query = useQuery(
     ['seguimientos-paciente', paciente.id, paciente.idHorario],
@@ -41,7 +79,7 @@ const DetallePacienteItem = ({ paciente, index }) => {
   );
 
   const header = (
-    <div>
+    <div className="d-flex flex-row justify-content-between flex-wrap">
       <span className="p-buttonset">
         <Button
           icon={PrimeIcons.PLUS}
@@ -64,6 +102,19 @@ const DetallePacienteItem = ({ paciente, index }) => {
           }}
         />
       </span>
+      <Button
+        icon={PrimeIcons.PLUS}
+        label="Registrar Signos Vitales"
+        sm
+        outlined
+        onClick={async () => {
+          setShowModalSignos(true);
+          const res = await API.private().get(urlGetSignos(router.query.startDate, paciente.id));
+          Object.entries(res?.data).forEach(([key, value]) => {
+            methodsSignoVitales[key].reset({ [key]: value } || {});
+          });
+        }}
+      />
     </div>
   );
 
@@ -78,7 +129,9 @@ const DetallePacienteItem = ({ paciente, index }) => {
       } else {
         await API.private().put(urlUpdateSeguimientoEnfermeria(id), formData);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
     query.refetch();
     setShowModal(false);
     setId(null);
@@ -86,10 +139,30 @@ const DetallePacienteItem = ({ paciente, index }) => {
     setGuardando(false);
   };
 
+  const onSubmitSigno = (tipo: 'AM-1' | 'PM-1' | 'AM-2' | 'PM-2') => async (formData) => {
+    console.log(formData, paciente);
+    try {
+      const body = {
+        fecha: router.query.startDate,
+        tipo: +tipo.split('-')[1],
+        ...formData[tipo],
+      };
+      await API.private().post(urlRegistrarSignoVital, body);
+      const res = await API.private().get(urlGetSignos(router.query.startDate, paciente.id));
+      Object.entries(res?.data).forEach(([key, value]) => {
+        methodsSignoVitales[key].reset({ [key]: value } || {});
+      });
+    } catch (error) {
+      setShowModalSignos(false);
+      alert('HA OCURRIDO UN PROBLEMA AL GUARDAR LA INFORMACIÓN');
+    }
+    setShowModalSignos(false);
+  };
+
   return (
     <Accordion.Item eventKey={`${index}-${paciente.id}-${paciente.idHorario}`}>
       <Accordion.Header
-        onClick={(evt) => {
+        onClick={() => {
           query.refetch();
         }}
       >
@@ -151,7 +224,9 @@ const DetallePacienteItem = ({ paciente, index }) => {
                           try {
                             await API.private().delete(urlDeleteSeguimientoEnfermeria(rowData.id));
                             query.refetch();
-                          } catch (error) {}
+                          } catch (error) {
+                            console.log(error);
+                          }
                         }, 100),
                       });
                     };
@@ -239,6 +314,185 @@ const DetallePacienteItem = ({ paciente, index }) => {
               </Modal.Footer>
             </form>
           </FormProvider>
+        </Modal>
+
+        <Modal show={showModalSignos} centered onHide={() => setShowModalSignos(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Registro de signos vitales</Modal.Title>
+          </Modal.Header>
+          <Modal.Body className="container-fluid">
+            <h3 className="text-center">Mañana(AM)</h3>
+            <FormProvider {...methodsSignoVitales['AM-1']}>
+              <div className="row">
+                <Controller name="AM-1.id" defaultValue={null} render={() => null} />
+                <div className="col-4">
+                  <label htmlFor="AM-1.hora">Hora</label>
+                  <span className="p-inputgroup">
+                    <TextInput
+                      controller={{
+                        name: 'AM-1.hora',
+                        defaultValue: moment().format('HH:mm'),
+                        rules: { validate: AM_VALIDATION },
+                      }}
+                      type="time"
+                      block
+                    />
+                  </span>
+                  <ErrorMessage name="AM-1.hora" />
+                </div>
+                <div className="col-4">
+                  <label htmlFor="AM-1.valor">Pulso</label>
+                  <TextInput
+                    controller={{ name: 'AM-1.valor', defaultValue: 50 }}
+                    type="number"
+                    block
+                    keyfilter="int"
+                    min={0}
+                    max={200}
+                  />
+                </div>
+                <div className="col-4">
+                  <Button
+                    icon={PrimeIcons.SAVE}
+                    outlined
+                    className="mt-label"
+                    label="Guardar"
+                    block
+                    type="button"
+                    onClick={methodsSignoVitales['AM-1'].handleSubmit(onSubmitSigno('AM-1'))}
+                  />
+                </div>
+              </div>
+            </FormProvider>
+            <FormProvider {...methodsSignoVitales['AM-2']}>
+              <div className="row">
+                <Controller name="AM-2.id" defaultValue={null} render={() => null} />
+                <div className="col-4">
+                  <label htmlFor="AM-2.hora">Hora</label>
+                  <span className="p-inputgroup">
+                    <TextInput
+                      controller={{
+                        name: 'AM-2.hora',
+                        defaultValue: moment().format('HH:mm'),
+                        rules: { validate: AM_VALIDATION },
+                      }}
+                      type="time"
+                      block
+                    />
+                  </span>
+                  <ErrorMessage name="AM-2.hora" />
+                </div>
+                <div className="col-4">
+                  <label htmlFor="AM-2.valor">Temperatura</label>
+                  <TextInput
+                    controller={{ name: 'AM-2.valor', defaultValue: 30 }}
+                    type="number"
+                    block
+                    keyfilter="int"
+                    min={0}
+                    max={80}
+                  />
+                </div>
+                <div className="col-4">
+                  <Button
+                    icon={PrimeIcons.SAVE}
+                    outlined
+                    className="mt-label"
+                    label="Guardar"
+                    block
+                    type="button"
+                    onClick={methodsSignoVitales['AM-2'].handleSubmit(onSubmitSigno('AM-2'))}
+                  />
+                </div>
+              </div>
+            </FormProvider>
+            <hr />
+            <h3 className="text-center">Tarde(PM)</h3>
+            <FormProvider {...methodsSignoVitales['PM-1']}>
+              <div className="row">
+                <Controller name="PM-1.id" defaultValue={null} render={() => null} />
+                <div className="col-4">
+                  <label htmlFor="PM-1.hora">Hora</label>
+                  <span className="p-inputgroup">
+                    <TextInput
+                      controller={{
+                        name: 'PM-1.hora',
+                        defaultValue: moment().format('HH:mm'),
+                        rules: { validate: PM_VALIDATION },
+                      }}
+                      type="time"
+                      block
+                    />
+                  </span>
+                  <ErrorMessage name="PM-1.hora" />
+                </div>
+                <div className="col-4">
+                  <label htmlFor="PM-1.valor">Pulso</label>
+                  <TextInput
+                    controller={{ name: 'PM-1.valor', defaultValue: 50 }}
+                    type="number"
+                    block
+                    keyfilter="int"
+                    min={0}
+                    max={200}
+                  />
+                </div>
+                <div className="col-4">
+                  <Button
+                    icon={PrimeIcons.SAVE}
+                    outlined
+                    className="mt-label"
+                    label="Guardar"
+                    block
+                    type="button"
+                    onClick={methodsSignoVitales['PM-1'].handleSubmit(onSubmitSigno('PM-1'))}
+                  />
+                </div>
+              </div>
+            </FormProvider>
+            <FormProvider {...methodsSignoVitales['PM-2']}>
+              <div className="row">
+                <Controller name="PM-2.id" defaultValue={null} render={() => null} />
+                <div className="col-4">
+                  <label htmlFor="PM-2.hora">Hora</label>
+                  <span className="p-inputgroup">
+                    <TextInput
+                      controller={{
+                        name: 'PM-2.hora',
+                        defaultValue: moment().format('HH:mm'),
+                        rules: { validate: PM_VALIDATION },
+                      }}
+                      type="time"
+                      block
+                    />
+                  </span>
+                  <ErrorMessage name="PM-2.hora" />
+                </div>
+                <div className="col-4">
+                  <label htmlFor="PM-2.valor">Temperatura</label>
+                  <TextInput
+                    controller={{ name: 'PM-2.valor', defaultValue: 30 }}
+                    type="number"
+                    block
+                    keyfilter="pint"
+                    min={0}
+                    max={80}
+                  />
+                </div>
+                <div className="col-4">
+                  <Button
+                    icon={PrimeIcons.SAVE}
+                    outlined
+                    className="mt-label"
+                    label="Guardar"
+                    block
+                    type="button"
+                    onClick={methodsSignoVitales['PM-2'].handleSubmit(onSubmitSigno('PM-2'))}
+                  />
+                </div>
+              </div>
+            </FormProvider>
+          </Modal.Body>
         </Modal>
       </Accordion.Body>
     </Accordion.Item>

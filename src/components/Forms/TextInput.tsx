@@ -10,7 +10,7 @@ export interface TextInputProps extends Omit<InputTextProps, 'name' | 'defaultVa
 }
 
 const TextInput: React.FC<TextInputProps> = (props) => {
-  const { controller, ...rest } = props;
+  const { controller, block, ...rest } = props;
 
   return (
     <Controller
@@ -19,7 +19,7 @@ const TextInput: React.FC<TextInputProps> = (props) => {
         <InputText
           id={field.name}
           {...rest}
-          className={classNames(rest.className, { 'p-invalid': fieldState.invalid, 'w-full': props.block })}
+          className={classNames(rest.className, { 'p-invalid': fieldState.invalid, 'w-full': block })}
           {...field}
         />
       )}

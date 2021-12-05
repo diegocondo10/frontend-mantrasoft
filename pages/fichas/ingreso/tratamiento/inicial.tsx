@@ -63,12 +63,12 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
               <div className="col-12 md:col-11 border p-5">
                 <div className="row">
                   <div className="col-md-6">
-                    <label htmlFor="inicio">Diagnostico inicial: *</label>
+                    <label htmlFor="inicio">Fecha de inicio: *</label>
                     <DateInput controller={{ name: 'inicio', rules: { required: 'Obligatorio' } }} block />
                     <ErrorMessage name="inicio" />
                   </div>
                   <div className="col-md-6">
-                    <label htmlFor="fin">Diagnostico inicial: *</label>
+                    <label htmlFor="fin">Fecha de fin: *</label>
                     <DateInput controller={{ name: 'fin', rules: { required: 'Obligatorio' } }} block />
                     <ErrorMessage name="fin" />
                   </div>

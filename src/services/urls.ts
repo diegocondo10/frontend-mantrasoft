@@ -67,6 +67,11 @@ export const urlImprimirFichaIngreso = (id: any) => `${urlUpdateFichasIngreso(id
 export const urlImprimirReporteEnfermeria = (id: any) => `${urlUpdateFichasIngreso(id)}imprimir-reporte-enfermeria/`;
 export const urlSeguimientosEnfermeriaPaciente = (id: any) => `${urlUpdateFichasIngreso(id)}seguimientos/`;
 
+export const urlRegistrarSignoVital = `signos-vitales/registrar/`;
+export const urlGetSignos = (fecha: any, paciente: any) => {
+  return `signos-vitales/get-signos/${fecha}/${paciente}/`;
+};
+
 //PERTENENCIAS
 export const urlListarPertenencias = (id: any) => `${PERTENENECIAS}?id_registro=${id}`;
 export const urlCreatePertenencia = PERTENENECIAS;
