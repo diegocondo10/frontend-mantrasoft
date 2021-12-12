@@ -21,11 +21,6 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
   const query = useQuery(['INICIAL', idFicha], () => API.private().get(urlGetTratamientoInicial(idFicha)), {
     refetchOnWindowFocus: false,
     onSuccess: ({ data }) => {
-      console.log({
-        ...data,
-        inicio: formatearFechaFronend(data?.inicio),
-        fin: formatearFechaFronend(data?.fin),
-      });
       methods.reset({
         ...data,
         inicio: formatearFechaFronend(data?.inicio),
@@ -62,15 +57,10 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
             <div className="row justify-content-center">
               <div className="col-12 md:col-11 border p-5">
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-12 col-md-6">
                     <label htmlFor="inicio">Fecha de inicio: *</label>
                     <DateInput controller={{ name: 'inicio', rules: { required: 'Obligatorio' } }} block />
                     <ErrorMessage name="inicio" />
-                  </div>
-                  <div className="col-md-6">
-                    <label htmlFor="fin">Fecha de fin: *</label>
-                    <DateInput controller={{ name: 'fin', rules: { required: 'Obligatorio' } }} block />
-                    <ErrorMessage name="fin" />
                   </div>
                   <div className="col-12">
                     <label htmlFor="diagnosticoInicial">Diagnostico inicial: *</label>
@@ -88,6 +78,7 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
                     render={({ field, fieldState }: any) => (
                       <Medicamentos
                         medicamentos={query?.data?.data?.medicamentosDisponibles || []}
+                        frecuencias={query?.data?.data?.frecuencias || []}
                         {...field}
                         {...fieldState}
                       />

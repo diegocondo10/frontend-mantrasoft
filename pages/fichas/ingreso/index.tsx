@@ -21,7 +21,7 @@ import { InputText } from 'primereact/inputtext';
 import React, { CSSProperties, useEffect, useMemo } from 'react';
 import { useQuery } from 'react-query';
 
-const FichasIngresoPage: NextPage<any> = (props) => {
+const FichasIngresoPage: NextPage<any> = () => {
   const {
     isLoading,
     data,
@@ -139,9 +139,8 @@ const FichasIngresoPage: NextPage<any> = (props) => {
                     {
                       label: 'Dar de alta',
                       icon: PrimeIcons.ANGLE_DOUBLE_RIGHT,
-                      command: async (e) => {
+                      command: async () => {
                         if (confirm('Esta seguro en dar de alta a este paciente?')) {
-                          // await API.private().delete(urlDeleteFichasIngreso(rowData.id));
                           await refetch();
                         }
                       },
@@ -182,6 +181,13 @@ const FichasIngresoPage: NextPage<any> = (props) => {
                       },
                     },
                     {
+                      label: 'Signo vitales',
+                      icon: PrimeIcons.LIST,
+                      command: () => {
+                        router.push(`/fichas/ingreso/signos-vitales?id=${rowData.id}`);
+                      },
+                    },
+                    {
                       label: 'Registro de pertenencias',
                       icon: PrimeIcons.LIST,
                       command: () => {
@@ -191,7 +197,7 @@ const FichasIngresoPage: NextPage<any> = (props) => {
                     {
                       label: 'Editar',
                       icon: PrimeIcons.PENCIL,
-                      command: (e) => {
+                      command: () => {
                         router.push(`/fichas/ingreso/editar/form?id=${rowData?.id}`);
                       },
                     },

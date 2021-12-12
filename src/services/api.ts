@@ -1,5 +1,4 @@
 import CONFIGS from '@src/constants/configs';
-import useToasts from '@src/hooks/useToasts';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { URL_BASE } from './urls';
 

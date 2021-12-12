@@ -52,11 +52,30 @@ const PM_VALIDATION = (value) => {
 const DetallePacienteItem = ({ paciente, index }) => {
   const { usuario } = useUsuario();
   const [data, setData] = useState([]);
-
+  const [tratamiento, setTratamiento] = useState<any>({});
   const [showModal, setShowModal] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [id, setId] = useState(null);
   const methods = useForm({ mode: 'onChange' });
+
+  const [loadingAm1, setLoadingAm1] = useState(false);
+  const [loadingAm2, setLoadingAm2] = useState(false);
+  const [loadingPm1, setLoadingPm1] = useState(false);
+  const [loadingPm2, setLoadingPm2] = useState(false);
+
+  const loading = {
+    'AM-1': loadingAm1,
+    'AM-2': loadingAm2,
+    'PM-1': loadingPm1,
+    'PM-2': loadingPm2,
+  };
+
+  const setLoading = {
+    'AM-1': setLoadingAm1,
+    'AM-2': setLoadingAm2,
+    'PM-1': setLoadingPm1,
+    'PM-2': setLoadingPm2,
+  };
 
   const methodsSignoVitales = {
     'AM-1': useForm({ mode: 'onChange' }),
@@ -73,7 +92,8 @@ const DetallePacienteItem = ({ paciente, index }) => {
     {
       enabled: false,
       onSuccess: (res) => {
-        setData(res?.data);
+        setData(res?.data?.seguimientos);
+        setTratamiento(res?.data?.tratamiento);
       },
     },
   );
@@ -140,11 +160,12 @@ const DetallePacienteItem = ({ paciente, index }) => {
   };
 
   const onSubmitSigno = (tipo: 'AM-1' | 'PM-1' | 'AM-2' | 'PM-2') => async (formData) => {
-    console.log(formData, paciente);
     try {
+      setLoading[tipo](true);
       const body = {
         fecha: router.query.startDate,
         tipo: +tipo.split('-')[1],
+        idPaciente: paciente.id,
         ...formData[tipo],
       };
       await API.private().post(urlRegistrarSignoVital, body);
@@ -153,10 +174,9 @@ const DetallePacienteItem = ({ paciente, index }) => {
         methodsSignoVitales[key].reset({ [key]: value } || {});
       });
     } catch (error) {
-      setShowModalSignos(false);
       alert('HA OCURRIDO UN PROBLEMA AL GUARDAR LA INFORMACIÓN');
     }
-    setShowModalSignos(false);
+    setLoading[tipo](false);
   };
 
   return (
@@ -316,7 +336,17 @@ const DetallePacienteItem = ({ paciente, index }) => {
           </FormProvider>
         </Modal>
 
-        <Modal show={showModalSignos} centered onHide={() => setShowModalSignos(false)}>
+        <Modal
+          show={showModalSignos}
+          centered
+          onHide={() => {
+            methodsSignoVitales['AM-1'].reset({});
+            methodsSignoVitales['AM-2'].reset({});
+            methodsSignoVitales['PM-1'].reset({});
+            methodsSignoVitales['PM-2'].reset({});
+            setShowModalSignos(false);
+          }}
+        >
           <Modal.Header closeButton>
             <Modal.Title>Registro de signos vitales</Modal.Title>
           </Modal.Header>
@@ -324,7 +354,13 @@ const DetallePacienteItem = ({ paciente, index }) => {
             <h3 className="text-center">Mañana(AM)</h3>
             <FormProvider {...methodsSignoVitales['AM-1']}>
               <div className="row">
-                <Controller name="AM-1.id" defaultValue={null} render={() => null} />
+                <Controller
+                  name="AM-1.id"
+                  defaultValue={null}
+                  render={({ field: { value } }) =>
+                    value ? <strong className="text-center text-success">Registrado</strong> : null
+                  }
+                />
                 <div className="col-4">
                   <label htmlFor="AM-1.hora">Hora</label>
                   <span className="p-inputgroup">
@@ -359,6 +395,7 @@ const DetallePacienteItem = ({ paciente, index }) => {
                     label="Guardar"
                     block
                     type="button"
+                    loading={loading['AM-1']}
                     onClick={methodsSignoVitales['AM-1'].handleSubmit(onSubmitSigno('AM-1'))}
                   />
                 </div>
@@ -366,7 +403,13 @@ const DetallePacienteItem = ({ paciente, index }) => {
             </FormProvider>
             <FormProvider {...methodsSignoVitales['AM-2']}>
               <div className="row">
-                <Controller name="AM-2.id" defaultValue={null} render={() => null} />
+                <Controller
+                  name="AM-2.id"
+                  defaultValue={null}
+                  render={({ field: { value } }) =>
+                    value ? <strong className="text-center text-success">Registrado</strong> : null
+                  }
+                />
                 <div className="col-4">
                   <label htmlFor="AM-2.hora">Hora</label>
                   <span className="p-inputgroup">
@@ -401,6 +444,7 @@ const DetallePacienteItem = ({ paciente, index }) => {
                     label="Guardar"
                     block
                     type="button"
+                    loading={loading['AM-2']}
                     onClick={methodsSignoVitales['AM-2'].handleSubmit(onSubmitSigno('AM-2'))}
                   />
                 </div>
@@ -410,7 +454,13 @@ const DetallePacienteItem = ({ paciente, index }) => {
             <h3 className="text-center">Tarde(PM)</h3>
             <FormProvider {...methodsSignoVitales['PM-1']}>
               <div className="row">
-                <Controller name="PM-1.id" defaultValue={null} render={() => null} />
+                <Controller
+                  name="PM-1.id"
+                  defaultValue={null}
+                  render={({ field: { value } }) =>
+                    value ? <strong className="text-center text-success">Registrado</strong> : null
+                  }
+                />
                 <div className="col-4">
                   <label htmlFor="PM-1.hora">Hora</label>
                   <span className="p-inputgroup">
@@ -445,6 +495,7 @@ const DetallePacienteItem = ({ paciente, index }) => {
                     label="Guardar"
                     block
                     type="button"
+                    loading={loading['PM-1']}
                     onClick={methodsSignoVitales['PM-1'].handleSubmit(onSubmitSigno('PM-1'))}
                   />
                 </div>
@@ -452,7 +503,13 @@ const DetallePacienteItem = ({ paciente, index }) => {
             </FormProvider>
             <FormProvider {...methodsSignoVitales['PM-2']}>
               <div className="row">
-                <Controller name="PM-2.id" defaultValue={null} render={() => null} />
+                <Controller
+                  name="PM-2.id"
+                  defaultValue={null}
+                  render={({ field: { value } }) =>
+                    value ? <strong className="text-center text-success">Registrado</strong> : null
+                  }
+                />
                 <div className="col-4">
                   <label htmlFor="PM-2.hora">Hora</label>
                   <span className="p-inputgroup">
@@ -487,6 +544,7 @@ const DetallePacienteItem = ({ paciente, index }) => {
                     label="Guardar"
                     block
                     type="button"
+                    loading={loading['PM-2']}
                     onClick={methodsSignoVitales['PM-2'].handleSubmit(onSubmitSigno('PM-2'))}
                   />
                 </div>

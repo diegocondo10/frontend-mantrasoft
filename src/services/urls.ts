@@ -12,6 +12,7 @@ const ALAS = 'alas/';
 const HORARIOS = 'horarios/';
 const SEGUIMIENTOS_ENFERMERIA = `seguimientos-enfermeria/`;
 const TRATAMIENTOS = `tratamientos/`;
+const SIGNO_VITALES = 'signos-vitales/';
 /**
  * AUTH
  */
@@ -66,6 +67,15 @@ export const urlDetailFichasIngreso = urlUpdateFichasIngreso;
 export const urlImprimirFichaIngreso = (id: any) => `${urlUpdateFichasIngreso(id)}imprimir-ficha/`;
 export const urlImprimirReporteEnfermeria = (id: any) => `${urlUpdateFichasIngreso(id)}imprimir-reporte-enfermeria/`;
 export const urlSeguimientosEnfermeriaPaciente = (id: any) => `${urlUpdateFichasIngreso(id)}seguimientos/`;
+
+export const urlInfoPacienteByIdFicha = (id) => `${urlUpdateFichasIngreso(id)}info-paciente/`;
+export const urlSignosPorSemana = (week: string, pacienteId: any) => {
+  return `${SIGNO_VITALES}info-semana/${week}/${pacienteId}/`;
+};
+
+export const urlImprimirReporteSignosVitalesSemana = (week: string, pacienteId: any) => {
+  return `${SIGNO_VITALES}imprimir-reporte-semanal/${week}/${pacienteId}/`;
+};
 
 export const urlRegistrarSignoVital = `signos-vitales/registrar/`;
 export const urlGetSignos = (fecha: any, paciente: any) => {
@@ -133,4 +143,4 @@ export const urlDeleteSeguimientoEnfermeria = urlUpdateSeguimientoEnfermeria;
  *
  */
 export const urlCreateOrUpdateTratamientoInicial = (idFicha: string) => `${TRATAMIENTOS}crear-o-editar/${idFicha}/`;
-export const urlGetTratamientoInicial = (idFicha: string) => `${TRATAMIENTOS}inicial-por-id-ficha/${idFicha}/`;
+export const urlGetTratamientoInicial = (idFicha: string) => `${TRATAMIENTOS}base/${idFicha}/`;
