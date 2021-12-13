@@ -155,7 +155,7 @@ const Medicamentos: React.FC<MedicamentosProps> = (props) => {
             body={(rowData) =>
               rowData?.horas?.map((hora) => (
                 <div className="d-flex flex-column" key={`${rowData.uuid}-${hora}`}>
-                  <strong className="">{hora}</strong>
+                  <strong>{hora}</strong>
                 </div>
               ))
             }
