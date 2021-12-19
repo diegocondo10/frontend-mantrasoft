@@ -165,7 +165,7 @@ const DetallePacienteItem = ({ paciente, index }) => {
       setLoadingTension(true);
       formData.tipo = 3;
       formData.hora = moment().format('HH:mm');
-      formData.fecha = formatearFechaBackend(router.query.startDate);
+      formData.fecha = router.query.startDate;
       formData.idPaciente = paciente.id;
       await API.private().post(urlRegistrarSignoVital, formData);
       const res = await API.private().get(urlGetTensionArterial(router.query.startDate, paciente.id));
