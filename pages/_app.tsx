@@ -1,11 +1,9 @@
-import { ApolloProvider } from '@apollo/client';
-import client from '@src/services/client';
 import '@styles/index.scss';
 import moment from 'moment';
 import 'moment/locale/es';
 import { AppProps } from 'next/dist/shared/lib/router/router';
 import { addLocale, locale } from 'primereact/api';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { defaults } from 'react-sweet-state';
 import { ToastProvider } from 'react-toast-notifications';
@@ -51,11 +49,9 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Hydratation>
       <QueryClientProvider client={queryClient}>
-        <ApolloProvider client={client}>
-          <ToastProvider autoDismiss autoDismissTimeout={10000} placement="top-left">
-            <Component {...pageProps} />
-          </ToastProvider>
-        </ApolloProvider>
+        <ToastProvider autoDismiss autoDismissTimeout={10000} placement="top-left">
+          <Component {...pageProps} />
+        </ToastProvider>
       </QueryClientProvider>
     </Hydratation>
   );
