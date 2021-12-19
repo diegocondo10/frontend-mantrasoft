@@ -1,18 +1,23 @@
 import Button from '@src/components/Button';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
+import NumberInput from '@src/components/Forms/NumberInput';
+import RenderField from '@src/components/Forms/RenderField';
 import TextArea from '@src/components/Forms/TextArea';
 import TextInput from '@src/components/Forms/TextInput';
+import Modal from '@src/components/Modal';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import API from '@src/services/api';
 import {
   urlCreateSeguimientoEnfermeria,
   urlDeleteSeguimientoEnfermeria,
   urlGetSignos,
+  urlGetTensionArterial,
   urlRegistrarSignoVital,
   urlSeguimientosPacienteHorarios,
   urlUpdateSeguimientoEnfermeria,
 } from '@src/services/urls';
 import useUsuario from '@src/store/usuario/useUsuario';
+import { formatearFechaBackend } from '@src/utils/date';
 import _ from 'lodash';
 import moment from 'moment';
 import router from 'next/router';
@@ -21,7 +26,7 @@ import { Column } from 'primereact/column';
 import { confirmPopup } from 'primereact/confirmpopup';
 import { DataTable } from 'primereact/datatable';
 import React, { CSSProperties, useState } from 'react';
-import { Accordion, Modal } from 'react-bootstrap';
+import { Accordion } from 'react-bootstrap';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 
@@ -52,16 +57,20 @@ const PM_VALIDATION = (value) => {
 const DetallePacienteItem = ({ paciente, index }) => {
   const { usuario } = useUsuario();
   const [data, setData] = useState([]);
-  const [tratamiento, setTratamiento] = useState<any>({});
+
   const [showModal, setShowModal] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [id, setId] = useState(null);
   const methods = useForm({ mode: 'onChange' });
+  const methodsTension = useForm({ mode: 'onChange' });
 
   const [loadingAm1, setLoadingAm1] = useState(false);
   const [loadingAm2, setLoadingAm2] = useState(false);
   const [loadingPm1, setLoadingPm1] = useState(false);
   const [loadingPm2, setLoadingPm2] = useState(false);
+
+  const [showTension, setShowTension] = useState(false);
+  const [loadingTension, setLoadingTension] = useState(false);
 
   const loading = {
     'AM-1': loadingAm1,
@@ -93,50 +102,22 @@ const DetallePacienteItem = ({ paciente, index }) => {
       enabled: false,
       onSuccess: (res) => {
         setData(res?.data?.seguimientos);
-        setTratamiento(res?.data?.tratamiento);
       },
     },
   );
 
-  const header = (
-    <div className="d-flex flex-row justify-content-between flex-wrap">
-      <span className="p-buttonset">
-        <Button
-          icon={PrimeIcons.PLUS}
-          outlined
-          sm
-          label="Registrar anomalia"
-          onClick={() => {
-            methods.setValue('tipo', 'ANOMALIA');
-            setShowModal(true);
-          }}
-        />
-        <Button
-          icon={PrimeIcons.PLUS}
-          outlined
-          sm
-          label="Registrar observación"
-          onClick={() => {
-            methods.setValue('tipo', 'OBSERVACIÓN');
-            setShowModal(true);
-          }}
-        />
-      </span>
-      <Button
-        icon={PrimeIcons.PLUS}
-        label="Registrar Signos Vitales"
-        sm
-        outlined
-        onClick={async () => {
-          setShowModalSignos(true);
-          const res = await API.private().get(urlGetSignos(router.query.startDate, paciente.id));
-          Object.entries(res?.data).forEach(([key, value]) => {
-            methodsSignoVitales[key].reset({ [key]: value } || {});
-          });
-        }}
-      />
-    </div>
-  );
+  const onClickShowTension = async () => {
+    setLoadingTension(true);
+
+    try {
+      const res = await API.private().get(urlGetTensionArterial(router.query.startDate, paciente.id));
+      methodsTension.reset(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+    setShowTension(true);
+    setLoadingTension(false);
+  };
 
   const onSubmit = async (formData) => {
     setGuardando(true);
@@ -179,6 +160,68 @@ const DetallePacienteItem = ({ paciente, index }) => {
     setLoading[tipo](false);
   };
 
+  const onSubmitTension = async (formData) => {
+    try {
+      setLoadingTension(true);
+      formData.tipo = 3;
+      formData.hora = moment().format('HH:mm');
+      formData.fecha = formatearFechaBackend();
+      formData.idPaciente = paciente.id;
+      await API.private().post(urlRegistrarSignoVital, formData);
+      const res = await API.private().get(urlGetTensionArterial(router.query.startDate, paciente.id));
+      methodsTension.reset(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+    setLoadingTension(false);
+  };
+  const header = (
+    <div className="d-flex flex-row justify-content-between flex-wrap">
+      <span className="">
+        <Button
+          icon={PrimeIcons.PLUS}
+          outlined
+          sm
+          label="Registrar anomalia"
+          onClick={() => {
+            methods.setValue('tipo', 'ANOMALIA');
+            setShowModal(true);
+          }}
+        />
+        <Button
+          icon={PrimeIcons.PLUS}
+          outlined
+          sm
+          label="Registrar observación"
+          onClick={() => {
+            methods.setValue('tipo', 'OBSERVACIÓN');
+            setShowModal(true);
+          }}
+        />
+      </span>
+      <Button
+        label="Registrar tensión arterial"
+        outlined
+        sm
+        icon={PrimeIcons.PLUS}
+        onClick={onClickShowTension}
+        loading={loadingTension}
+      />
+      <Button
+        icon={PrimeIcons.PLUS}
+        label="Registrar Signos Vitales"
+        sm
+        outlined
+        onClick={async () => {
+          setShowModalSignos(true);
+          const res = await API.private().get(urlGetSignos(router.query.startDate, paciente.id));
+          Object.entries(res?.data).forEach(([key, value]) => {
+            methodsSignoVitales[key].reset({ [key]: value } || {});
+          });
+        }}
+      />
+    </div>
+  );
   return (
     <Accordion.Item eventKey={`${index}-${paciente.id}-${paciente.idHorario}`}>
       <Accordion.Header
@@ -205,6 +248,7 @@ const DetallePacienteItem = ({ paciente, index }) => {
                 rowsPerPageOptions={[20, 30, 50, 100]}
                 sortMode="multiple"
                 header={header}
+                responsiveLayout="scroll"
               >
                 {ColumnaNo({ width: '80px' })}
                 <Column
@@ -292,53 +336,54 @@ const DetallePacienteItem = ({ paciente, index }) => {
         </div>
 
         <Modal
-          centered
           show={showModal}
           onHide={() => {
             methods.reset({});
             setId(null);
             setShowModal(false);
           }}
+          modal={{
+            centered: true,
+            size: 'sm',
+          }}
+          header={{
+            closeButton: !guardando,
+            title: 'Formulario',
+          }}
+          body={{ className: 'container-fluid' }}
         >
           <FormProvider {...methods}>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
-              <Modal.Header closeButton={!guardando}>
-                <Modal.Title>Formulario</Modal.Title>
-              </Modal.Header>
-              <Modal.Body className="container-fluid">
-                <div className="row">
-                  <div className="col-12">
-                    <Controller
-                      name="tipo"
-                      render={({ field: { value } }) => (
-                        <p>
-                          Registrando: <strong>{value}</strong>
-                        </p>
-                      )}
-                    />
-                  </div>
-                  <div className="col-12">
-                    <label htmlFor="observaciones">Observaciones</label>
-                    <TextArea
-                      block
-                      controller={{ name: 'observaciones', rules: { required: 'Este campo es obligatorio' } }}
-                      rows={10}
-                      disabled={guardando}
-                    />
-                    <ErrorMessage name="observaciones" />
-                  </div>
+              <div className="row">
+                <div className="col-12">
+                  <Controller
+                    name="tipo"
+                    render={({ field: { value } }) => (
+                      <p>
+                        Registrando: <strong>{value}</strong>
+                      </p>
+                    )}
+                  />
                 </div>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button label="Guardar" icon={PrimeIcons.SAVE} outlined type="submit" loading={guardando} />
-              </Modal.Footer>
+                <div className="col-12">
+                  <label htmlFor="observaciones">Observaciones</label>
+                  <TextArea
+                    block
+                    controller={{ name: 'observaciones', rules: { required: 'Este campo es obligatorio' } }}
+                    rows={10}
+                    disabled={guardando}
+                  />
+                  <ErrorMessage name="observaciones" />
+                </div>
+              </div>
+
+              <Button label="Guardar" icon={PrimeIcons.SAVE} outlined type="submit" loading={guardando} />
             </form>
           </FormProvider>
         </Modal>
 
         <Modal
           show={showModalSignos}
-          centered
           onHide={() => {
             methodsSignoVitales['AM-1'].reset({});
             methodsSignoVitales['AM-2'].reset({});
@@ -346,211 +391,237 @@ const DetallePacienteItem = ({ paciente, index }) => {
             methodsSignoVitales['PM-2'].reset({});
             setShowModalSignos(false);
           }}
+          header={{ closeButton: true, title: 'Registro de signos vitales' }}
         >
-          <Modal.Header closeButton>
-            <Modal.Title>Registro de signos vitales</Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="container-fluid">
-            <h3 className="text-center">Mañana(AM)</h3>
-            <FormProvider {...methodsSignoVitales['AM-1']}>
-              <div className="row">
-                <Controller
-                  name="AM-1.id"
-                  defaultValue={null}
-                  render={({ field: { value } }) =>
-                    value ? <strong className="text-center text-success">Registrado</strong> : null
-                  }
-                />
-                <div className="col-4">
-                  <label htmlFor="AM-1.hora">Hora</label>
-                  <span className="p-inputgroup">
-                    <TextInput
-                      controller={{
-                        name: 'AM-1.hora',
-                        defaultValue: moment().format('HH:mm'),
-                        rules: { validate: AM_VALIDATION },
-                      }}
-                      type="time"
-                      block
-                    />
-                  </span>
-                  <ErrorMessage name="AM-1.hora" />
-                </div>
-                <div className="col-4">
-                  <label htmlFor="AM-1.valor">Pulso</label>
+          <h3 className="text-center">Mañana(AM)</h3>
+          <FormProvider {...methodsSignoVitales['AM-1']}>
+            <div className="row">
+              <RenderField
+                name="AM-1.id"
+                defaultValue={null}
+                render={() => <strong className="text-center text-success">Registrado</strong>}
+              />
+              <div className="col-4">
+                <label htmlFor="AM-1.hora">Hora</label>
+                <span className="p-inputgroup">
                   <TextInput
-                    controller={{ name: 'AM-1.valor', defaultValue: 50 }}
-                    type="number"
+                    controller={{
+                      name: 'AM-1.hora',
+                      defaultValue: moment().format('HH:mm'),
+                      rules: { validate: AM_VALIDATION },
+                    }}
+                    type="time"
                     block
-                    keyfilter="int"
-                    min={0}
-                    max={200}
                   />
-                </div>
-                <div className="col-4">
-                  <Button
-                    icon={PrimeIcons.SAVE}
-                    outlined
-                    className="mt-label"
-                    label="Guardar"
-                    block
-                    type="button"
-                    loading={loading['AM-1']}
-                    onClick={methodsSignoVitales['AM-1'].handleSubmit(onSubmitSigno('AM-1'))}
-                  />
-                </div>
+                </span>
+                <ErrorMessage name="AM-1.hora" />
               </div>
-            </FormProvider>
-            <FormProvider {...methodsSignoVitales['AM-2']}>
-              <div className="row">
-                <Controller
-                  name="AM-2.id"
-                  defaultValue={null}
-                  render={({ field: { value } }) =>
-                    value ? <strong className="text-center text-success">Registrado</strong> : null
-                  }
+              <div className="col-4">
+                <label htmlFor="AM-1.valor">Pulso</label>
+                <TextInput
+                  controller={{ name: 'AM-1.valor', defaultValue: 50 }}
+                  type="number"
+                  block
+                  keyfilter="int"
+                  min={0}
+                  max={200}
                 />
-                <div className="col-4">
-                  <label htmlFor="AM-2.hora">Hora</label>
-                  <span className="p-inputgroup">
-                    <TextInput
-                      controller={{
-                        name: 'AM-2.hora',
-                        defaultValue: moment().format('HH:mm'),
-                        rules: { validate: AM_VALIDATION },
-                      }}
-                      type="time"
-                      block
-                    />
-                  </span>
-                  <ErrorMessage name="AM-2.hora" />
-                </div>
-                <div className="col-4">
-                  <label htmlFor="AM-2.valor">Temperatura</label>
-                  <TextInput
-                    controller={{ name: 'AM-2.valor', defaultValue: 30 }}
-                    type="number"
-                    block
-                    keyfilter="int"
-                    min={0}
-                    max={80}
-                  />
-                </div>
-                <div className="col-4">
-                  <Button
-                    icon={PrimeIcons.SAVE}
-                    outlined
-                    className="mt-label"
-                    label="Guardar"
-                    block
-                    type="button"
-                    loading={loading['AM-2']}
-                    onClick={methodsSignoVitales['AM-2'].handleSubmit(onSubmitSigno('AM-2'))}
-                  />
-                </div>
               </div>
-            </FormProvider>
-            <hr />
-            <h3 className="text-center">Tarde(PM)</h3>
-            <FormProvider {...methodsSignoVitales['PM-1']}>
-              <div className="row">
-                <Controller
-                  name="PM-1.id"
-                  defaultValue={null}
-                  render={({ field: { value } }) =>
-                    value ? <strong className="text-center text-success">Registrado</strong> : null
-                  }
+              <div className="col-4">
+                <Button
+                  icon={PrimeIcons.SAVE}
+                  outlined
+                  className="mt-label"
+                  label="Guardar"
+                  block
+                  type="button"
+                  loading={loading['AM-1']}
+                  onClick={methodsSignoVitales['AM-1'].handleSubmit(onSubmitSigno('AM-1'))}
                 />
-                <div className="col-4">
-                  <label htmlFor="PM-1.hora">Hora</label>
-                  <span className="p-inputgroup">
-                    <TextInput
-                      controller={{
-                        name: 'PM-1.hora',
-                        defaultValue: moment().format('HH:mm'),
-                        rules: { validate: PM_VALIDATION },
-                      }}
-                      type="time"
-                      block
-                    />
-                  </span>
-                  <ErrorMessage name="PM-1.hora" />
-                </div>
-                <div className="col-4">
-                  <label htmlFor="PM-1.valor">Pulso</label>
-                  <TextInput
-                    controller={{ name: 'PM-1.valor', defaultValue: 50 }}
-                    type="number"
-                    block
-                    keyfilter="int"
-                    min={0}
-                    max={200}
-                  />
-                </div>
-                <div className="col-4">
-                  <Button
-                    icon={PrimeIcons.SAVE}
-                    outlined
-                    className="mt-label"
-                    label="Guardar"
-                    block
-                    type="button"
-                    loading={loading['PM-1']}
-                    onClick={methodsSignoVitales['PM-1'].handleSubmit(onSubmitSigno('PM-1'))}
-                  />
-                </div>
               </div>
-            </FormProvider>
-            <FormProvider {...methodsSignoVitales['PM-2']}>
-              <div className="row">
-                <Controller
-                  name="PM-2.id"
-                  defaultValue={null}
-                  render={({ field: { value } }) =>
-                    value ? <strong className="text-center text-success">Registrado</strong> : null
-                  }
+            </div>
+          </FormProvider>
+          <FormProvider {...methodsSignoVitales['AM-2']}>
+            <div className="row">
+              <RenderField
+                name="AM-2.id"
+                defaultValue={null}
+                render={() => <strong className="text-center text-success">Registrado</strong>}
+              />
+              <div className="col-4">
+                <label htmlFor="AM-2.hora">Hora</label>
+                <span className="p-inputgroup">
+                  <TextInput
+                    controller={{
+                      name: 'AM-2.hora',
+                      defaultValue: moment().format('HH:mm'),
+                      rules: { validate: AM_VALIDATION },
+                    }}
+                    type="time"
+                    block
+                  />
+                </span>
+                <ErrorMessage name="AM-2.hora" />
+              </div>
+              <div className="col-4">
+                <label htmlFor="AM-2.valor">Temperatura</label>
+                <TextInput
+                  controller={{ name: 'AM-2.valor', defaultValue: 30 }}
+                  type="number"
+                  block
+                  keyfilter="int"
+                  min={0}
+                  max={80}
                 />
-                <div className="col-4">
-                  <label htmlFor="PM-2.hora">Hora</label>
-                  <span className="p-inputgroup">
-                    <TextInput
-                      controller={{
-                        name: 'PM-2.hora',
-                        defaultValue: moment().format('HH:mm'),
-                        rules: { validate: PM_VALIDATION },
-                      }}
-                      type="time"
-                      block
-                    />
-                  </span>
-                  <ErrorMessage name="PM-2.hora" />
-                </div>
-                <div className="col-4">
-                  <label htmlFor="PM-2.valor">Temperatura</label>
-                  <TextInput
-                    controller={{ name: 'PM-2.valor', defaultValue: 30 }}
-                    type="number"
-                    block
-                    keyfilter="pint"
-                    min={0}
-                    max={80}
-                  />
-                </div>
-                <div className="col-4">
-                  <Button
-                    icon={PrimeIcons.SAVE}
-                    outlined
-                    className="mt-label"
-                    label="Guardar"
-                    block
-                    type="button"
-                    loading={loading['PM-2']}
-                    onClick={methodsSignoVitales['PM-2'].handleSubmit(onSubmitSigno('PM-2'))}
-                  />
-                </div>
               </div>
-            </FormProvider>
-          </Modal.Body>
+              <div className="col-4">
+                <Button
+                  icon={PrimeIcons.SAVE}
+                  outlined
+                  className="mt-label"
+                  label="Guardar"
+                  block
+                  type="button"
+                  loading={loading['AM-2']}
+                  onClick={methodsSignoVitales['AM-2'].handleSubmit(onSubmitSigno('AM-2'))}
+                />
+              </div>
+            </div>
+          </FormProvider>
+          <hr />
+          <h3 className="text-center">Tarde(PM)</h3>
+          <FormProvider {...methodsSignoVitales['PM-1']}>
+            <div className="row">
+              <RenderField
+                name="PM-1.id"
+                defaultValue={null}
+                render={() => <strong className="text-center text-success">Registrado</strong>}
+              />
+              <div className="col-4">
+                <label htmlFor="PM-1.hora">Hora</label>
+                <span className="p-inputgroup">
+                  <TextInput
+                    controller={{
+                      name: 'PM-1.hora',
+                      defaultValue: moment().format('HH:mm'),
+                      rules: { validate: PM_VALIDATION },
+                    }}
+                    type="time"
+                    block
+                  />
+                </span>
+                <ErrorMessage name="PM-1.hora" />
+              </div>
+              <div className="col-4">
+                <label htmlFor="PM-1.valor">Pulso</label>
+                <TextInput
+                  controller={{ name: 'PM-1.valor', defaultValue: 50 }}
+                  type="number"
+                  block
+                  keyfilter="int"
+                  min={0}
+                  max={200}
+                />
+              </div>
+              <div className="col-4">
+                <Button
+                  icon={PrimeIcons.SAVE}
+                  outlined
+                  className="mt-label"
+                  label="Guardar"
+                  block
+                  type="button"
+                  loading={loading['PM-1']}
+                  onClick={methodsSignoVitales['PM-1'].handleSubmit(onSubmitSigno('PM-1'))}
+                />
+              </div>
+            </div>
+          </FormProvider>
+          <FormProvider {...methodsSignoVitales['PM-2']}>
+            <div className="row">
+              <RenderField
+                name="PM-2.id"
+                defaultValue={null}
+                render={() => <strong className="text-center text-success">Registrado</strong>}
+              />
+              <div className="col-4">
+                <label htmlFor="PM-2.hora">Hora</label>
+                <span className="p-inputgroup">
+                  <TextInput
+                    controller={{
+                      name: 'PM-2.hora',
+                      defaultValue: moment().format('HH:mm'),
+                      rules: { validate: PM_VALIDATION },
+                    }}
+                    type="time"
+                    block
+                  />
+                </span>
+                <ErrorMessage name="PM-2.hora" />
+              </div>
+              <div className="col-4">
+                <label htmlFor="PM-2.valor">Temperatura</label>
+                <TextInput
+                  controller={{ name: 'PM-2.valor', defaultValue: 30 }}
+                  type="number"
+                  block
+                  keyfilter="pint"
+                  min={0}
+                  max={80}
+                />
+              </div>
+              <div className="col-4">
+                <Button
+                  icon={PrimeIcons.SAVE}
+                  outlined
+                  className="mt-label"
+                  label="Guardar"
+                  block
+                  type="button"
+                  loading={loading['PM-2']}
+                  onClick={methodsSignoVitales['PM-2'].handleSubmit(onSubmitSigno('PM-2'))}
+                />
+              </div>
+            </div>
+          </FormProvider>
+        </Modal>
+
+        <Modal
+          show={showTension}
+          onHide={() => {
+            methodsTension.resetField('valor');
+            setShowTension(false);
+          }}
+          modal={{ size: 'sm', centered: true }}
+          header={{ title: 'Tensión arterial', closeButton: !loadingTension }}
+          body={{ className: 'text-center' }}
+        >
+          <FormProvider {...methodsTension}>
+            <form onSubmit={methodsTension.handleSubmit(onSubmitTension)}>
+              <label htmlFor="valor" className="w-100">
+                Ingrese la tensión arterial
+              </label>
+              <RenderField
+                name="id"
+                defaultValue={null}
+                render={() => <strong className="text-center text-success w-100">Registrado</strong>}
+                renderIfNotValue={() => <strong className="text-center text-danger w-100">Sin Registrar</strong>}
+              />
+              <div className="w-full my-3">
+                <NumberInput
+                  block
+                  controller={{ name: 'valor', rules: { required: 'Este campo es obligatorio', min: 0, max: 100 } }}
+                  min={0}
+                  max={100}
+                  autoFocus
+                  showButtons
+                  useGrouping={false}
+                />
+                <ErrorMessage name="valor" />
+              </div>
+              <Button icon={PrimeIcons.SAVE} type="submit" label="Guardar" block outlined sm loading={loadingTension} />
+            </form>
+          </FormProvider>
         </Modal>
       </Accordion.Body>
     </Accordion.Item>

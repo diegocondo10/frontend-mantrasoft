@@ -1295,14 +1295,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                               <th style={{ width: '50px' }}>D</th>
                               <th>CIE</th>
                               <th>OPCIONES</th>
-                              <th></th>
+                              <th>
+                                <i className={PrimeIcons.TRASH} />
+                              </th>
                             </tr>
                           </thead>
                           <tbody>
                             {value?.map((item, index) => (
                               <tr key={item.uuid}>
-                                <td className="text-center font-bold">{index + 1}</td>
-                                <td>
+                                <td className="text-center font-bold align-vertical-middle p-0 m-0">{index + 1}</td>
+                                <td className="align-vertical-middle p-0 m-0">
                                   <input
                                     className="w-100 form-control"
                                     type="text"
@@ -1315,7 +1317,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                                     }}
                                   />
                                 </td>
-                                <td className="text-center">
+                                <td className="text-center align-vertical-middle p-0 m-0">
                                   <input
                                     type="checkbox"
                                     name={`estado.${index}`}
@@ -1329,7 +1331,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                                     }}
                                   />
                                 </td>
-                                <td className="text-center">
+                                <td className="text-center align-vertical-middle p-0 m-0">
                                   <input
                                     type="checkbox"
                                     className="w-100 form-check"
@@ -1343,7 +1345,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                                     }}
                                   />
                                 </td>
-                                <td>
+                                <td className="align-vertical-middle p-0 m-0">
                                   <input
                                     className="w-100 form-control"
                                     type="text"
@@ -1356,7 +1358,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                                     }}
                                   />
                                 </td>
-                                <td>
+                                <td className="align-vertical-middle p-0 m-0">
                                   <select
                                     className="w-100 form-control"
                                     value={item.opcion}
@@ -1375,12 +1377,13 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                                     <option value="NUTRICIONAL">NUTRICIONAL</option>
                                   </select>
                                 </td>
-                                <td style={{ width: '50px' }}>
+                                <td className="align-vertical-middle p-0 m-0 text-center" style={{ width: '50px' }}>
                                   <Button
                                     icon={PrimeIcons.TRASH}
                                     sm
                                     outlined
                                     rounded
+                                    text
                                     onClick={() => onChange(value.filter((option) => option.uuid !== item.uuid))}
                                   />
                                 </td>

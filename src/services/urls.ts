@@ -81,6 +81,9 @@ export const urlRegistrarSignoVital = `signos-vitales/registrar/`;
 export const urlGetSignos = (fecha: any, paciente: any) => {
   return `signos-vitales/get-signos/${fecha}/${paciente}/`;
 };
+export const urlGetTensionArterial = (fecha: any, paciente: any) => {
+  return `signos-vitales/tension-arterial/${fecha}/${paciente}/`;
+};
 
 //PERTENENCIAS
 export const urlListarPertenencias = (id: any) => `${PERTENENECIAS}?id_registro=${id}`;
