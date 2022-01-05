@@ -53,4 +53,13 @@ Home.getInitialProps = ({ query }) => {
     today,
   };
 };
+
+Home.help = {
+  title: 'AYUDA',
+  content: (
+    <React.Fragment>
+      <h3>Preguntas frecuentes</h3>
+    </React.Fragment>
+  ),
+};
 export default Home;

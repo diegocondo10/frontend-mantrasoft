@@ -11,13 +11,12 @@ import {
   urlCreateSeguimientoEnfermeria,
   urlDeleteSeguimientoEnfermeria,
   urlGetSignos,
-  urlGetTensionArterial,
+  urlGetSignoVital,
   urlRegistrarSignoVital,
   urlSeguimientosPacienteHorarios,
   urlUpdateSeguimientoEnfermeria,
 } from '@src/services/urls';
 import useUsuario from '@src/store/usuario/useUsuario';
-import { formatearFechaBackend } from '@src/utils/date';
 import _ from 'lodash';
 import moment from 'moment';
 import router from 'next/router';
@@ -29,6 +28,7 @@ import React, { CSSProperties, useState } from 'react';
 import { Accordion } from 'react-bootstrap';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
+import ModalRespiracion from './components/ModalRespiracion';
 
 const TIME_FORMAT = 'HH:mm';
 const AM_VALIDATION = (value) => {
@@ -110,7 +110,7 @@ const DetallePacienteItem = ({ paciente, index }) => {
     setLoadingTension(true);
 
     try {
-      const res = await API.private().get(urlGetTensionArterial(router.query.startDate, paciente.id));
+      const res = await API.private().get(urlGetSignoVital(router.query.startDate, paciente.id, 3));
       methodsTension.reset(res.data);
     } catch (error) {
       console.log(error);
@@ -168,7 +168,7 @@ const DetallePacienteItem = ({ paciente, index }) => {
       formData.fecha = router.query.startDate;
       formData.idPaciente = paciente.id;
       await API.private().post(urlRegistrarSignoVital, formData);
-      const res = await API.private().get(urlGetTensionArterial(router.query.startDate, paciente.id));
+      const res = await API.private().get(urlGetSignoVital(router.query.startDate, paciente.id, 3));
       methodsTension.reset(res.data);
     } catch (error) {
       console.log(error);
@@ -177,28 +177,27 @@ const DetallePacienteItem = ({ paciente, index }) => {
   };
   const header = (
     <div className="d-flex flex-row justify-content-between flex-wrap">
-      <span className="">
-        <Button
-          icon={PrimeIcons.PLUS}
-          outlined
-          sm
-          label="Registrar anomalia"
-          onClick={() => {
-            methods.setValue('tipo', 'ANOMALIA');
-            setShowModal(true);
-          }}
-        />
-        <Button
-          icon={PrimeIcons.PLUS}
-          outlined
-          sm
-          label="Registrar observación"
-          onClick={() => {
-            methods.setValue('tipo', 'OBSERVACIÓN');
-            setShowModal(true);
-          }}
-        />
-      </span>
+      <Button
+        icon={PrimeIcons.PLUS}
+        outlined
+        sm
+        label="Registrar anomalia"
+        onClick={() => {
+          methods.setValue('tipo', 'ANOMALIA');
+          setShowModal(true);
+        }}
+      />
+      <Button
+        icon={PrimeIcons.PLUS}
+        outlined
+        sm
+        label="Registrar observación"
+        onClick={() => {
+          methods.setValue('tipo', 'OBSERVACIÓN');
+          setShowModal(true);
+        }}
+      />
+
       <Button
         label="Registrar tensión arterial"
         outlined
@@ -207,6 +206,7 @@ const DetallePacienteItem = ({ paciente, index }) => {
         onClick={onClickShowTension}
         loading={loadingTension}
       />
+      <ModalRespiracion paciente={paciente} />
       <Button
         icon={PrimeIcons.PLUS}
         label="Registrar Signos Vitales"

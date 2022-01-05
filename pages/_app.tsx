@@ -1,3 +1,4 @@
+import HelpButton from '@src/components/HelpButton';
 import '@styles/index.scss';
 import moment from 'moment';
 import 'moment/locale/es';
@@ -45,7 +46,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     setLocale();
     defaults.devtools = true;
   }, []);
-
+  console.log(Component?.help);
   return (
     <Hydratation>
       <QueryClientProvider client={queryClient}>
@@ -53,6 +54,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </ToastProvider>
       </QueryClientProvider>
+      {Component?.help && <HelpButton title={Component.help?.title} content={Component?.help?.content} />}
     </Hydratation>
   );
 }
