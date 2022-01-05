@@ -46,7 +46,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     setLocale();
     defaults.devtools = true;
   }, []);
-  console.log(Component?.help);
+
   return (
     <Hydratation>
       <QueryClientProvider client={queryClient}>

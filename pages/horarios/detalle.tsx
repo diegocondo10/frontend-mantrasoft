@@ -5,6 +5,7 @@ import API from '@src/services/api';
 import { urlDetalleHorario } from '@src/services/urls';
 import moment from 'moment';
 import { NextPage } from 'next';
+import Router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import React, { useMemo, useRef } from 'react';
 import { useQuery } from 'react-query';
@@ -81,5 +82,8 @@ const DetalleHorarioPage: NextPage<any> = ({ id, startDate, endDate }) => {
 };
 
 DetalleHorarioPage.getInitialProps = ({ query }) => query as any;
-
+DetalleHorarioPage.help = {
+  title: 'Detalle del horario',
+  content: <React.Fragment></React.Fragment>,
+};
 export default DetalleHorarioPage;
