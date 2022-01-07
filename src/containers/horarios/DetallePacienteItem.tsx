@@ -1,6 +1,5 @@
 import Button from '@src/components/Button';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
-import NumberInput from '@src/components/Forms/NumberInput';
 import RenderField from '@src/components/Forms/RenderField';
 import TextArea from '@src/components/Forms/TextArea';
 import TextInput from '@src/components/Forms/TextInput';
@@ -11,7 +10,6 @@ import {
   urlCreateSeguimientoEnfermeria,
   urlDeleteSeguimientoEnfermeria,
   urlGetSignos,
-  urlGetSignoVital,
   urlRegistrarSignoVital,
   urlSeguimientosPacienteHorarios,
   urlUpdateSeguimientoEnfermeria,
@@ -19,7 +17,6 @@ import {
 import useUsuario from '@src/store/usuario/useUsuario';
 import _ from 'lodash';
 import moment from 'moment';
-import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { confirmPopup } from 'primereact/confirmpopup';
@@ -28,7 +25,7 @@ import React, { CSSProperties, useState } from 'react';
 import { Accordion } from 'react-bootstrap';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
-import ModalRespiracion from './components/ModalRespiracion';
+import ModalSigno from './components/ModalSigno';
 
 const TIME_FORMAT = 'HH:mm';
 const AM_VALIDATION = (value) => {
@@ -62,15 +59,11 @@ const DetallePacienteItem = ({ paciente, index }) => {
   const [guardando, setGuardando] = useState(false);
   const [id, setId] = useState(null);
   const methods = useForm({ mode: 'onChange' });
-  const methodsTension = useForm({ mode: 'onChange' });
 
   const [loadingAm1, setLoadingAm1] = useState(false);
   const [loadingAm2, setLoadingAm2] = useState(false);
   const [loadingPm1, setLoadingPm1] = useState(false);
   const [loadingPm2, setLoadingPm2] = useState(false);
-
-  const [showTension, setShowTension] = useState(false);
-  const [loadingTension, setLoadingTension] = useState(false);
 
   const loading = {
     'AM-1': loadingAm1,
@@ -106,19 +99,6 @@ const DetallePacienteItem = ({ paciente, index }) => {
     },
   );
 
-  const onClickShowTension = async () => {
-    setLoadingTension(true);
-
-    try {
-      const res = await API.private().get(urlGetSignoVital(router.query.startDate, paciente.id, 3));
-      methodsTension.reset(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-    setShowTension(true);
-    setLoadingTension(false);
-  };
-
   const onSubmit = async (formData) => {
     setGuardando(true);
     try {
@@ -144,13 +124,13 @@ const DetallePacienteItem = ({ paciente, index }) => {
     try {
       setLoading[tipo](true);
       const body = {
-        fecha: router.query.startDate,
+        fecha: paciente.fecha,
         tipo: +tipo.split('-')[1],
         idPaciente: paciente.id,
         ...formData[tipo],
       };
       await API.private().post(urlRegistrarSignoVital, body);
-      const res = await API.private().get(urlGetSignos(router.query.startDate, paciente.id));
+      const res = await API.private().get(urlGetSignos(paciente.fecha, paciente.id));
       Object.entries(res?.data).forEach(([key, value]) => {
         methodsSignoVitales[key].reset({ [key]: value } || {});
       });
@@ -160,21 +140,6 @@ const DetallePacienteItem = ({ paciente, index }) => {
     setLoading[tipo](false);
   };
 
-  const onSubmitTension = async (formData) => {
-    try {
-      setLoadingTension(true);
-      formData.tipo = 3;
-      formData.hora = moment().format('HH:mm');
-      formData.fecha = router.query.startDate;
-      formData.idPaciente = paciente.id;
-      await API.private().post(urlRegistrarSignoVital, formData);
-      const res = await API.private().get(urlGetSignoVital(router.query.startDate, paciente.id, 3));
-      methodsTension.reset(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-    setLoadingTension(false);
-  };
   const header = (
     <div className="d-flex flex-row justify-content-between flex-wrap">
       <Button
@@ -198,23 +163,50 @@ const DetallePacienteItem = ({ paciente, index }) => {
         }}
       />
 
-      <Button
-        label="Registrar tensión arterial"
-        outlined
-        sm
-        icon={PrimeIcons.PLUS}
-        onClick={onClickShowTension}
-        loading={loadingTension}
+      <ModalSigno
+        modalTitle="Tensión arterial"
+        title="Ingrese la tensión arterial"
+        buttonLabel="Tensión arterial"
+        paciente={paciente}
+        tipo={3}
       />
-      <ModalRespiracion paciente={paciente} />
+      <ModalSigno
+        modalTitle="Respiración"
+        title="Ingrese la respiración"
+        buttonLabel="Respiración"
+        paciente={paciente}
+        tipo={4}
+      />
+      <ModalSigno
+        modalTitle="Número de deposiciones"
+        title="Ingrese el número"
+        buttonLabel="Número de deposiciones"
+        paciente={paciente}
+        tipo={5}
+      />
+      <ModalSigno
+        modalTitle="Número de comidas"
+        title="Ingrese el número"
+        buttonLabel="Número de comidas"
+        paciente={paciente}
+        tipo={6}
+      />
+      <ModalSigno
+        modalTitle="Peso"
+        title="Registrar el peso en (Kg)"
+        buttonLabel="Peso"
+        paciente={paciente}
+        tipo={7}
+        max={300}
+      />
       <Button
         icon={PrimeIcons.PLUS}
-        label="Registrar Signos Vitales"
+        label="Pulso/Temperatura"
         sm
         outlined
         onClick={async () => {
           setShowModalSignos(true);
-          const res = await API.private().get(urlGetSignos(router.query.startDate, paciente.id));
+          const res = await API.private().get(urlGetSignos(paciente.fecha, paciente.id));
           Object.entries(res?.data).forEach(([key, value]) => {
             methodsSignoVitales[key].reset({ [key]: value } || {});
           });
@@ -232,9 +224,9 @@ const DetallePacienteItem = ({ paciente, index }) => {
         {paciente?.str}
       </Accordion.Header>
       <Accordion.Body className="p-0 m-0">
-        <div className="container-fluid">
+        <div className="container-fluid p-0">
           <div className="row">
-            <div className="col-12">
+            <div className="col-12 py-0">
               <DataTable
                 // lazy
                 loading={query.isFetching}
@@ -583,44 +575,6 @@ const DetallePacienteItem = ({ paciente, index }) => {
                 />
               </div>
             </div>
-          </FormProvider>
-        </Modal>
-
-        <Modal
-          show={showTension}
-          onHide={() => {
-            methodsTension.resetField('valor');
-            setShowTension(false);
-          }}
-          modal={{ size: 'sm', centered: true }}
-          header={{ title: 'Tensión arterial', closeButton: !loadingTension }}
-          body={{ className: 'text-center' }}
-        >
-          <FormProvider {...methodsTension}>
-            <form onSubmit={methodsTension.handleSubmit(onSubmitTension)}>
-              <label htmlFor="valor" className="w-100">
-                Ingrese la tensión arterial
-              </label>
-              <RenderField
-                name="id"
-                defaultValue={null}
-                render={() => <strong className="text-center text-success w-100">Registrado</strong>}
-                renderIfNotValue={() => <strong className="text-center text-danger w-100">Sin Registrar</strong>}
-              />
-              <div className="w-full my-3">
-                <NumberInput
-                  block
-                  controller={{ name: 'valor', rules: { required: 'Este campo es obligatorio', min: 0, max: 100 } }}
-                  min={0}
-                  max={100}
-                  autoFocus
-                  showButtons
-                  useGrouping={false}
-                />
-                <ErrorMessage name="valor" />
-              </div>
-              <Button icon={PrimeIcons.SAVE} type="submit" label="Guardar" block outlined sm loading={loadingTension} />
-            </form>
           </FormProvider>
         </Modal>
       </Accordion.Body>
