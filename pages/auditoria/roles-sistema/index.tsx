@@ -45,6 +45,7 @@ const RolesSistemaPage: NextPage<any> = () => {
             variant="success"
             rounded
             href="/auditoria/roles-sistema/create/form"
+            tooltip='Agregar registro'
           />
         </h1>
 

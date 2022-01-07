@@ -32,7 +32,15 @@ const HabitacionesPage: NextPage<any> = () => {
     <PrivateLayout title="Habitaciones">
       <main className="container-fluid">
         <h1 className="text-center my-5">
-          Habitaciones <Button href="/habitaciones/create/form" variant="success" sm rounded icon={PrimeIcons.PLUS} />
+          Habitaciones 
+          <Button 
+            href="/habitaciones/create/form" 
+            variant="success" 
+            sm
+            rounded 
+            icon={PrimeIcons.PLUS} 
+            tooltip='Agregar Registro'
+            />
         </h1>
         <div className="row row-cols-1">
           <TablaPaginada
@@ -61,6 +69,7 @@ const HabitacionesPage: NextPage<any> = () => {
                     icon={PrimeIcons.PENCIL}
                     variant="info"
                     href={`/habitaciones/editar/form?id=${rowData?.id}`}
+                    tooltip='Editar Registro'
                   />
                   <Button
                     sm
@@ -68,9 +77,13 @@ const HabitacionesPage: NextPage<any> = () => {
                     icon={PrimeIcons.INFO}
                     variant="warning"
                     href={`/habitaciones/detalle?id=${rowData?.id}`}
+                    tooltip='Mostrar información de Registro'
                   />
-                  <Button sm rounded icon={PrimeIcons.TRASH} variant="danger"
-                 onClick={async () => {
+                  <Button 
+                    sm 
+                    rounded 
+                    icon={PrimeIcons.TRASH} variant="danger"
+                    onClick={async () => {
                     if (confirm(`Esta seguro eliminar la información de la habitación ${rowData.alaNumeroHabitacion}?`)) {
                       try {
                         setEliminando(true);
@@ -82,6 +95,7 @@ const HabitacionesPage: NextPage<any> = () => {
                       setEliminando(false);
                     }
                   }}
+                  tooltip='Eliminar Registro'
                   />
                 </div>
               )}

@@ -42,7 +42,15 @@ const MedicamentosPage: NextPage<any> = () => {
     <PrivateLayout title="Medicamentos">
       <main className="container-fluid">
         <h1 className="text-center my-5">
-          Medicamentos <Button href="/medicamentos/create/form" variant="success" sm rounded icon={PrimeIcons.PLUS} />
+          Medicamentos 
+          <Button 
+          href="/medicamentos/create/form" 
+          variant="success" 
+          sm 
+          rounded 
+          icon={PrimeIcons.PLUS} 
+          tooltip='Agregar Registro'
+          />
         </h1>
         <div className="row row-cols-1">
           <TablaPaginada
@@ -71,9 +79,13 @@ const MedicamentosPage: NextPage<any> = () => {
                     icon={PrimeIcons.PENCIL}
                     variant="info"
                     href={`/medicamentos/editar/form?id=${rowData?.id}`}
+                    tooltip='Editar Registro'
                   />
-                  <Button sm rounded icon={PrimeIcons.TRASH} variant="danger" 
-                  onClick={async () => {
+                  <Button 
+                    sm 
+                    rounded 
+                    icon={PrimeIcons.TRASH} variant="danger" 
+                    onClick={async () => {
                     if (confirm(`Esta seguro eliminar la información de la persona ${rowData.nombre}?`)) {
                       try {
                         setEliminando(true);
@@ -85,6 +97,7 @@ const MedicamentosPage: NextPage<any> = () => {
                       setEliminando(false);
                     }
                   }}
+                    tooltip='Eliminar Registro'
                   />
                 </div>
               )}

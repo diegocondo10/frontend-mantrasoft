@@ -35,7 +35,15 @@ const Permisos: NextPage<any> = (props) => {
       <main className="container-fluid">
         <h1 className="text-center my-5">
           Listado de permisos
-          <Button outlined sm icon={PrimeIcons.PLUS} variant="success" rounded href="/auditoria/permisos/create/form" />
+          <Button 
+            outlined 
+            sm 
+            icon={PrimeIcons.PLUS} 
+            variant="success" 
+            rounded 
+            href="/auditoria/permisos/create/form" 
+            tooltip='Agregar Registro'
+          />
         </h1>
 
         <div className="row">

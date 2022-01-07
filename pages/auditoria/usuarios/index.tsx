@@ -37,7 +37,15 @@ const UsuarioPage: NextPage<any> = () => {
       <main className="container-fluid">
         <h1 className="text-center my-5">
           Usuarios del sistema
-          <Button outlined sm icon={PrimeIcons.PLUS} variant="success" rounded href="/auditoria/usuarios/create/form" />
+          <Button 
+            outlined 
+            sm 
+            icon={PrimeIcons.PLUS} 
+            variant="success" 
+            rounded 
+            href="/auditoria/usuarios/create/form" 
+            tooltip='Agregar Registro'
+          />
         </h1>
 
         <div className="row">
