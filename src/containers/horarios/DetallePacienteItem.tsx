@@ -199,6 +199,8 @@ const DetallePacienteItem = ({ paciente, index }) => {
         tipo={7}
         max={300}
       />
+      <ModalSigno modalTitle="Aseo" title="Aseo" buttonLabel="Aseo" paciente={paciente} tipo={8} max={20} />
+      <ModalSigno modalTitle="Baño" title="Baño" buttonLabel="Baño" paciente={paciente} tipo={9} max={20} />
       <Button
         icon={PrimeIcons.PLUS}
         label="Pulso/Temperatura"
