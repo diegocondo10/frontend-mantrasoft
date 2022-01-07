@@ -483,4 +483,9 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
 
 CreatePersonaPage.getInitialProps = ({ query }) => query as any;
 
+CreatePersonaPage.help ={
+  title:'Formulario de registro de datos de personas dentro del sistema',
+  content:'Formulario de ingreso de datos de personas',
+}
+
 export default CreatePersonaPage;

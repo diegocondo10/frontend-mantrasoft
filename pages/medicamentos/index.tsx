@@ -109,4 +109,9 @@ const MedicamentosPage: NextPage<any> = () => {
   );
 };
 
+MedicamentosPage.help = {
+  title: 'Dashboard de Medicamentos',
+  content: 'Presenta información de los medicamentos ingresados conjunto con las acciones a realizar sobre los registros',
+};
+
 export default MedicamentosPage;

@@ -112,4 +112,9 @@ const UsuarioPage: NextPage<any> = () => {
   );
 };
 
+UsuarioPage.help ={
+  title:'Dashboard de Usuarios',
+  content:'Contiene información de los usuarios del sistema conjunto con las acciones a realizar sobre los registros',
+}
+
 export default UsuarioPage;

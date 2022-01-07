@@ -170,5 +170,9 @@ const FormMedicamentosPage: NextPage<any> = ({ crudAction, id }) => {
 };
 
 FormMedicamentosPage.getInitialProps = ({ query }) => query;
+FormMedicamentosPage.help ={
+  title:'Formulario de registros de datos de medicamentos',
+  content:'Formulario de ingreso de datos para medicamentos',
+}
 
 export default FormMedicamentosPage;

@@ -152,5 +152,9 @@ const HabitacionFormPage: NextPage<{ crudAction: CrudActions; id?: string | numb
 };
 
 HabitacionFormPage.getInitialProps = ({ query }) => query as any;
+HabitacionFormPage.help ={
+  title:'Formulario de registro de habitación',
+  content:'Formulario de ingreso de datos de habitaciones',
+}
 
 export default HabitacionFormPage;

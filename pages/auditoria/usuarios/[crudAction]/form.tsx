@@ -211,4 +211,9 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
 };
 
 FormUsuarioPage.getInitialProps = ({ query }) => query as any;
+FormUsuarioPage.help = {
+  title:'Formulario de registro de usuarios',
+  content:'Formulario de ingreso de parámetros para la creación de usuarios',
+}
+
 export default FormUsuarioPage;

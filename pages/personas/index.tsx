@@ -101,4 +101,9 @@ const PersonasPage: NextPage<any> = () => {
   );
 };
 
+PersonasPage.help ={
+  title:'Dashboard de Personas',
+  content:'Contiene información de las personas registradas dentro del sistema',
+}
+
 export default PersonasPage;
