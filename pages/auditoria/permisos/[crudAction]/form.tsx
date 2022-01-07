@@ -107,5 +107,9 @@ const FormPermiso: NextPage<{ id: string | number; crudAction: CrudActions }> = 
 };
 
 FormPermiso.getInitialProps = ({ query }) => query as any;
+FormPermiso.help = {
+  title: 'Formulario de registro de Permisos',
+  content: 'Formulario para ingreso de datos de Permisos',
+}
 
 export default FormPermiso;

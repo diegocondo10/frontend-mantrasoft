@@ -298,4 +298,8 @@ const HorariosPage: NextPage<any> = ({ start, end }) => {
   );
 };
 HorariosPage.getInitialProps = ({ query }) => query as any;
+HorariosPage.help = {
+  title:'Dashboard de generación de horarios',
+  content:'Permite generar el horario laboral',
+}
 export default HorariosPage;

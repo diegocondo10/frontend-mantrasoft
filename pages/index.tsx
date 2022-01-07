@@ -56,17 +56,6 @@ Home.getInitialProps = ({ query }) => {
 
 Home.help = {
   title: 'Pagina de inicio',
-  content: `<h1>Prueba</h1>`,
-  // content: (
-  //   <React.Fragment>
-  //     <h3 className="text-center">Preguntas frecuentes</h3>
-  //     <p>
-  //       Contenido <strong>Prueba</strong>
-  //     </p>
-  //     <ul>
-  //       <li></li>
-  //     </ul>
-  //   </React.Fragment>
-  // ),
+  content: 'Dashboard de presentación de la página',
 };
 export default Home;

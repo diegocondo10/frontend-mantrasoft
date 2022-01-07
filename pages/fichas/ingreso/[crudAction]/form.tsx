@@ -1496,5 +1496,9 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
 };
 
 FichaIngresoFormPage.getInitialProps = ({ query }) => query as any;
+FichaIngresoFormPage.help ={
+  title:'Formulario de registro de ficha de ingreso del paciente',
+  content:'Formulario de ingreso de datos de ficha de ingreso del paciente',
+}
 
 export default FichaIngresoFormPage;

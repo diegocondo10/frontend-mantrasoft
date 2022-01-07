@@ -142,5 +142,9 @@ const FormRolSistemaPage: NextPage<{ id?: number | string; crudAction: CrudActio
 };
 
 FormRolSistemaPage.getInitialProps = ({ query }) => query as any;
+FormRolSistemaPage.help ={
+  title:'Formulario de registro de Roles del sistema',
+  content:'Formulario de ingreso de datos de roles del sistema',
+}
 
 export default FormRolSistemaPage;

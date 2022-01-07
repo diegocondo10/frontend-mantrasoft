@@ -92,4 +92,9 @@ const Permisos: NextPage<any> = (props) => {
   );
 };
 
+Permisos.help = {
+  title: 'Dashboard de permisos',
+  content: 'Presenta información de los roles ingresados conjunto con las acciones a realizar sobre los registros',
+}
+
 export default Permisos;

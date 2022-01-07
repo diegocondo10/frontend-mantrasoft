@@ -107,4 +107,8 @@ const HabitacionesPage: NextPage<any> = () => {
   );
 };
 
+HabitacionesPage.help = {
+  title:'Dashboard de habitaciones',
+  content:'Contiene información de las habitaciones registradas con las acciones que se pueden realizar en los registros',
+}
 export default HabitacionesPage;

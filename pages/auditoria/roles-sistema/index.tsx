@@ -112,4 +112,9 @@ const RolesSistemaPage: NextPage<any> = () => {
   );
 };
 
+RolesSistemaPage.help ={
+  title:'Dashboard de roles del sistema',
+  content: 'Contiene información de los roles de sistema y las acciones a realizar sobre los registros',
+}
+
 export default RolesSistemaPage;
