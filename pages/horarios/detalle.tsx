@@ -41,7 +41,7 @@ const DetalleHorarioPage: NextPage<any> = ({ id, startDate, endDate }) => {
                     }
                   }
                 `}
-                trigger={() => <Button icon={PrimeIcons.PRINT} outlined rounded />}
+                trigger={() => <Button icon={PrimeIcons.PRINT} outlined rounded tooltip='Imprimir Reporte del día' />}
                 content={() => componentRef.current}
               />
             </h4>

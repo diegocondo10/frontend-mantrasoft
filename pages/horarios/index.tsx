@@ -155,7 +155,15 @@ const HorariosPage: NextPage<any> = ({ start, end }) => {
                     </div>
                   </div>
                   <div className="col-12 md:col-6">
-                    <Button label="Consultar" loading={queryHorarios.isFetching} sm outlined block type="submit" />
+                    <Button 
+                      label="Consultar" 
+                      loading={queryHorarios.isFetching} 
+                      sm 
+                      outlined 
+                      block 
+                      type="submit" 
+                      tooltip='Desplegar Horario'
+                    />
                   </div>
                 </div>
               </form>
