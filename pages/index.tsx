@@ -24,6 +24,7 @@ const Home: NextPage<any> = () => {
                   type="date"
                   ref={ref}
                   defaultValue={moment().format('YYYY-MM-DD')}
+                  max={moment().format('YYYY-MM-DD')}
                 />
               </div>
               <div className="col-auto">

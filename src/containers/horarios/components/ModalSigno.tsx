@@ -54,6 +54,8 @@ const ModalSigno: React.FC<ModalSignoType> = (props) => {
     setShow(true);
     setLoading(false);
   };
+  const minValue = min ? min : 0;
+  const maxValue = max ? max : 20;
 
   return (
     <React.Fragment>
@@ -84,7 +86,17 @@ const ModalSigno: React.FC<ModalSignoType> = (props) => {
                 block
                 controller={{
                   name: 'valor',
-                  rules: { required: 'Este campo es obligatorio', min: min ? min : 0, max: max ? max : 20 },
+                  rules: {
+                    required: 'Este campo es obligatorio',
+                    min: {
+                      value: minValue,
+                      message: `El valor mínimo es ${minValue}`,
+                    },
+                    max: {
+                      value: maxValue,
+                      message: `El valor máximo es ${maxValue}`,
+                    },
+                  },
                 }}
                 min={0}
                 max={100}
