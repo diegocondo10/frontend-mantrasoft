@@ -41,7 +41,7 @@ const DetalleHorarioPage: NextPage<any> = ({ id, startDate, endDate }) => {
                     }
                   }
                 `}
-                trigger={() => <Button icon={PrimeIcons.PRINT} outlined rounded tooltip='Imprimir Reporte del día' />}
+                trigger={() => <Button icon={PrimeIcons.PRINT} outlined rounded tooltip="Imprimir Reporte del día" />}
                 content={() => componentRef.current}
               />
             </h4>
@@ -64,7 +64,7 @@ const DetalleHorarioPage: NextPage<any> = ({ id, startDate, endDate }) => {
                               <h6>
                                 <strong>Habitación: {habitacion?.habitacion}</strong>
                               </h6>
-                              <DetallePaciente habitacion={habitacion} />
+                              <DetallePaciente habitacion={habitacion} fecha={item?.fecha} />
                             </li>
                           ))}
                         </ul>

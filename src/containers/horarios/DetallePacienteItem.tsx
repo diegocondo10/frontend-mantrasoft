@@ -21,10 +21,11 @@ import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { confirmPopup } from 'primereact/confirmpopup';
 import { DataTable } from 'primereact/datatable';
-import React, { CSSProperties, useState } from 'react';
-import { Accordion } from 'react-bootstrap';
+import React, { CSSProperties, useContext, useMemo, useState } from 'react';
+import { Accordion, AccordionContext } from 'react-bootstrap';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { useQuery } from 'react-query';
+import { useQueries } from 'react-query';
+import ModalMedicacion from './components/ModalMedicacion';
 import ModalSigno from './components/ModalSigno';
 
 const TIME_FORMAT = 'HH:mm';
@@ -51,14 +52,18 @@ const PM_VALIDATION = (value) => {
   return 'Ingrese una hora entre 12:00 y 23:59';
 };
 
-const DetallePacienteItem = ({ paciente, index }) => {
+const DetallePacienteItem = ({ paciente, index, medicamentos, loadingMedicamentos }) => {
+  console.log(medicamentos);
   const { usuario } = useUsuario();
   const [data, setData] = useState([]);
-
   const [showModal, setShowModal] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [id, setId] = useState(null);
   const methods = useForm({ mode: 'onChange' });
+
+  const eventKey = useMemo(() => `${index}-${paciente.id}-${paciente.idHorario}`, [index, paciente]);
+  const { activeEventKey } = useContext(AccordionContext);
+  const isActive = useMemo(() => eventKey === activeEventKey, [activeEventKey, eventKey]);
 
   const [loadingAm1, setLoadingAm1] = useState(false);
   const [loadingAm2, setLoadingAm2] = useState(false);
@@ -88,16 +93,16 @@ const DetallePacienteItem = ({ paciente, index }) => {
 
   const [showModalSignos, setShowModalSignos] = useState(false);
 
-  const query = useQuery(
-    ['seguimientos-paciente', paciente.id, paciente.idHorario],
-    () => API.private().get(urlSeguimientosPacienteHorarios(paciente.fecha, paciente.id)),
+  const [query] = useQueries([
     {
-      enabled: false,
+      queryKey: ['seguimientos-paciente', paciente.id, paciente.idHorario],
+      queryFn: () => API.private().get(urlSeguimientosPacienteHorarios(paciente.fecha, paciente.id)),
+      enabled: isActive,
       onSuccess: (res) => {
         setData(res?.data?.seguimientos);
       },
     },
-  );
+  ]);
 
   const onSubmit = async (formData) => {
     setGuardando(true);
@@ -214,16 +219,16 @@ const DetallePacienteItem = ({ paciente, index }) => {
           });
         }}
       />
+      <ModalMedicacion medicamentos={medicamentos} loadingMedicamentos={loadingMedicamentos} />
+
     </div>
   );
   return (
-    <Accordion.Item eventKey={`${index}-${paciente.id}-${paciente.idHorario}`}>
-      <Accordion.Header
-        onClick={() => {
-          query.refetch();
-        }}
-      >
-        {paciente?.str}
+    <Accordion.Item eventKey={eventKey}>
+      <Accordion.Header className="d-flex align-self-center">
+        <h6>
+          {paciente?.str} {isActive && query.isFetching && <i className={`${PrimeIcons.SPINNER} pi-spin`} />}
+        </h6>
       </Accordion.Header>
       <Accordion.Body className="p-0 m-0">
         <div className="container-fluid p-0">

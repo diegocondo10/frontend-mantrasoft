@@ -22,9 +22,8 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
     refetchOnWindowFocus: false,
     onSuccess: ({ data }) => {
       methods.reset({
-        ...data,
-        inicio: formatearFechaFronend(data?.inicio),
-        fin: formatearFechaFronend(data?.fin),
+        ...data?.tratamiento,
+        inicio: formatearFechaFronend(data?.tratamiento?.inicio),
       });
     },
   });
@@ -32,12 +31,18 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
   const onSubmit = async (formData) => {
     try {
       setGuardando(true);
-      console.log(formData);
       formData.inicio = formatearFechaBackend(formData.inicio);
-      formData.fin = formatearFechaBackend(formData.fin);
-      formData.medicamentosDisponibles = undefined;
+      formData.pacienteId = formData.paciente.id;
+      formData.medicamentos = formData.medicamentos.map((item) => ({
+        ...item,
+        medicamentoId: item.medicamento.value,
+        medicamento: undefined,
+        uuid: undefined,
+        id: undefined,
+      }));
+      formData.paciente = undefined;
 
-      await API.private().post(urlCreateOrUpdateTratamientoInicial(idFicha), formData);
+      await API.private().put(urlCreateOrUpdateTratamientoInicial(idFicha), formData);
       alert('Se ha guardado la información');
     } catch (error) {
       alert('Ha ocurrido un problema al guardar la información');
@@ -63,13 +68,13 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
                     <ErrorMessage name="inicio" />
                   </div>
                   <div className="col-12">
-                    <label htmlFor="diagnosticoInicial">Diagnostico inicial: *</label>
+                    <label htmlFor="diagnostico">Diagnostico: *</label>
                     <TextArea
                       rows={10}
-                      controller={{ name: 'diagnosticoInicial', rules: { required: 'Obligatorio' } }}
+                      controller={{ name: 'diagnostico', rules: { required: 'Obligatorio' } }}
                       block
                     />
-                    <ErrorMessage name="diagnosticoInicial" />
+                    <ErrorMessage name="diagnostico" />
                   </div>
 
                   <Controller

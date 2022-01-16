@@ -11,7 +11,7 @@ const PERTENENECIAS = 'pertenencias/';
 const ALAS = 'alas/';
 const HORARIOS = 'horarios/';
 const SEGUIMIENTOS_ENFERMERIA = `seguimientos-enfermeria/`;
-const TRATAMIENTOS = `tratamientos/`;
+const TRATAMIENTOS_BASE = `tratamientos-base/`;
 const SIGNO_VITALES = 'signos-vitales/';
 /**
  * AUTH
@@ -145,5 +145,6 @@ export const urlDeleteSeguimientoEnfermeria = urlUpdateSeguimientoEnfermeria;
  * TRATAMIENTOS
  *
  */
-export const urlCreateOrUpdateTratamientoInicial = (idFicha: string) => `${TRATAMIENTOS}crear-o-editar/${idFicha}/`;
-export const urlGetTratamientoInicial = (idFicha: string) => `${TRATAMIENTOS}base/${idFicha}/`;
+export const urlGetTratamientoInicial = (idFicha: any) => `${TRATAMIENTOS_BASE}${idFicha}/`;
+export const urlCreateOrUpdateTratamientoInicial = urlGetTratamientoInicial;
+export const urlMedicamentosPaciente = (fecha: any) => `${TRATAMIENTOS_BASE}medicamentos/${fecha}/`;
