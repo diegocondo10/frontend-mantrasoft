@@ -169,6 +169,8 @@ const DetallePacienteItem = ({ paciente, index }) => {
         buttonLabel="Tensión arterial"
         paciente={paciente}
         tipo={3}
+        max={100}
+        min={50}
       />
       <ModalSigno
         modalTitle="Respiración"
