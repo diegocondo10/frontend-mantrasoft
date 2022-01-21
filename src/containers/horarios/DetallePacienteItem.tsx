@@ -52,8 +52,7 @@ const PM_VALIDATION = (value) => {
   return 'Ingrese una hora entre 12:00 y 23:59';
 };
 
-const DetallePacienteItem = ({ paciente, index, medicamentos, loadingMedicamentos }) => {
-  console.log(medicamentos);
+const DetallePacienteItem = ({ paciente, index, medicacion, loadingMedicamentos }) => {
   const { usuario } = useUsuario();
   const [data, setData] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -221,16 +220,19 @@ const DetallePacienteItem = ({ paciente, index, medicamentos, loadingMedicamento
           });
         }}
       />
-      <ModalMedicacion medicamentos={medicamentos} loadingMedicamentos={loadingMedicamentos} />
-
+      <ModalMedicacion paciente={paciente} medicacion={medicacion} loadingMedicamentos={loadingMedicamentos} />
     </div>
   );
   return (
     <Accordion.Item eventKey={eventKey}>
-      <Accordion.Header className="d-flex align-self-center">
-        <h6>
-          {paciente?.str} {isActive && query.isFetching && <i className={`${PrimeIcons.SPINNER} pi-spin`} />}
-        </h6>
+      <Accordion.Header>
+        <div className="w-100 d-flex align-self-center flex-row flex-wrap justify-content-between">
+          <h6>
+            {paciente?.str} {isActive && query.isFetching && <i className={`${PrimeIcons.SPINNER} pi-spin`} />}
+          </h6>
+          {medicacion?.tieneProximo && <h6 className="text-info font-bold mr-1">Medicación prixima</h6>}
+          {medicacion?.tieneAtraso && <h6 className="text-danger font-bold mr-1">Medicación atrasada</h6>}
+        </div>
       </Accordion.Header>
       <Accordion.Body className="p-0 m-0">
         <div className="container-fluid p-0">

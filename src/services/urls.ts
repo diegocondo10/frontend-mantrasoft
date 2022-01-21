@@ -148,3 +148,4 @@ export const urlDeleteSeguimientoEnfermeria = urlUpdateSeguimientoEnfermeria;
 export const urlGetTratamientoInicial = (idFicha: any) => `${TRATAMIENTOS_BASE}${idFicha}/`;
 export const urlCreateOrUpdateTratamientoInicial = urlGetTratamientoInicial;
 export const urlMedicamentosPaciente = (fecha: any) => `${TRATAMIENTOS_BASE}medicamentos/${fecha}/`;
+export const urlRegistrarMedicacion = (idPaciente: any) => `${TRATAMIENTOS_BASE}registrar-medicacion/${idPaciente}/`;

@@ -6,6 +6,7 @@ import { default as BsModal } from 'react-bootstrap/Modal';
 export type ModalProps = {
   show: boolean;
   onHide: () => void;
+  backdrop?: 'static' | true | false;
   modal?: {
     centered?: boolean;
     size?: 'sm' | 'lg' | 'xl';
@@ -32,7 +33,7 @@ export type ModalProps = {
 
 const Modal: React.FC<ModalProps> = (props) => {
   return (
-    <BsModal {...props.modal} show={props.show} onHide={props.onHide}>
+    <BsModal {...props.modal} show={props.show} onHide={props.onHide} backdrop={props.backdrop}>
       {props.header && (
         <BsModal.Header {...props.header}>
           <BsModal.Title>{props.header?.title}</BsModal.Title>

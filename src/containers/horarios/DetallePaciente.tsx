@@ -1,22 +1,27 @@
 import API from '@src/services/api';
 import { urlMedicamentosPaciente } from '@src/services/urls';
+import moment from 'moment';
 import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import { useQuery } from 'react-query';
 import DetallePacienteItem from './DetallePacienteItem';
 
+export type StatusMedicacion = 'A' | 'N' | null;
 const DetallePaciente = ({ habitacion, fecha }) => {
-  console.log(habitacion);
-
   const ids = habitacion?.pacientes?.map((item) => item?.id);
 
   const query = useQuery(
-    ['medicamentos', habitacion?.pacientes],
-    () => API.private().post(urlMedicamentosPaciente(fecha), { ids }),
+    ['medicamentos', ids],
+    () =>
+      API.private().post(urlMedicamentosPaciente(fecha), {
+        ids,
+        horaActual: moment().format('HH:mm:[00]'),
+      }),
     {
       enabled: ids.length > 0,
       refetchOnWindowFocus: true,
-      select: (data) => data?.data || {},
+      // refetchInterval: 5000,
+      select: (data) => data?.data,
     },
   );
 
@@ -31,7 +36,7 @@ const DetallePaciente = ({ habitacion, fecha }) => {
             key={paciente.id}
             paciente={paciente}
             index={index}
-            medicamentos={query?.data?.[paciente?.id]}
+            medicacion={query?.data?.[paciente?.id]}
             loadingMedicamentos={query?.isFetching}
           />
         ))}
