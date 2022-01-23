@@ -52,6 +52,7 @@ export const urlCreateMedicamento = MEDICAMENTOS;
 export const urlUpdateMedicamento = (id: any) => `${MEDICAMENTOS}${id}/`;
 export const urlDeleteMedicamento = urlUpdateMedicamento;
 export const urlDetailMedicamento = urlUpdateMedicamento;
+export const urlPersonalAutorizadoMedicamentos = `${MEDICAMENTOS}personal-autorizado/`;
 
 /**
  * PACIENTES

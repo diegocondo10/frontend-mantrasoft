@@ -1,29 +1,16 @@
 import Button from '@src/components/Button';
 import Modal from '@src/components/Modal';
-import API from '@src/services/api';
-import { urlRegistrarMedicacion } from '@src/services/urls';
 import classNames from 'classnames';
 import { PrimeIcons } from 'primereact/api';
 import React, { useState } from 'react';
 import { useQueryClient } from 'react-query';
+import HoraMedicacion from './HoraMedicacion';
 
 const ModalMedicacion = ({ medicacion, loadingMedicamentos, paciente }) => {
   const [show, setShow] = useState(false);
 
   const queryClient = useQueryClient();
   const isLoading = queryClient.isFetching(['medicamentos', medicacion?.ids]) === 1;
-
-  const [loading, setLoading] = useState(false);
-
-  const onClick = (medicamento, hora) => async () => {
-    setLoading(true);
-    await API.private().post(urlRegistrarMedicacion(paciente?.id), {
-      medicacionBaseId: medicamento?.id,
-      hora: hora?.horaStr,
-    });
-    await queryClient.refetchQueries(['medicamentos', medicacion?.ids]);
-    setLoading(false);
-  };
 
   return (
     <React.Fragment>
@@ -36,10 +23,15 @@ const ModalMedicacion = ({ medicacion, loadingMedicamentos, paciente }) => {
         variant="info"
         className=""
       />
-      <Modal show={show} onHide={() => setShow(false)} header={{ closeButton: !isLoading, title: 'Medicación' }}>
+      <Modal
+        modal={{ scrollable: true, size: 'xl', centered: true }}
+        show={show}
+        onHide={() => setShow(false)}
+        header={{ closeButton: !isLoading, title: 'Medicación' }}
+      >
         {medicacion?.medicamentos?.map?.((medicamento, index) => (
           <div key={medicamento?.id}>
-            <h5
+            <h4
               className={classNames({
                 'text-danger': medicamento?.isAtraso,
                 'text-info': medicamento?.isProximo,
@@ -47,28 +39,20 @@ const ModalMedicacion = ({ medicacion, loadingMedicamentos, paciente }) => {
             >
               {index + 1}. {medicamento?.medicamento?.label} {medicamento?.isAtraso && '(Atrasado)'}{' '}
               {medicamento?.isProximo && '(Proximo)'}
-            </h5>
+            </h4>
             <div>
               {medicamento?.horas?.map((hora) => (
-                <h6
-                  className={classNames('ms-4 d-flex align-items-center', {
-                    'text-danger': hora?.isAtrasada,
-                    'text-info': hora?.isProximo,
-                    'text-success': hora?.suministrado,
-                  })}
+                <HoraMedicacion
                   key={hora?.horaStr}
-                >
-                  {hora?.horaStr}{' '}
-                  <input
-                    className="ms-2 my-0 form-check-input"
-                    disabled={loading || isLoading}
-                    type="checkbox"
-                    checked={hora?.suministrado}
-                    onChange={onClick(medicamento, hora)}
-                  />
-                </h6>
+                  {...hora}
+                  isLoading={isLoading}
+                  medicacion={medicacion}
+                  paciente={paciente}
+                  medicamento={medicamento}
+                />
               ))}
             </div>
+            <hr />
           </div>
         ))}
       </Modal>

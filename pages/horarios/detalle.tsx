@@ -2,18 +2,27 @@ import Button from '@src/components/Button';
 import DetallePaciente from '@src/containers/horarios/DetallePaciente';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlDetalleHorario } from '@src/services/urls';
+import { urlDetalleHorario, urlPersonalAutorizadoMedicamentos } from '@src/services/urls';
 import moment from 'moment';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
 import React, { useMemo, useRef } from 'react';
-import { useQuery } from 'react-query';
+import { useQueries } from 'react-query';
 import ReactToPrint from 'react-to-print';
 
 const DetalleHorarioPage: NextPage<any> = ({ id, startDate, endDate }) => {
-  const query = useQuery(['horario', 'detalle', id, startDate, endDate], () =>
-    API.private().get(urlDetalleHorario(id, startDate, endDate)),
-  );
+  const [query] = useQueries([
+    {
+      queryKey: ['horario', 'detalle', id, startDate, endDate],
+      queryFn: () => API.private().get(urlDetalleHorario(id, startDate, endDate)),
+      refetchOnWindowFocus: false,
+    },
+    {
+      queryKey: ['personal-autorizado-medicacion'],
+      queryFn: () => API.private().get(urlPersonalAutorizadoMedicamentos),
+      refetchOnWindowFocus: false,
+    },
+  ]);
 
   const documentTitle = useMemo(
     () => `${moment(startDate).format('DD [de] MMMM [de] YYYY')} - ${moment(endDate).format('DD [de] MMMM [de] YYYY')}`,

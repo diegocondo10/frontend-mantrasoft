@@ -23,7 +23,7 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
     onSuccess: ({ data }) => {
       methods.reset({
         ...data?.tratamiento,
-        inicio: formatearFechaFronend(data?.tratamiento?.inicio),
+        fechaInicio: formatearFechaFronend(data?.tratamiento?.fechaInicio),
       });
     },
   });
@@ -31,8 +31,8 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
   const onSubmit = async (formData) => {
     try {
       setGuardando(true);
-      formData.inicio = formatearFechaBackend(formData.inicio);
-      formData.pacienteId = formData.paciente.id;
+      formData.fechaInicio = formatearFechaBackend(formData.fechaInicio);
+      formData.pacienteId = idFicha;
       formData.medicamentos = formData.medicamentos.map((item) => ({
         ...item,
         medicamentoId: item.medicamento.value,
@@ -45,6 +45,7 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
       await API.private().put(urlCreateOrUpdateTratamientoInicial(idFicha), formData);
       alert('Se ha guardado la información');
     } catch (error) {
+      console.error(error);
       alert('Ha ocurrido un problema al guardar la información');
     }
     setGuardando(false);
@@ -63,9 +64,9 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
               <div className="col-12 md:col-11 border p-5">
                 <div className="row">
                   <div className="col-12 col-md-6">
-                    <label htmlFor="inicio">Fecha de inicio: *</label>
-                    <DateInput controller={{ name: 'inicio', rules: { required: 'Obligatorio' } }} block />
-                    <ErrorMessage name="inicio" />
+                    <label htmlFor="fechaInicio">Fecha de fechaInicio: *</label>
+                    <DateInput controller={{ name: 'fechaInicio', rules: { required: 'Obligatorio' } }} block />
+                    <ErrorMessage name="fechaInicio" />
                   </div>
                   <div className="col-12">
                     <label htmlFor="diagnostico">Diagnostico: *</label>
