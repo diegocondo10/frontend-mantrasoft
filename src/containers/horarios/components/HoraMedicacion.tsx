@@ -45,7 +45,7 @@ const HoraMedicacion = (props) => {
       hora: props?.horaStr,
       fecha: paciente.fecha,
       observacion: formData?.observacion,
-      autorizadoPro: formData?.autorizadoPor?.value,
+      autorizadoPor: formData?.autorizadoPor?.value,
       tipo: formData?.tipo || estado,
     });
     await queryClient.refetchQueries(['medicamentos', medicacion?.ids]);
@@ -87,7 +87,9 @@ const HoraMedicacion = (props) => {
             <h4 className="me-3 my-0" style={{ ...ESTADOS_MEDICACION_COLORES[props.tipo] }}>
               {ESTADOS_MEDICACION_LABELS[props.tipo]}
             </h4>
-            <Button outlined label="Cambiar estado" sm onClick={() => setShowEstados(true)} loading={loading} />
+            {![ESTADO_MEDICACION.DIFERENTE_DOSIS].includes(props.tipo) && (
+              <Button outlined label="Cambiar estado" sm onClick={() => setShowEstados(true)} loading={loading} />
+            )}
           </React.Fragment>
         )}
 
@@ -151,8 +153,15 @@ const HoraMedicacion = (props) => {
 
               <div className="w-full text-right mt-3">
                 <span className="p-buttonset">
-                  <Button label="Cancelar" sm variant="danger" outlined onClick={() => setEstado(null)} />
-                  <Button label="Guardar" type="submit" sm variant="info" outlined />
+                  <Button
+                    label="Cancelar"
+                    sm
+                    variant="danger"
+                    outlined
+                    onClick={() => setEstado(null)}
+                    loading={loading}
+                  />
+                  <Button label="Guardar" type="submit" sm variant="info" outlined loading={loading} />
                 </span>
               </div>
             </form>

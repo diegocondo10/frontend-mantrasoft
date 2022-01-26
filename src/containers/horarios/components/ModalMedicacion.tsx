@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { PrimeIcons } from 'primereact/api';
 import React, { useState } from 'react';
 import { useQueryClient } from 'react-query';
+import HeaderMedicamentoModal from './HeaderMedicamentoModal';
 import HoraMedicacion from './HoraMedicacion';
 
 const ModalMedicacion = ({ medicacion, loadingMedicamentos, paciente }) => {
@@ -30,16 +31,13 @@ const ModalMedicacion = ({ medicacion, loadingMedicamentos, paciente }) => {
         header={{ closeButton: !isLoading, title: 'Medicación' }}
       >
         {medicacion?.medicamentos?.map?.((medicamento, index) => (
-          <div key={medicamento?.id}>
-            <h4
-              className={classNames({
-                'text-danger': medicamento?.isAtraso,
-                'text-info': medicamento?.isProximo,
-              })}
-            >
-              {index + 1}. {medicamento?.medicamento?.label} {medicamento?.isAtraso && '(Atrasado)'}{' '}
-              {medicamento?.isProximo && '(Proximo)'}
-            </h4>
+          <React.Fragment key={medicamento?.id}>
+            <HeaderMedicamentoModal
+              medicamento={medicamento}
+              index={index}
+              paciente={paciente}
+              medicacion={medicacion}
+            />
             <div>
               {medicamento?.horas?.map((hora) => (
                 <HoraMedicacion
@@ -53,7 +51,7 @@ const ModalMedicacion = ({ medicacion, loadingMedicamentos, paciente }) => {
               ))}
             </div>
             <hr />
-          </div>
+          </React.Fragment>
         ))}
       </Modal>
     </React.Fragment>
