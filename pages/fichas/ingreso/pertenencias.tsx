@@ -10,7 +10,6 @@ import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
 import { urlCreatePertenencia, urlInfoPacienteFichaIngreso, urlUpdatePertenencia } from '@src/services/urls';
 import { AxiosResponse } from 'axios';
-import moment from 'moment';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';

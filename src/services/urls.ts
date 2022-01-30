@@ -69,7 +69,7 @@ export const urlImprimirFichaIngreso = (id: any) => `${urlUpdateFichasIngreso(id
 export const urlImprimirReporteEnfermeria = (id: any) => `${urlUpdateFichasIngreso(id)}imprimir-reporte-enfermeria/`;
 export const urlSeguimientosEnfermeriaPaciente = (id: any) => `${urlUpdateFichasIngreso(id)}seguimientos/`;
 
-export const urlInfoPacienteByIdFicha = (id) => `${urlUpdateFichasIngreso(id)}info-paciente/`;
+export const urlInfoPacienteByIdFicha = (id) => `${urlUpdateFichasIngreso(id)}info-paciente-signos/`;
 export const urlSignosPorSemana = (week: string, pacienteId: any) => {
   return `${SIGNO_VITALES}info-semana/${week}/${pacienteId}/`;
 };
