@@ -105,13 +105,13 @@ const FichasIngresoPage: NextPage<any> = () => {
       <main className="container-fluid">
         <h1 className="text-center my-5">
           Fichas de Ingreso
-          <Button 
-            href="/fichas/ingreso/create/form" 
-            variant="success" 
+          <Button
+            href="/fichas/ingreso/create/form"
+            variant="success"
             sm
-            rounded 
-            icon={PrimeIcons.PLUS} 
-            tooltip='Agregar Registro'
+            rounded
+            icon={PrimeIcons.PLUS}
+            tooltip="Agregar Registro"
           />
         </h1>
 

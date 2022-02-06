@@ -5,6 +5,7 @@ import usePagination from '@src/hooks/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
 import { urlDeleteMedicamento, urlListarMedicamentos } from '@src/services/urls';
+import useUsuario from '@src/store/usuario/useUsuario';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
@@ -19,7 +20,7 @@ const MedicamentosPage: NextPage<any> = () => {
       key: 'ListadoMedicamentos',
     });
 
-  
+  const { tienePermiso } = useUsuario();
 
   const cabecera = (
     <div className="d-flex flex-row">
@@ -42,14 +43,15 @@ const MedicamentosPage: NextPage<any> = () => {
     <PrivateLayout title="Medicamentos">
       <main className="container-fluid">
         <h1 className="text-center my-5">
-          Medicamentos 
-          <Button 
-          href="/medicamentos/create/form" 
-          variant="success" 
-          sm 
-          rounded 
-          icon={PrimeIcons.PLUS} 
-          tooltip='Agregar Registro'
+          Medicamentos
+          <Button
+            href="/medicamentos/create/form"
+            variant="success"
+            sm
+            rounded
+            icon={PrimeIcons.PLUS}
+            tooltip="Agregar Registro"
+            disabled={!tienePermiso('MEDICAMENTOS__AGREGAR')}
           />
         </h1>
         <div className="row row-cols-1">
@@ -68,7 +70,7 @@ const MedicamentosPage: NextPage<any> = () => {
             <Column header="Nombre" field="nombre" sortable />
             <Column header="Descripción" field="descripcion" sortable />
             <Column header="Via" field="via" sortable />
-            <Column header="Variante" field="variante" sortable/>
+            <Column header="Variante" field="variante" sortable />
             <Column
               header="Opciones"
               body={(rowData) => (
@@ -79,25 +81,28 @@ const MedicamentosPage: NextPage<any> = () => {
                     icon={PrimeIcons.PENCIL}
                     variant="info"
                     href={`/medicamentos/editar/form?id=${rowData?.id}`}
-                    tooltip='Editar Registro'
+                    tooltip="Editar Registro"
+                    disabled={!tienePermiso('MEDICAMENTOS__EDITAR')}
                   />
-                  <Button 
-                    sm 
-                    rounded 
-                    icon={PrimeIcons.TRASH} variant="danger" 
+                  <Button
+                    sm
+                    rounded
+                    icon={PrimeIcons.TRASH}
+                    variant="danger"
                     onClick={async () => {
-                    if (confirm(`Esta seguro eliminar la información de la persona ${rowData.nombre}?`)) {
-                      try {
-                        setEliminando(true);
-                        await API.private().delete(urlDeleteMedicamento(rowData.id));
-                        refetch();
-                      } catch (error) {
-                        alert('Se ha eliminado el registro exitosamente');
+                      if (confirm(`Esta seguro eliminar la información de la persona ${rowData.nombre}?`)) {
+                        try {
+                          setEliminando(true);
+                          await API.private().delete(urlDeleteMedicamento(rowData.id));
+                          refetch();
+                        } catch (error) {
+                          alert('Se ha eliminado el registro exitosamente');
+                        }
+                        setEliminando(false);
                       }
-                      setEliminando(false);
-                    }
-                  }}
-                    tooltip='Eliminar Registro'
+                    }}
+                    tooltip="Eliminar Registro"
+                    disabled={!tienePermiso('MEDICAMENTOS__ELIMINAR')}
                   />
                 </div>
               )}
@@ -111,7 +116,8 @@ const MedicamentosPage: NextPage<any> = () => {
 
 MedicamentosPage.help = {
   title: 'Dashboard de Medicamentos',
-  content: 'Presenta información de los medicamentos ingresados conjunto con las acciones a realizar sobre los registros',
+  content:
+    'Presenta información de los medicamentos ingresados conjunto con las acciones a realizar sobre los registros',
 };
 
 export default MedicamentosPage;

@@ -1,4 +1,5 @@
 import Button from '@src/components/Button';
+import useUsuario from '@src/store/usuario/useUsuario';
 import { useRouter } from 'next/dist/client/router';
 import { PrimeIcons } from 'primereact/api';
 import { Menubar } from 'primereact/menubar';
@@ -7,7 +8,7 @@ import React, { useMemo } from 'react';
 
 const PrivateNavbar = () => {
   const router = useRouter();
-
+  const { activarOptionNavbarByPermiso } = useUsuario();
   const mappItem = (item: MenuItem) => ({
     ...item,
     command: () => {
@@ -35,11 +36,13 @@ const PrivateNavbar = () => {
               icon: PrimeIcons.USERS,
               label: 'Personas',
               url: '/personas/',
+              ...activarOptionNavbarByPermiso('PERSONAS__LISTAR'),
             },
             {
               label: 'Habitaciones',
               icon: PrimeIcons.LIST,
               url: '/habitaciones/',
+              ...activarOptionNavbarByPermiso('HABITACIONES__LISTAR'),
             },
             {
               label: 'Horarios',
@@ -57,7 +60,12 @@ const PrivateNavbar = () => {
           icon: PrimeIcons.FOLDER,
           label: 'Fichas',
           items: [
-            { label: 'Ingreso', icon: PrimeIcons.FILE, url: '/fichas/ingreso' },
+            {
+              label: 'Ingreso',
+              icon: PrimeIcons.FILE,
+              url: '/fichas/ingreso',
+              ...activarOptionNavbarByPermiso('HOME'),
+            },
           ],
         },
         {
