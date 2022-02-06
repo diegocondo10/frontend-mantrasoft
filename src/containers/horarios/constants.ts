@@ -46,5 +46,5 @@ export const ESTADOS_MEDICACION_LABELS = {
   4: 'Se adminitro en diferente hora',
   5: 'Diferente dosis',
   6: 'Por razones necesarias',
-  7: 'No se administro proque se suspendio',
+  7: 'No se administro porque se suspendio',
 };

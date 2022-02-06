@@ -23,7 +23,7 @@ const HeaderMedicamentoModal = ({ medicamento, index, paciente, medicacion }) =>
   const onSubmit = async (formData) => {
     setLoading(true);
     await API.private().post(urlRegistrarMedicacion(paciente?.id), {
-      medicacionBaseId: medicamento?.id,
+      medicamentoId: medicamento?.medicamento?.id,
       hora: formData.hora,
       fecha: paciente.fecha,
       observacion: formData?.observacion,

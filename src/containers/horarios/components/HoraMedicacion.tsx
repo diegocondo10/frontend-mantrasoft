@@ -41,7 +41,7 @@ const HoraMedicacion = (props) => {
   const onSubmit = async (formData) => {
     setLoading(true);
     await API.private().post(urlRegistrarMedicacion(paciente?.id), {
-      medicacionBaseId: medicamento?.id,
+      medicamentoId: medicamento?.medicamento?.id,
       hora: props?.horaStr,
       fecha: paciente.fecha,
       observacion: formData?.observacion,
