@@ -2,7 +2,7 @@ import Button from '@src/components/Button';
 import DetallePaciente from '@src/containers/horarios/DetallePaciente';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlDetalleHorario, urlPersonalAutorizadoMedicamentos } from '@src/services/urls';
+import { urlDetalleHorario, urlMedicamentosLabelValue, urlPersonalAutorizadoMedicamentos } from '@src/services/urls';
 import moment from 'moment';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
@@ -21,6 +21,12 @@ const DetalleHorarioPage: NextPage<any> = ({ id, startDate, endDate }) => {
       queryKey: ['personal-autorizado-medicacion'],
       queryFn: () => API.private().get(urlPersonalAutorizadoMedicamentos),
       refetchOnWindowFocus: false,
+    },
+    {
+      queryKey: ['medicamentos-label-value'],
+      queryFn: () => API.private().get(urlMedicamentosLabelValue),
+      refetchOnWindowFocus: false,
+      retry: false,
     },
   ]);
 

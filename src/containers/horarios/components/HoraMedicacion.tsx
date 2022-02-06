@@ -87,13 +87,13 @@ const HoraMedicacion = (props) => {
             <h4 className="me-3 my-0" style={{ ...ESTADOS_MEDICACION_COLORES[props.tipo] }}>
               {ESTADOS_MEDICACION_LABELS[props.tipo]}
             </h4>
-            {![ESTADO_MEDICACION.DIFERENTE_DOSIS].includes(props.tipo) && (
+            {!props.isNuevo && ![ESTADO_MEDICACION.DIFERENTE_DOSIS].includes(props.tipo) && (
               <Button outlined label="Cambiar estado" sm onClick={() => setShowEstados(true)} loading={loading} />
             )}
           </React.Fragment>
         )}
 
-        {props?.id && showEstados && (
+        {props?.id && showEstados && !props.isNuevo && (
           <Button
             label="Cancelar cambio"
             sm

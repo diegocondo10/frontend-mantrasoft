@@ -53,6 +53,7 @@ export const urlUpdateMedicamento = (id: any) => `${MEDICAMENTOS}${id}/`;
 export const urlDeleteMedicamento = urlUpdateMedicamento;
 export const urlDetailMedicamento = urlUpdateMedicamento;
 export const urlPersonalAutorizadoMedicamentos = `${MEDICAMENTOS}personal-autorizado/`;
+export const urlMedicamentosLabelValue = `${MEDICAMENTOS}label-value/`;
 
 /**
  * PACIENTES
@@ -84,6 +85,10 @@ export const urlGetSignos = (fecha: any, paciente: any) => {
 };
 export const urlGetSignoVital = (fecha: any, paciente: any, tipo: any) => {
   return `signos-vitales/${fecha}/${paciente}/${tipo}/`;
+};
+
+export const urlResumenEnfermera = (pacienteId: any, fecha: string) => {
+  return `${FICHAS_INGRESO}resumen/${pacienteId}/${fecha}`;
 };
 
 //PERTENENCIAS

@@ -47,20 +47,22 @@ const HeaderMedicamentoModal = ({ medicamento, index, paciente, medicacion }) =>
           {index + 1}. {medicamento?.medicamento?.label} {medicamento?.isAtraso && '(Atrasado)'}{' '}
           {medicamento?.isProximo && '(Proximo)'}
         </h4>
-        <Button
-          icon={showForm ? PrimeIcons.TIMES : PrimeIcons.PLUS}
-          label={showForm ? 'Cancelar' : 'Agregar dosis'}
-          sm
-          outlined
-          variant={showForm ? 'danger' : 'info'}
-          onClick={() => {
-            methods.reset({
-              hora: moment().format('hh:mm'),
-            });
-            setShowForm(!showForm);
-          }}
-          loading={loading}
-        />
+        {!medicamento.isNuevo && (
+          <Button
+            icon={showForm ? PrimeIcons.TIMES : PrimeIcons.PLUS}
+            label={showForm ? 'Cancelar' : 'Agregar dosis'}
+            sm
+            outlined
+            variant={showForm ? 'danger' : 'info'}
+            onClick={() => {
+              methods.reset({
+                hora: moment().format('hh:mm'),
+              });
+              setShowForm(!showForm);
+            }}
+            loading={loading}
+          />
+        )}
       </div>
       {showForm && (
         <FormProvider {...methods}>
