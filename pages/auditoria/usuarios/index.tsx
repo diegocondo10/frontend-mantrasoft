@@ -6,7 +6,7 @@ import usePagination from '@src/hooks/usePagination';
 import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlListarUsuarios, urlReiniciarPasswordUsuario } from '@src/services/urls';
+import { urlDeleteUsuarios, urlListarUsuarios, urlReiniciarPasswordUsuario } from '@src/services/urls';
 import { NextPage } from 'next';
 import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
@@ -15,6 +15,7 @@ import React, { CSSProperties } from 'react';
 
 const UsuarioPage: NextPage<any> = () => {
   const {
+    isFetching,
     isLoading,
     data,
     page,
@@ -31,6 +32,8 @@ const UsuarioPage: NextPage<any> = () => {
     uri: urlListarUsuarios,
     key: 'Usuarios',
   });
+
+
 
   return (
     <PrivateLayout title="Usuarios">
@@ -59,7 +62,7 @@ const UsuarioPage: NextPage<any> = () => {
               onChangePage={setPage}
               onOrdering={setOrdering}
               multiSortMeta={ordering}
-              loading={isLoading}
+              loading={isFetching}
             >
               {ColumnaNo()}
               <Column header="Username" field="username" sortable />
@@ -97,6 +100,16 @@ const UsuarioPage: NextPage<any> = () => {
                                 rowData?.fullName || rowData?.username
                               }`,
                             );
+                          }
+                        },
+                      },
+                      {
+                        label: 'Eliminar',
+                        icon: PrimeIcons.TRASH,
+                        command: async () => {
+                          if (confirm('Esta seguro de eliminar este usuario')) {
+                            await API.private().delete(urlDeleteUsuarios(rowData.id));
+                            refetch();
                           }
                         },
                       },

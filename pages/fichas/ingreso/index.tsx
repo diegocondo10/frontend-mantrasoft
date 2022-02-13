@@ -12,6 +12,7 @@ import {
   urlListadoFilterPacientes,
   urlListarFichasIngreso,
 } from '@src/services/urls';
+import useUsuario from '@src/store/usuario/useUsuario';
 import { NextPage } from 'next';
 import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
@@ -48,6 +49,8 @@ const FichasIngresoPage: NextPage<any> = () => {
     () => query?.data?.data?.find?.((ala) => ala.value === filters?.habitacion__ala__id)?.habitaciones || [],
     [filters?.habitacion__ala__id, query?.data?.data],
   );
+
+  const { tienePermiso } = useUsuario();
 
   useEffect(() => {
     setFilters({
@@ -112,6 +115,7 @@ const FichasIngresoPage: NextPage<any> = () => {
             rounded
             icon={PrimeIcons.PLUS}
             tooltip="Agregar Registro"
+            disabled={!tienePermiso('FICHAINGRESO_AGREGAR')}
           />
         </h1>
 
@@ -151,6 +155,7 @@ const FichasIngresoPage: NextPage<any> = () => {
                           await refetch();
                         }
                       },
+                      disabled: !tienePermiso('DAR_ALTA'),
                     },
                     {
                       label: 'Reportes',

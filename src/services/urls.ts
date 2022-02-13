@@ -117,8 +117,8 @@ export const urlListarUsuarios = USUARIOS;
 export const urlCreateUsuarios = USUARIOS;
 export const urlCatalogoFormUsuarios = `${USUARIOS}catalogo-form/`;
 export const urlUpdateUsuarios = (id: any) => `${USUARIOS}${id}/`;
-export const urlDeleteUsuarios = urlUpdatePermiso;
-export const urlDetailUsuarios = urlUpdatePermiso;
+export const urlDeleteUsuarios = urlUpdateUsuarios;
+export const urlDetailUsuarios = urlUpdateUsuarios;
 export const urlReiniciarPasswordUsuario = (id: any) => `${USUARIOS}${id}/reset-password/`;
 export const urlPerfil = `${USUARIOS}perfil/`;
 
