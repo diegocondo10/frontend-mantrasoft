@@ -95,6 +95,7 @@ export const urlResumenEnfermera = (pacienteId: any, fecha: string) => {
 export const urlListarPertenencias = (id: any) => `${PERTENENECIAS}?id_registro=${id}`;
 export const urlCreatePertenencia = PERTENENECIAS;
 export const urlUpdatePertenencia = (id: string | any) => `${PERTENENECIAS}${id}/`;
+export const urlImprimirFichaSalida = (id: string | any) => `${FICHAS_INGRESO}${id}/imprimir/ficha/salida`;
 
 /**
  * AUDITORIA

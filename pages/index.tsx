@@ -22,10 +22,10 @@ const Home: NextPage<any> = () => {
   const [pacienteModal, setPacienteModal] = useState(null);
 
   const query = useQuery(
-    ['resumen', usuario.id, fecha],
-    () => API.private().get(urlResumenEnfermera(usuario.id, fecha)),
+    ['resumen', usuario?.id, fecha],
+    () => API.private().get(urlResumenEnfermera(usuario?.id, fecha)),
     {
-      enabled: !!usuario.id && !!fecha,
+      enabled: !!usuario?.id && !!fecha,
       refetchOnWindowFocus: false,
       select: (res) => res.data,
       onSuccess: (data) => {
@@ -127,9 +127,9 @@ const Home: NextPage<any> = () => {
             title: `${pacienteModal?.identificacion} ${pacienteModal?.apellidos} ${pacienteModal?.nombres}`,
           }}
         >
-          <h4 className='font-bold'>Diagnostico del tratamiento:</h4>
+          <h4 className="font-bold">Diagnostico del tratamiento:</h4>
           <p>{pacienteModal?.tratamiento?.diagnostico}</p>
-          <h4 className='font-bold'>Medicamentos:</h4>
+          <h4 className="font-bold">Medicamentos:</h4>
           <ul className="list-group">
             {pacienteModal?.tratamiento?.medicamentos?.map?.((medicamento) => (
               <React.Fragment key={medicamento.id}>

@@ -8,7 +8,12 @@ import TextInput from '@src/components/Forms/TextInput';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlCreatePertenencia, urlInfoPacienteFichaIngreso, urlUpdatePertenencia } from '@src/services/urls';
+import {
+  urlCreatePertenencia,
+  urlImprimirFichaSalida,
+  urlInfoPacienteFichaIngreso,
+  urlUpdatePertenencia,
+} from '@src/services/urls';
 import { AxiosResponse } from 'axios';
 import { NextPage } from 'next';
 import { PrimeIcons } from 'primereact/api';
@@ -88,7 +93,7 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
 
   return (
     <PrivateLayout title="Ficha de salida" loading={{ loading: query.isLoading }}>
-      <main className="container">
+      <main className="container-fluid">
         <div className="d-flex flex-row justify-content-center mt-5">
           <h1 className="text-center align-self-center">
             <Button
@@ -112,6 +117,12 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
           </h1>
         </div>
         <h3 className="text-center mb-5">{query?.data?.data?.paciente?.str}</h3>
+        <Button
+          label="Imprimir"
+          outlined
+          icon={PrimeIcons.PRINT}
+          onClick={API.getReporte(urlImprimirFichaSalida(props.id))}
+        />
         <div className="row justify-content-center">
           <div className="col-12">
             <DataTable

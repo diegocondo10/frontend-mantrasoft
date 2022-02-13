@@ -6,6 +6,7 @@
     "dev": "set NODE_OPTIONS='--inspect' && next dev -p 9500 ",
     "build": "next build",
     "start": "next start",
+    "export": "next export",
     "lint": "next lint"
   },
   "dependencies": {
