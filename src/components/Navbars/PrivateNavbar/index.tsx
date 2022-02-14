@@ -48,11 +48,13 @@ const PrivateNavbar = () => {
               label: 'Horarios',
               icon: PrimeIcons.LIST,
               url: '/horarios/',
+              ...activarOptionNavbarByPermiso('HORARIOS__LISTAR')
             },
             {
               label: 'Medicamentos',
               icon: PrimeIcons.LIST,
               url: '/medicamentos/',
+              ...activarOptionNavbarByPermiso('MEDICAMENTOS__LISTAR')
             },
           ],
         },
@@ -64,7 +66,7 @@ const PrivateNavbar = () => {
               label: 'Ingreso',
               icon: PrimeIcons.FILE,
               url: '/fichas/ingreso',
-              ...activarOptionNavbarByPermiso('HOME'),
+              ...activarOptionNavbarByPermiso('FICHASINGRESO__LISTAR')
             },
           ],
         },
@@ -76,16 +78,19 @@ const PrivateNavbar = () => {
               label: 'Permisos',
               icon: PrimeIcons.LOCK,
               url: '/auditoria/permisos/',
+              ...activarOptionNavbarByPermiso('PERMISOS__LISTAR'),
             },
             {
               label: 'Roles del sistema',
               icon: PrimeIcons.LIST,
               url: '/auditoria/roles-sistema/',
+              ...activarOptionNavbarByPermiso('ROLES__LISTAR'),
             },
             {
               label: 'Usuarios',
               icon: PrimeIcons.USERS,
               url: '/auditoria/usuarios/',
+              ...activarOptionNavbarByPermiso('USUARIOS__LISTAR'),
             },
           ],
         },
