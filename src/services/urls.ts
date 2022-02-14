@@ -1,4 +1,5 @@
-export const URL_BASE = 'http://localhost:8000/';
+// export const URL_BASE = 'http://localhost:8000/';
+export const URL_BASE = 'http://backendmantra-env.eba-ye3rkbaj.us-east-1.elasticbeanstalk.com/';
 
 const PERMISOS = 'permisos/';
 const ROLES_SISTEMA = 'roles-sistema/';
