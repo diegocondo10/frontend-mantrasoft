@@ -68,6 +68,9 @@ export const urlDeleteFichasIngreso = urlUpdateFichasIngreso;
 export const urlDetailFichasIngreso = urlUpdateFichasIngreso;
 export const urlImprimirFichaIngreso = (id: any) => `${urlUpdateFichasIngreso(id)}imprimir-ficha/`;
 export const urlImprimirReporteEnfermeria = (id: any) => `${urlUpdateFichasIngreso(id)}imprimir-reporte-enfermeria/`;
+export const urlImprimirControlMedicacion = (id: any, mes: any, anio: any) => {
+  return `${urlUpdateFichasIngreso(id)}imprimir-control-medicacion/${mes}/${anio}/`;
+};
 export const urlSeguimientosEnfermeriaPaciente = (id: any) => `${urlUpdateFichasIngreso(id)}seguimientos/`;
 
 export const urlInfoPacienteByIdFicha = (id) => `${urlUpdateFichasIngreso(id)}info-paciente-signos/`;

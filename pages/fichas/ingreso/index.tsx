@@ -1,5 +1,6 @@
 import Button from '@src/components/Button';
 import ButtonMenu from '@src/components/ButtonMenu';
+import Modal from '@src/components/Modal';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import TablaPaginada from '@src/components/Tables/TablaPaginada';
 import usePagination from '@src/hooks/usePagination';
@@ -7,18 +8,20 @@ import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
 import {
   urlDeleteFichasIngreso,
+  urlImprimirControlMedicacion,
   urlImprimirFichaIngreso,
   urlImprimirReporteEnfermeria,
   urlListadoFilterPacientes,
   urlListarFichasIngreso,
 } from '@src/services/urls';
+import moment from 'moment';
 import { NextPage } from 'next';
 import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
-import React, { CSSProperties, useEffect, useMemo } from 'react';
+import React, { CSSProperties, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 
 const FichasIngresoPage: NextPage<any> = () => {
@@ -40,6 +43,9 @@ const FichasIngresoPage: NextPage<any> = () => {
     key: 'ListadoFichasIngreso',
   });
 
+  const [showModal, setShowModal] = useState(false);
+  const [fecha, setFecha] = useState(moment().format('YYYY-MM-DD'));
+  const [id, setId] = useState(null);
   const query = useQuery(['alasHabitaciones'], () => API.private().get<any[]>(urlListadoFilterPacientes), {
     refetchOnWindowFocus: false,
   });
@@ -166,6 +172,14 @@ const FichasIngresoPage: NextPage<any> = () => {
                           icon: PrimeIcons.PRINT,
                           command: API.getReporte(urlImprimirReporteEnfermeria(rowData.id)),
                         },
+                        {
+                          label: 'Control de medicación',
+                          icon: PrimeIcons.PRINT,
+                          command: () => {
+                            setShowModal(true);
+                            setId(rowData.id);
+                          },
+                        },
                       ],
                     },
                     {
@@ -224,6 +238,35 @@ const FichasIngresoPage: NextPage<any> = () => {
             />
           </TablaPaginada>
         </div>
+        <Modal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          modal={{ size: 'sm', centered: true }}
+          header={{ title: 'Control de medicación', closeButton: true }}
+        >
+          <div className="d-flex">
+            <input
+              value={fecha}
+              onChange={(evt) => {
+                setFecha(evt.target.value);
+              }}
+              className="form-control"
+              type="date"
+              required
+              name="fecha"
+            />
+            <Button
+              type="submit"
+              className="rounded-0"
+              label="Imprimir"
+              sm
+              icon={PrimeIcons.PRINT}
+              onClick={API.getReporte(
+                urlImprimirControlMedicacion(id, +fecha?.split?.('-')?.[1], fecha?.split?.('-')?.[0]),
+              )}
+            />
+          </div>
+        </Modal>
       </main>
     </PrivateLayout>
   );
