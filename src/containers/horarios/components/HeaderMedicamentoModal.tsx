@@ -81,7 +81,7 @@ const HeaderMedicamentoModal = ({ medicamento, index, paciente, medicacion }) =>
               }}
               render={({ field: { value, name, onChange, ref }, fieldState: { invalid } }) => (
                 <Select
-                  options={usuarios}
+                  options={usuarios || []}
                   name={name}
                   id={name}
                   onChange={onChange}

@@ -132,7 +132,7 @@ const HoraMedicacion = (props) => {
                 }}
                 render={({ field: { value, name, onChange, ref }, fieldState: { invalid } }) => (
                   <Select
-                    options={usuarios}
+                    options={usuarios || []}
                     name={name}
                     id={name}
                     onChange={onChange}

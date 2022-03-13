@@ -22,7 +22,7 @@ const ModalMedicacion = ({ medicacion, loadingMedicamentos, paciente }) => {
   const methods = useForm({ mode: 'onChange' });
   const queryClient = useQueryClient();
   const isLoading = queryClient.isFetching(['medicamentos', medicacion?.ids]) === 1;
-  const usuarios = queryClient.getQueryData<{ data: any[] }>(['personal-autorizado-medicacion'])?.data;
+  const usuarios = queryClient.getQueryData<{ data: any[] }>(['personal-autorizado-medicacion'])?.data || [];
   const medicamentos = queryClient.getQueryData<{ data: any[] }>(['medicamentos-label-value'])?.data || [];
 
   const onClickAgregar = () => {
@@ -145,7 +145,7 @@ const ModalMedicacion = ({ medicacion, loadingMedicamentos, paciente }) => {
                       />
                     )}
                   />
-                  <ErrorMessage name="autorizadoPor" />
+                  <ErrorMessage name="medicamento" />
                 </div>
                 <div className="w-full">
                   <label htmlFor="hora" className="w-100">
