@@ -3,7 +3,6 @@ import ButtonMenu from '@src/components/ButtonMenu';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import TablaPaginada from '@src/components/Tables/TablaPaginada';
 import usePagination from '@src/hooks/usePagination';
-import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
 import { urlDeleteUsuarios, urlListarUsuarios, urlReiniciarPasswordUsuario } from '@src/services/urls';
@@ -11,7 +10,7 @@ import { NextPage } from 'next';
 import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
-import React, { CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 
 const UsuarioPage: NextPage<any> = () => {
   const {
@@ -33,21 +32,19 @@ const UsuarioPage: NextPage<any> = () => {
     key: 'Usuarios',
   });
 
-
-
   return (
     <PrivateLayout title="Usuarios">
       <main className="container-fluid">
         <h1 className="text-center my-5">
           Usuarios del sistema
-          <Button 
-            outlined 
-            sm 
-            icon={PrimeIcons.PLUS} 
-            variant="success" 
-            rounded 
-            href="/auditoria/usuarios/create/form" 
-            tooltip='Agregar Registro'
+          <Button
+            outlined
+            sm
+            icon={PrimeIcons.PLUS}
+            variant="success"
+            rounded
+            href="/auditoria/usuarios/create/form"
+            tooltip="Agregar Registro"
           />
         </h1>
 
@@ -68,7 +65,12 @@ const UsuarioPage: NextPage<any> = () => {
               <Column header="Username" field="username" sortable />
               <Column header="Nombre completo" field="fullName" sortable />
               <Column header="Email" field="email" sortable />
-              <Column header="Es super usuario?" field="isSuperuserStr" sortField="isSuperuser" sortable />
+              <Column
+                header="Rol asignado"
+                field="rol"
+                // sortField="rol"
+                // sortable
+              />
               <Column
                 header="Opciones"
                 bodyClassName="p-0 m-0"
@@ -125,9 +127,9 @@ const UsuarioPage: NextPage<any> = () => {
   );
 };
 
-UsuarioPage.help ={
-  title:'Dashboard de Usuarios',
-  content:'Contiene información de los usuarios del sistema conjunto con las acciones a realizar sobre los registros',
-}
+UsuarioPage.help = {
+  title: 'Dashboard de Usuarios',
+  content: 'Contiene información de los usuarios del sistema conjunto con las acciones a realizar sobre los registros',
+};
 
 export default UsuarioPage;

@@ -20,12 +20,13 @@ const defaultProps: TablaPaginadaProps = {
   emptyMessage: 'No se ha encontrado información',
   lazy: true,
   removableSort: true,
+  responsiveLayout: 'scroll',
 };
 
 const TablaPaginada: React.FC<TablaPaginadaProps> = React.forwardRef<DataTable, TablaPaginadaProps>((props, ref) => {
   const { onOrdering, onChangePage, ...rest } = props;
   return (
-    <DataTable {...rest} onSort={(e) => onOrdering(e.multiSortMeta)} onPage={(e) => onChangePage(e.page)} {...rest}>
+    <DataTable onSort={(e) => onOrdering(e.multiSortMeta)} onPage={(e) => onChangePage(e.page)} {...rest}>
       {props.children}
     </DataTable>
   );

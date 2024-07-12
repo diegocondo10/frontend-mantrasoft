@@ -12,7 +12,7 @@ import styles from './styles.module.scss';
 
 const PrivateNavbar = () => {
   const router = useRouter();
-  const { activarOptionNavbarByPermiso, usuario } = useUsuario();
+  const { usuario } = useUsuario();
 
   const op = useRef<OverlayPanel>(null);
 
@@ -44,12 +44,6 @@ const PrivateNavbar = () => {
           label: 'Catalogos',
           items: [
             {
-              icon: PrimeIcons.USERS,
-              label: 'Personas',
-              url: '/personas/',
-              // ...activarOptionNavbarByPermiso('PERSONAS__LISTAR'),
-            },
-            {
               label: 'Habitaciones',
               icon: PrimeIcons.LIST,
               url: '/habitaciones/',
@@ -74,6 +68,11 @@ const PrivateNavbar = () => {
           label: 'Fichas',
           items: [
             {
+              icon: PrimeIcons.USERS,
+              label: 'Pacientes',
+              url: '/personas/',
+            },
+            {
               label: 'Ingreso',
               icon: PrimeIcons.FILE,
               url: '/fichas/ingreso',
@@ -82,28 +81,9 @@ const PrivateNavbar = () => {
           ],
         },
         {
-          icon: PrimeIcons.LOCK,
-          label: 'Auditoria',
-          items: [
-            {
-              label: 'Permisos',
-              icon: PrimeIcons.LOCK,
-              url: '/auditoria/permisos/',
-              // ...activarOptionNavbarByPermiso('PERMISOS__LISTAR'),
-            },
-            {
-              label: 'Roles del sistema',
-              icon: PrimeIcons.LIST,
-              url: '/auditoria/roles-sistema/',
-              // ...activarOptionNavbarByPermiso('ROLES__LISTAR'),
-            },
-            {
-              label: 'Usuarios',
-              icon: PrimeIcons.USERS,
-              url: '/auditoria/usuarios/',
-              // ...activarOptionNavbarByPermiso('USUARIOS__LISTAR'),
-            },
-          ],
+          label: 'Usuarios',
+          icon: PrimeIcons.USERS,
+          url: '/auditoria/usuarios/',
         },
       ].map(mappItem),
     [],
@@ -112,6 +92,7 @@ const PrivateNavbar = () => {
   return (
     <Menubar
       model={model}
+      className="shadow rounded-0 "
       end={
         <React.Fragment>
           <React.Fragment>
@@ -131,19 +112,10 @@ const PrivateNavbar = () => {
               <div className="container-fluid">
                 <div className="row">
                   <div className="col-12 text-center">
-                    {usuario?.persona?.foto && (
-                      <img
-                        className="img-fluid img-thumbnail"
-                        style={{ maxHeight: '100px' }}
-                        src={usuario?.persona?.foto}
-                        alt=""
-                      />
-                    )}
                     <h5 className="mt-2">{usuario?.username}</h5>
-                    <h6 className="mt-2">{usuario?.persona?.display}</h6>
+                    <h5 className="mt-2">{usuario?.fullName}</h5>
                     <h6 className="mt-2">{usuario?.email}</h6>
-                    <h6 className="mt-2">Rol seleccionado: {usuario?.roles?.[0]?.nombre}</h6>
-                    <p>{usuario?.persona?.correo}</p>
+                    <h6 className="mt-2">{usuario.rol.nombre}</h6>
                   </div>
                 </div>
               </div>

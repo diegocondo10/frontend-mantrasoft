@@ -1,6 +1,5 @@
 import Button from '@src/components/Button';
 import Modal from '@src/components/Modal';
-import ROLES from '@src/constants/roles';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
 import { urlResumenEnfermera } from '@src/services/urls';
@@ -15,7 +14,7 @@ import { useQuery } from 'react-query';
 const today = moment().format('YYYY-MM-DD');
 
 const Home: NextPage<any> = () => {
-  const { usuario, tieneRol } = useUsuario();
+  const { usuario } = useUsuario();
   const [fecha, setFecha] = useState(today);
 
   const [showModal, setShowModal] = useState(false);
@@ -53,7 +52,7 @@ const Home: NextPage<any> = () => {
       <main className="container">
         <h1 className="display-6 text-center mt-5">Bienvenido</h1>
         <h4 className="text-center">Que deseas hacer?</h4>
-        {tieneRol(ROLES.ENFERMERA) && (
+        {usuario.isEnfermera && (
           <React.Fragment>
             <div className="row g-1 align-items-center">
               <div className="col-auto">

@@ -50,7 +50,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Hydratation>
       <QueryClientProvider client={queryClient}>
-        <ToastProvider autoDismiss autoDismissTimeout={10000} placement="top-left">
+        <ToastProvider autoDismiss autoDismissTimeout={10000} placement="top-right">
           <Component {...pageProps} />
         </ToastProvider>
       </QueryClientProvider>

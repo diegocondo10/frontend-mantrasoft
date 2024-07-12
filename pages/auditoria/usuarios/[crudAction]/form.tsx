@@ -1,7 +1,7 @@
 import Button from '@src/components/Button';
+import DropDown from '@src/components/Forms/DropDown';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
 import TextInput from '@src/components/Forms/TextInput';
-import Toggle from '@src/components/Forms/Toggle';
 import { CrudActions } from '@src/emuns/crudActions';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
@@ -10,9 +10,8 @@ import { AxiosResponse } from 'axios';
 import { NextPage } from 'next';
 import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
-import { ListBox } from 'primereact/listbox';
 import { useMemo } from 'react';
-import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 
 const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }> = (props) => {
@@ -61,9 +60,6 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
 
   const _onSubmit = async (formData) => {
     try {
-      if (!formData?.persona) {
-        formData.persona = null;
-      }
       await mutation.mutateAsync(formData);
       router.push('/auditoria/usuarios/');
     } catch (error) {
@@ -131,30 +127,23 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
                       <ErrorMessage name="email" />
                     </div>
                     <div className="col-10 my-1">
-                      <label htmlFor="isSuperuser">Es super usuario?: *</label>
-                      <Toggle name="isSuperuser" />
-                      <ErrorMessage name="isSuperuser" />
+                      <label htmlFor="rol" className="w-full">
+                        Rol Asignado: *
+                      </label>
+                      <DropDown
+                        controller={{
+                          name: 'rol',
+                          rules: {
+                            required: 'Este campo es obligatorio',
+                          },
+                        }}
+                        filter
+                        block
+                        options={catalogo?.data?.data?.roles}
+                      />
+                      <ErrorMessage name="rol" />
                     </div>
 
-                    <div className="col-10 my-1">
-                      <label htmlFor="roles" className="w-full">
-                        Roles asignados: *
-                      </label>
-                      <ErrorMessage name="roles" />
-                      <Controller
-                        name="roles"
-                        render={({ field }) => (
-                          <ListBox
-                            filter
-                            filterMatchMode="contains"
-                            value={field.value}
-                            options={catalogo?.data?.data?.roles}
-                            onChange={(e) => field.onChange(e.value)}
-                            multiple
-                          />
-                        )}
-                      />
-                    </div>
                     <div className="col-10">
                       <div className="row">
                         <div className="col-md-6 my-2">

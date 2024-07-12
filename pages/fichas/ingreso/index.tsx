@@ -14,15 +14,15 @@ import {
   urlListadoFilterPacientes,
   urlListarFichasIngreso,
 } from '@src/services/urls';
-import moment from 'moment';
 import useUsuario from '@src/store/usuario/useUsuario';
+import moment from 'moment';
 import { NextPage } from 'next';
 import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
-import React, { CSSProperties, useEffect, useMemo, useState } from 'react';
+import { CSSProperties, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 
 const FichasIngresoPage: NextPage<any> = () => {

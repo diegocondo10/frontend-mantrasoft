@@ -1,47 +1,43 @@
 import CONFIGS from '@src/constants/configs';
+import { Perfil } from '@src/types/usuario';
 import router from 'next/router';
+import { useEffect, useMemo } from 'react';
 
 const useUsuario = () => {
-  const usuarioJSON: any = localStorage.getItem('usuario') || null;
-  const usuario = usuarioJSON !== null ? JSON.parse(usuarioJSON) : null;
+  const usuario = useMemo<Perfil | null>(() => {
+    const usuarioJSON = localStorage.getItem('usuario') || null;
+    const usuario = usuarioJSON !== null ? JSON.parse(usuarioJSON) : null;
+    return usuario;
+  }, []);
 
   const isValidSession = () => {
     const access = localStorage.getItem(CONFIGS.TOKEN_KEY);
     const refresh = localStorage.getItem(CONFIGS.REFRESH_TOKEN_KEY);
-    if (access && refresh) {
+    if (access && refresh && usuario) {
       return true;
     }
     router.replace('/logout');
     return false;
   };
 
+  useEffect(() => {
+    isValidSession();
+  }, [usuario]);
+
   const tienePermiso = (permiso: string) => {
     return true;
     // return usuario?.permisos?.some?.((item: string) => item === permiso);
   };
 
-  const tieneRol = (rol: string) => {
-    return true;
-    // return usuario?.roles?.some?.((item) => item?.codigo === rol);
-  };
-
-  const activarOptionNavbarByPermiso = (permiso: string) => {
-    console.log(permiso);
-    // if (!tienePermiso(permiso)) {
-    //   return { className: 'd-none', disabled: true };
-    // }
-    return {};
+  const setUsuario = (data: Perfil) => {
+    localStorage.setItem('usuario', JSON.stringify(data));
   };
 
   return {
     isValidSession,
-    setUsuario: (data: any) => {
-      localStorage.setItem('usuario', JSON.stringify(data));
-    },
+    setUsuario,
     usuario,
     tienePermiso,
-    tieneRol,
-    activarOptionNavbarByPermiso,
   };
 };
 
