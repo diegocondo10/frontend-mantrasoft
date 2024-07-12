@@ -115,7 +115,7 @@ const PrivateNavbar = () => {
                     <h5 className="mt-2">{usuario?.username}</h5>
                     <h5 className="mt-2">{usuario?.fullName}</h5>
                     <h6 className="mt-2">{usuario?.email}</h6>
-                    <h6 className="mt-2">{usuario.rol.nombre}</h6>
+                    <h6 className="mt-2">{usuario?.rol?.nombre}</h6>
                   </div>
                 </div>
               </div>
