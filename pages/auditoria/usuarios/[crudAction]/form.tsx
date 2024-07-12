@@ -1,5 +1,4 @@
 import Button from '@src/components/Button';
-import DropDown from '@src/components/Forms/DropDown';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
 import TextInput from '@src/components/Forms/TextInput';
 import Toggle from '@src/components/Forms/Toggle';
@@ -12,7 +11,7 @@ import { NextPage } from 'next';
 import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import { ListBox } from 'primereact/listbox';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 
@@ -93,17 +92,6 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
                       <ErrorMessage name="username" />
                     </div>
 
-                    <div className="col-10 my-1">
-                      <label htmlFor="persona">Persona:</label>
-                      <DropDown
-                        filter
-                        filterMatchMode="contains"
-                        showClear
-                        block
-                        controller={{ name: 'persona' }}
-                        options={catalogo?.data?.data?.personas || []}
-                      />
-                    </div>
                     <div className="col-10 md:col-5 my-1">
                       <label htmlFor="firstName">Primer nombre: *</label>
                       <TextInput
@@ -144,9 +132,7 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
                     </div>
                     <div className="col-10 my-1">
                       <label htmlFor="isSuperuser">Es super usuario?: *</label>
-
                       <Toggle name="isSuperuser" />
-
                       <ErrorMessage name="isSuperuser" />
                     </div>
 
@@ -169,26 +155,6 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
                         )}
                       />
                     </div>
-                    <div className="col-10 my-1">
-                      <label htmlFor="permisos" className="w-full">
-                        Permisos: *
-                      </label>
-                      <ErrorMessage name="permisos" />
-                      <Controller
-                        name="permisos"
-                        render={({ field }) => (
-                          <ListBox
-                            filter
-                            filterMatchMode="contains"
-                            value={field.value}
-                            options={catalogo?.data?.data?.permisos}
-                            onChange={(e) => field.onChange(e.value)}
-                            multiple
-                          />
-                        )}
-                      />
-                    </div>
-
                     <div className="col-10">
                       <div className="row">
                         <div className="col-md-6 my-2">
@@ -211,9 +177,10 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
 };
 
 FormUsuarioPage.getInitialProps = ({ query }) => query as any;
+
 FormUsuarioPage.help = {
-  title:'Formulario de registro de usuarios',
-  content:'Formulario de ingreso de parámetros para la creación de usuarios',
-}
+  title: 'Formulario de registro de usuarios',
+  content: 'Formulario de ingreso de parámetros para la creación de usuarios',
+};
 
 export default FormUsuarioPage;

@@ -17,18 +17,22 @@ const useUsuario = () => {
 
   const tienePermiso = (permiso: string) => {
     return true;
-    return usuario?.permisos?.some?.((item: string) => item === permiso);
+    // return usuario?.permisos?.some?.((item: string) => item === permiso);
   };
 
   const tieneRol = (rol: string) => {
-    return usuario?.roles?.some?.((item) => item?.codigo === rol);
+    return true;
+    // return usuario?.roles?.some?.((item) => item?.codigo === rol);
   };
+
   const activarOptionNavbarByPermiso = (permiso: string) => {
-    if (!tienePermiso(permiso)) {
-      return { className: 'd-none', disabled: true };
-    }
+    console.log(permiso);
+    // if (!tienePermiso(permiso)) {
+    //   return { className: 'd-none', disabled: true };
+    // }
     return {};
   };
+
   return {
     isValidSession,
     setUsuario: (data: any) => {
