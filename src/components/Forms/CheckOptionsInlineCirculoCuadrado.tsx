@@ -33,7 +33,7 @@ const CheckOptionsInlineCirculoCuadrado: React.FC<CheckOptionsInlineCirculoCuadr
                 <div className="d-inline-flex flex-wrap me-5 w-full md:w-max">
                   <div className="d-inline-flex flex-wrap">
                     <div>
-                      <label style={{ fontSize: '1.25rem' }} className="me-2">
+                      <label style={{ fontSize: '1.25rem' }} className="me-2 select-all">
                         {option.labelText}
                       </label>
                       <HiddenField name={`${option.controller.name}.label`} defaultValue={option.labelText} />
@@ -42,7 +42,6 @@ const CheckOptionsInlineCirculoCuadrado: React.FC<CheckOptionsInlineCirculoCuadr
                         name={`${option.controller.name}.valueCuadrado`}
                         defaultValue={option.valueCuadrado}
                       />
-
                       <div className="d-inline-block">
                         <input
                           className="align-self-center checkbox-round"

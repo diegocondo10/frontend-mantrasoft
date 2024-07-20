@@ -18,7 +18,7 @@ import { useQuery } from 'react-query';
 import ReactToPrint from 'react-to-print';
 
 const HorariosPage: NextPage<any> = ({ start, end }) => {
-  console.log(start, end);
+
   const methods = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -57,6 +57,8 @@ const HorariosPage: NextPage<any> = ({ start, end }) => {
               return { ...diaOriginal, ...dia, jornada: getJornada(diaOriginal?.jornada)?.value };
             }),
         }));
+
+        console.log(newData);
         setFilas(newData);
       },
     },
@@ -155,14 +157,14 @@ const HorariosPage: NextPage<any> = ({ start, end }) => {
                     </div>
                   </div>
                   <div className="col-12 md:col-6">
-                    <Button 
-                      label="Consultar" 
-                      loading={queryHorarios.isFetching} 
-                      sm 
-                      outlined 
-                      block 
-                      type="submit" 
-                      tooltip='Desplegar Horario'
+                    <Button
+                      label="Consultar"
+                      loading={queryHorarios.isFetching}
+                      sm
+                      outlined
+                      block
+                      type="submit"
+                      tooltip="Desplegar Horario"
                     />
                   </div>
                 </div>
@@ -299,7 +301,7 @@ const HorariosPage: NextPage<any> = ({ start, end }) => {
 };
 HorariosPage.getInitialProps = ({ query }) => query as any;
 HorariosPage.help = {
-  title:'Dashboard de generación de horarios',
-  content:'Permite generar el horario laboral',
-}
+  title: 'Dashboard de generación de horarios',
+  content: 'Permite generar el horario laboral',
+};
 export default HorariosPage;

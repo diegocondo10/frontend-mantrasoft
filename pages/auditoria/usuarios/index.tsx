@@ -29,30 +29,36 @@ const UsuarioPage: NextPage<any> = () => {
     refetch,
   } = usePagination({
     uri: urlListarUsuarios,
-    key: 'Usuarios',
+    key: 'usuarios',
   });
+
+  const tableHeader = () => {
+    return (
+      <div className="d-flex flex-row">
+        <span className="p-inputgroup w-full">
+          <Button
+            outlined
+            sm
+            label="Agregar"
+            icon={PrimeIcons.PLUS}
+            variant="success"
+            href="/auditoria/usuarios/create/form"
+          />
+        </span>
+      </div>
+    );
+  };
 
   return (
     <PrivateLayout title="Usuarios">
       <main className="container-fluid">
-        <h1 className="text-center my-5">
-          Usuarios del sistema
-          <Button
-            outlined
-            sm
-            icon={PrimeIcons.PLUS}
-            variant="success"
-            rounded
-            href="/auditoria/usuarios/create/form"
-            tooltip="Agregar Registro"
-          />
-        </h1>
+        <h1 className="text-center my-5">Usuarios</h1>
 
         <div className="row">
           <div className="col-12">
             <TablaPaginada
               value={data?.data?.data || []}
-              //   header={cabecera}
+              header={tableHeader}
               first={page}
               rows={data?.data?.pagina?.registrosPorPagina}
               totalRecords={data?.data?.pagina?.registrosTotales}
@@ -60,6 +66,7 @@ const UsuarioPage: NextPage<any> = () => {
               onOrdering={setOrdering}
               multiSortMeta={ordering}
               loading={isFetching}
+              className="border"
             >
               {ColumnaNo()}
               <Column header="Username" field="username" sortable />

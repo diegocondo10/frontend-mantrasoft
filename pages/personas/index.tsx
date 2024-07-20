@@ -22,7 +22,8 @@ const PersonasPage: NextPage<any> = () => {
   const [eliminando, setEliminando] = useState(false);
 
   const cabecera = (
-    <div>
+    <div className="d-flex flex-row">
+      <Button icon={PrimeIcons.PLUS} variant="success" href="/personas/create/form/" label="Agregar" outlined />
       <InputText type="search" placeholder="Buscar" value={search} onChange={setSearch} />
     </div>
   );
@@ -30,17 +31,7 @@ const PersonasPage: NextPage<any> = () => {
   return (
     <PrivateLayout>
       <main className="container-fluid">
-        <h1 className="text-center mt-3">
-          Listado de personas{' '}
-          <Button
-            icon={PrimeIcons.PLUS}
-            variant="success"
-            sm
-            rounded
-            href="/personas/create/form/"
-            tooltip="Agregar registro"
-          />
-        </h1>
+        <h1 className="text-center my-5">Pacientes</h1>
 
         <div className="row row-cols-1">
           <TablaPaginada

@@ -1,16 +1,14 @@
 import CONFIGS from '@src/constants/configs';
 import PublicLayout from '@src/layouts/PublicLayout';
-import { NextPage } from 'next';
-import { useRouter } from 'next/dist/client/router';
-import React, { useEffect } from 'react';
+import { CustomNextPage } from '@src/types/next';
+import Router from 'next/router';
+import { useEffect } from 'react';
 
-const LogOutPage: NextPage = () => {
-  const router = useRouter();
-
+const LogOutPage: CustomNextPage = () => {
   useEffect(() => {
     localStorage.removeItem(CONFIGS.TOKEN_KEY);
     localStorage.removeItem(CONFIGS.REFRESH_TOKEN_KEY);
-    router.replace('/login');
+    Router.replace('/login');
   }, []);
 
   return <PublicLayout loading={{ loading: true }} />;

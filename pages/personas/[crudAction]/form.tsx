@@ -6,21 +6,19 @@ import { CrudActions } from '@src/emuns/crudActions';
 import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlCatalogoCreate, urlCreatePersona, urlDetailPersona, urlUpdatePersona } from '@src/services/urls';
+import { urlCreatePersona, urlDetailPersona, urlUpdatePersona } from '@src/services/urls';
+import { CustomNextPage } from '@src/types/next';
 import { formatearFechaBackend } from '@src/utils/date';
 import { AxiosResponse } from 'axios';
 import classNames from 'classnames';
-import { NextPage } from 'next';
 import { useRouter } from 'next/dist/client/router';
-import { PrimeIcons } from 'primereact/api';
 import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
-import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 
-const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ crudAction, id }) => {
+const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any }> = ({ crudAction, id }) => {
   const methods = useForm({ mode: 'onChange' });
 
   const router = useRouter();
@@ -33,12 +31,8 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
     },
     onError: () => {
       addErrorToast('No se ha podido encontrar el registro');
-      router.push('/medicamentos');
+      router.push('/personas');
     },
-  });
-
-  const queryCatalogo = useQuery(['catalogo-create'], () => API.private().get(urlCatalogoCreate), {
-    enabled: crudAction === CrudActions.CREATE,
   });
 
   const updateMutation = useMutation<any>((formData: any) => API.private().put(urlUpdatePersona(id), formData));
@@ -66,7 +60,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
       alert('Ha ocurrido un problema al guardar la información');
     }
   };
-  console.log(queryCatalogo);
+
   return (
     <FormProvider {...methods}>
       <PrivateLayout
@@ -75,22 +69,13 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
         }}
       >
         <main className="container-fluid">
-          <div className="d-flex flex-row my-3 justify-content-center">
-            <div className="align-self-center">
-              <Button href="/personas" sm rounded icon={PrimeIcons.ARROW_LEFT} outlined />
-            </div>
-            {CrudActions.CREATE === crudAction && (
-              <h3 className="text-center align-self-center">Registro de información</h3>
-            )}
-            {CrudActions.UPDATE === crudAction && <h3 className="text-center align-self-center">Editar información</h3>}
-          </div>
-
+          <h1 className="text-center my-5">Información del pasciente</h1>
           <div className="row justify-content-center mb-5">
-            <div className="col-11 border mb-5">
+            <div className="col-11 lg:col-10 xl:col-8 border mb-5">
               <div className="row justify-content-center">
-                <div className="col-11 mb-5">
+                <div className="col-11 m-5">
                   <form onSubmit={methods.handleSubmit(_onSubmit)} className="row mb-5">
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label htmlFor="tipoIdentificacion">Tipo de identificación: *</label>
                       <Controller
                         name="tipoIdentificacion"
@@ -100,7 +85,6 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                             inputId="tipoIdentificacion"
                             options={['CEDULA', 'PASAPORTE', 'OTRO']}
                             {...field}
-                            showClear
                             placeholder="Seleccione"
                             className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
                           />
@@ -108,7 +92,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="tipoIdentificacion" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Identificación: *</label>
                       <Controller
                         name="identificacion"
@@ -123,7 +107,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="identificacion" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Primer Nombre: *</label>
                       <Controller
                         name="primerNombre"
@@ -138,7 +122,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="primerNombre" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Segundo Nombre: *</label>
                       <Controller
                         name="segundoNombre"
@@ -152,7 +136,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="segundoNombre" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Primer Apellido: *</label>
                       <Controller
                         name="primerApellido"
@@ -167,7 +151,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="primerApellido" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Segundo Apellido: *</label>
                       <Controller
                         name="segundoApellido"
@@ -181,7 +165,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="segundoApellido" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Fecha de Nacimiento: *</label>
                       <Controller
                         name="fechaNacimiento"
@@ -200,7 +184,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="fechaNacimiento" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Celular: *</label>
                       <Controller
                         name="celular"
@@ -215,7 +199,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="celular" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Teléfono: *</label>
                       <Controller
                         name="telefono"
@@ -231,7 +215,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       <ErrorMessage name="telefono" />
                     </div>
                     {/** ESpecial**/}
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Correo: *</label>
                       <Controller
                         name="correo"
@@ -247,7 +231,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="correo" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label htmlFor="estadoCivil">Estado Civil: *</label>
                       <Controller
                         name="estadoCivil"
@@ -257,7 +241,6 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                             inputId="estadoCivil"
                             options={['SOLTERO', 'CASADO', 'DIVORCIADO', 'VIUDO', 'UNION LIBRE']}
                             {...field}
-                            showClear
                             placeholder="Seleccione"
                             className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
                           />
@@ -265,7 +248,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="estadoCivil" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label htmlFor="genero">Género: *</label>
                       <Controller
                         name="genero"
@@ -275,7 +258,6 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                             inputId="genero"
                             options={['MASCULINO', 'FEMENINO']}
                             {...field}
-                            showClear
                             placeholder="Seleccione"
                             className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
                           />
@@ -283,17 +265,16 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="genero" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label htmlFor="sexo">Sexo: *</label>
                       <Controller
-                        name="genero"
+                        name="sexo"
                         rules={{ required: 'Este campo es obligatorio' }}
                         render={({ field, fieldState }) => (
                           <Dropdown
                             inputId="sexo"
                             options={['HOMBRE', 'MUJER', 'OTRO']}
                             {...field}
-                            showClear
                             placeholder="Seleccione"
                             className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
                           />
@@ -301,7 +282,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="sexo" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label htmlFor="pais">País: *</label>
                       <Controller
                         name="pais"
@@ -310,7 +291,6 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                             inputId="pais"
                             options={PAISES}
                             {...field}
-                            showClear
                             filter
                             filterMatchMode="contains"
                             placeholder="Seleccione"
@@ -320,7 +300,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="pais" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Calle Principal: *</label>
                       <Controller
                         name="callePrincipal"
@@ -335,7 +315,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="callePrincipal" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Número de casa:</label>
                       <Controller
                         name="numeroCasa"
@@ -344,7 +324,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                         )}
                       />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Calle Secundaria: *</label>
                       <Controller
                         name="calleSecundaria"
@@ -358,7 +338,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       />
                       <ErrorMessage name="calleSecundaria" />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Referencia:</label>
                       <Controller
                         name="referencia"
@@ -367,7 +347,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                         )}
                       />
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 my-2">
                       <label>Sector:</label>
                       <Controller
                         name="sector"
@@ -377,7 +357,7 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                     <hr className="my-5" />
                     <div className="col-12">
                       <div className="row">
-                        <div className="col-md-6">
+                        <div className="col-md-6 my-2">
                           <label htmlFor="sexo">Tipo de Sangre: *</label>
                           <Controller
                             name="tipoSangre"
@@ -386,26 +366,25 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                                 inputId="tipoSangre"
                                 options={['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-']}
                                 {...field}
-                                showClear
                                 placeholder="Seleccione"
                                 className={classNames('w-full')}
                               />
                             )}
                           />
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-6 my-2">
                           <label htmlFor="tieneIess" className="w-full">
                             Tiene seguro de IESS?
                           </label>
                           <Toggle name="tieneIess" size="lg" />
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-6 my-2">
                           <label htmlFor="tieneHipertencion" className="w-full">
                             Tiene Hipertención?
                           </label>
                           <Toggle name="tieneHipertencion" size="lg" />
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-6 my-2">
                           <label htmlFor="tieneDiabetes" className="w-full">
                             Tiene diabetes?
                           </label>
@@ -414,57 +393,13 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
                       </div>
                     </div>
 
-                    {crudAction === CrudActions.CREATE && (
-                      <React.Fragment>
-                        <hr className="my-5" />
-
-                        <div className="col-12">
-                          <label htmlFor="usuario.generar" className="w-full">
-                            Generar un usuario?
-                          </label>
-                          <Toggle name="usuario.generar" size="lg" defaultValue={false} />
-                        </div>
-
-                        {methods.watch('usuario.generar') && (
-                          <React.Fragment>
-                            <div className="col-md-6">
-                              <label className="w-full">Seleccione el rol para el usuario:</label>
-                              <ErrorMessage name="usuario.rol" />
-                              <Controller
-                                name="usuario.rol"
-                                rules={{ required: 'Es necesario seleccionar un rol!' }}
-                                render={({ field }) => (
-                                  <React.Fragment>
-                                    {queryCatalogo?.data?.data?.roles?.map((rol) => (
-                                      <div className="w-full" key={rol.value}>
-                                        <input
-                                          type="radio"
-                                          name="usuario.rol"
-                                          id={rol.value}
-                                          checked={field.value === rol.value}
-                                          onChange={() => field.onChange(rol.value)}
-                                        />
-                                        <label className="font-bold" htmlFor={rol.value}>
-                                          {rol.label}
-                                        </label>
-                                      </div>
-                                    ))}
-                                  </React.Fragment>
-                                )}
-                              />
-                            </div>
-                          </React.Fragment>
-                        )}
-                      </React.Fragment>
-                    )}
-
                     <div className="row mt-3">
                       <div className="col-12">
                         <div className="row">
-                          <div className="col-md-6">
+                          <div className="col-md-6 my-2">
                             <Button label="Regresar" block href="/personas" variant="info" />
                           </div>
-                          <div className="col-md-6">
+                          <div className="col-md-6 my-2">
                             <Button label="Guardar" block type="submit" />
                           </div>
                         </div>
@@ -481,11 +416,11 @@ const CreatePersonaPage: NextPage<{ crudAction: CrudActions; id: any }> = ({ cru
   );
 };
 
-CreatePersonaPage.getInitialProps = ({ query }) => query as any;
+FormPascientePage.getInitialProps = ({ query }) => query as any;
 
-CreatePersonaPage.help ={
-  title:'Formulario de registro de datos de personas dentro del sistema',
-  content:'Formulario de ingreso de datos de personas',
-}
+FormPascientePage.help = {
+  title: 'Formulario de registro de datos de personas dentro del sistema',
+  content: 'Formulario de ingreso de datos de personas',
+};
 
-export default CreatePersonaPage;
+export default FormPascientePage;

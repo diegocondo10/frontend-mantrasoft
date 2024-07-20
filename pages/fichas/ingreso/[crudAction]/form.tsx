@@ -6,6 +6,7 @@ import DropDown from '@src/components/Forms/DropDown';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
 import TextArea from '@src/components/Forms/TextArea';
 import TextInput from '@src/components/Forms/TextInput';
+import { REQUIRED_RULE } from '@src/constants/rules';
 import { CrudActions } from '@src/emuns/crudActions';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
@@ -18,10 +19,10 @@ import {
 import { NextPage } from 'next';
 import router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
-import uuid from 'uuid';
+import * as uuid from 'uuid';
 
 const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActions }> = ({ id, crudAction }) => {
   const methods = useForm({ mode: 'onChange' });
@@ -80,33 +81,31 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
         </div>
         <FormProvider {...methods}>
           <form className="row justify-content-center" onSubmit={methods.handleSubmit(onSubmit)}>
-            <div className="md:col-8 lg:col-6">
+            <div className="md:col-6 lg:col-6 my-2">
               <label htmlFor="paciente" className="w-full font-bold">
                 Buscar paciente: *
               </label>
 
               <DropDown
-                controller={{ name: 'paciente', rules: { required: 'Este campo es obligatorio' } }}
+                controller={{ name: 'paciente', rules: { ...REQUIRED_RULE } }}
                 options={queryCatalogo?.data?.data?.pacientes || []}
                 block
                 filter
                 filterMatchMode="contains"
-                showClear
+                disabled={crudAction === CrudActions.UPDATE}
               />
 
               <ErrorMessage name="paciente" />
             </div>
 
-            <div className="md:col-8 lg:col-5">
+            <div className="md:col-6 lg:col-5 my-2">
               <label htmlFor="paciente" className="w-full font-bold">
                 Buscar Habitación: *
               </label>
-
               <DropDown
-                controller={{ name: 'habitacion', rules: { required: 'Este campo es obligatorio' } }}
+                controller={{ name: 'habitacion', rules: { ...REQUIRED_RULE } }}
                 options={queryCatalogo?.data?.data?.habitaciones || []}
                 block
-                showClear
                 optionLabel="label"
                 optionGroupLabel="label"
                 optionGroupChildren="items"
@@ -123,51 +122,51 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-12 border">
+              <div className="col-12 lg:col-11 border">
                 <div className="d-flex flex-column m-3">
-                  <h3>INFORMACIÓN GENERAL</h3>
-                  <div className="my-2">
-                    <label htmlFor="contenido.viveCon" className="font-bold">
-                      VIVE CON: *
-                    </label>
-                    <TextInput
-                      controller={{ name: 'contenido.viveCon', rules: { required: 'Este campo es obligatorio' } }}
-                      block
-                    />
-                    <ErrorMessage name="contenido.viveCon" />
-                  </div>
-                  <div className="my-2">
-                    <label htmlFor="contenido.ocupacionAnterior" className="font-bold">
-                      OCUPACIÓN ANTERIOR: *
-                    </label>
-                    <TextInput
-                      controller={{
-                        name: 'contenido.ocupacionAnterior',
-                        rules: { required: 'Este campo es obligatorio' },
-                      }}
-                      block
-                    />
-                    <ErrorMessage name="contenido.ocupacionAnterior" />
-                  </div>
-                  <div className="my-2">
-                    <label htmlFor="contenido.ocupacionActual" className="font-bold">
-                      OCUPACIÓN ACTUAL: *
-                    </label>
-                    <TextInput
-                      controller={{
-                        name: 'contenido.ocupacionActual',
-                        rules: { required: 'Este campo es obligatorio' },
-                      }}
-                      block
-                    />
-                    <ErrorMessage name="contenido.ocupacionActual" />
+                  <h3 className="text-center">INFORMACIÓN GENERAL</h3>
+                  <div className="row">
+                    <div className="lg:col-6">
+                      <label htmlFor="contenido.viveCon" className="font-bold">
+                        VIVE CON: *
+                      </label>
+                      <TextInput controller={{ name: 'contenido.viveCon', rules: { ...REQUIRED_RULE } }} block />
+                      <ErrorMessage name="contenido.viveCon" />
+                    </div>
+                    <div className="lg:col-6">
+                      <label htmlFor="contenido.ocupacionAnterior" className="font-bold">
+                        OCUPACIÓN ANTERIOR: *
+                      </label>
+                      <TextInput
+                        controller={{
+                          name: 'contenido.ocupacionAnterior',
+                          rules: { ...REQUIRED_RULE },
+                        }}
+                        block
+                      />
+                      <ErrorMessage name="contenido.ocupacionAnterior" />
+                    </div>
+
+                    <div className="lg:col-6">
+                      <label htmlFor="contenido.ocupacionActual" className="font-bold">
+                        OCUPACIÓN ACTUAL: *
+                      </label>
+                      <TextInput
+                        controller={{
+                          name: 'contenido.ocupacionActual',
+                          rules: { ...REQUIRED_RULE },
+                        }}
+                        block
+                      />
+                      <ErrorMessage name="contenido.ocupacionActual" />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-12 border">
+              <div className="lg:col-11 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
                     <label htmlFor="contenido.motivoConsulta" className="font-bold">
@@ -177,7 +176,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                       label="INFORMANTE: *"
                       controller={{
                         name: 'contenido.informante',
-                        rules: { required: 'Este campo es obligatorio' },
+                        rules: { ...REQUIRED_RULE },
                       }}
                       options={[
                         {
@@ -193,11 +192,13 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                   </div>
 
                   <TextArea
+                    className="mt-2"
                     controller={{
                       name: 'contenido.motivoConsulta',
                       defaultValue: '',
-                      rules: { required: 'Este campo es obligatorio' },
+                      rules: { ...REQUIRED_RULE },
                     }}
+                    rows={4}
                   />
 
                   <ErrorMessage name="contenido.motivoConsulta" />
@@ -206,13 +207,13 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-12 border">
+              <div className="lg:col-11 border">
                 <div className="d-flex flex-column m-3">
                   <div className="row justify-content-between">
-                    <label className="col-12 font-bold md:col-6" htmlFor="contenido.enfermedades">
+                    <label className="col-12 font-bold md:col-6 align-self-start" htmlFor="contenido.enfermedades">
                       2. ENFERMEDADES O PROBLEMA ACTUAL: *
                     </label>
-                    <h6 className="md:text-right col-12 md:col-6">
+                    <h6 className="md:text-justify col-12 md:col-6">
                       CRONOLOGÍA, LOCALIZACIÓN, CARACTERÍSTICAS, INTENSIDAD, CAUSA APARENTE, FACTORES QUE AGRAVAN O
                       MEJORAN, SÍNTOMAS ASOCIADOS, EVOLUCIÓN, RESULTADOS DE EXÁMENES ANTERIORES
                     </h6>
@@ -222,7 +223,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                       controller={{
                         name: 'contenido.enfermedades',
                         defaultValue: '',
-                        rules: { required: 'Este campo es obligatorio' },
+                        rules: { ...REQUIRED_RULE },
                       }}
                       block
                     />
@@ -235,8 +236,10 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                       controller={{
                         name: 'contenido.medicamentos',
                         defaultValue: '',
-                        rules: { required: 'Este campo es obligatorio' },
+                        rules: { ...REQUIRED_RULE },
                       }}
+                      rows={5}
+                      autoResize
                       block
                     />
                     <ErrorMessage name="contenido.medicamentos" />
@@ -270,13 +273,13 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-12 border">
+              <div className="lg:col-11 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
-                    <label className="my-1">3. REVISIÓN ACTUAL DE SISTEMAS: </label>
+                    <h4 className="my-1 font-bold">3. REVISIÓN ACTUAL DE SISTEMAS: </h4>
                     <div className="my-1">
-                      <h6>REDONDO = CON PATOLOGÍA: DESCRIBIR</h6>
-                      <h6>CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
+                      <h6 className="font-bold">REDONDO = CON PATOLOGÍA: DESCRIBIR</h6>
+                      <h6 className="font-bold">CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
                     </div>
                     <CheckOptionsInlineCirculoCuadrado
                       options={[
@@ -337,15 +340,17 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-12 border">
+              <div className="lg:col-11 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
-                    <label className="my-1">4. ANTECEDENTES PERSONALES: </label>
+                    <h4 className="my-1 font-bold">4. ANTECEDENTES PERSONALES: </h4>
                     <div className="my-1">
-                      <h6>REDONDO = CON PATOLOGÍA: DESCRIBIR</h6>
-                      <h6>CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
+                      <h6 className="font-bold">REDONDO = CON PATOLOGÍA: DESCRIBIR</h6>
+                      <h6 className="font-bold">CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
                     </div>
+
                     <div className="w-100">
+                      <hr className="my-5" />
                       <CheckOptionsMultipleInline
                         label="ALERTAS DE RIESGO"
                         options={[
@@ -391,7 +396,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                         controller={{ name: 'contenido.antecedentesPersonales.alertasRiesgo.observaciones' }}
                         block
                       />
-                      <hr />
+                      <hr className="my-5" />
                     </div>
                     <div className="w-100">
                       <CheckOptionsInlineCirculoCuadrado
@@ -447,7 +452,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                           },
                         ]}
                       />
-                      <hr />
+                      <hr className="my-5" />
                     </div>
 
                     <div className="w-100">
@@ -484,7 +489,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                         controller={{ name: 'contenido.antecedentesPersonales.habitosNocivos.observaciones' }}
                         block
                       />
-                      <hr />
+                      <hr className="my-5" />
                     </div>
 
                     <div className="w-100">
@@ -587,7 +592,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                         controller={{ name: 'contenido.antecedentesPersonales.clinicoquirurgicos.observaciones' }}
                         block
                       />
-                      <hr />
+                      <hr className="my-5" />
                     </div>
 
                     <div className="w-100">
@@ -643,7 +648,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                         controller={{ name: 'contenido.antecedentesPersonales.ginecoobstetricos.observaciones' }}
                         block
                       />
-                      <hr />
+                      <hr className="my-5" />
                     </div>
 
                     <div className="w-100">
@@ -668,7 +673,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                         controller={{ name: 'contenido.antecedentesPersonales.andrologicos.observaciones' }}
                         block
                       />
-                      <hr />
+                      <hr className="my-5" />
                     </div>
 
                     <div className="w-100">
@@ -742,16 +747,16 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-12 border">
+              <div className="lg:col-11 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
-                    <label className="my-1">5. ANTECEDENTES FAMILIARES Y SOCIALES: </label>
+                    <h4 className="my-1 font-bold">5. ANTECEDENTES FAMILIARES Y SOCIALES: </h4>
                     <div className="my-1">
-                      <h6>REDONDO = CON PATOLOGÍA: DESCRIBIR</h6>
-                      <h6>CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
+                      <h6 className="font-bold">REDONDO = CON PATOLOGÍA: DESCRIBIR</h6>
+                      <h6 className="font-bold">CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
                     </div>
 
-                    <div className="w-100">
+                    <div className="w-100 my-4">
                       <CheckOptionsInlineCirculoCuadrado
                         options={[
                           {
@@ -827,14 +832,13 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-12 border">
+              <div className="lg:col-11 border">
                 <div className="d-flex flex-column m-3">
-                  <label className="my-1">6. SIGNOS VITALES, ANTROPOMETRIA Y TAMIZAJE: </label>
+                  <h4 className="my-4 font-bold">6. SIGNOS VITALES, ANTROPOMETRIA Y TAMIZAJE: </h4>
                   <div className="d-flex flex-row flex-wrap justify-content-around">
-                    {/* P. ARTERIAL ACOSTADO */}
                     <div className="d-flex flex-column text-center">
                       <label
-                        htmlFor="contenido.signosVitales.presionAterial.sentado.numerador"
+                        htmlFor="contenido.signosVitales.presionAterial.acostado.numerador"
                         style={{ maxWidth: '10rem' }}
                       >
                         P. ARTERIAL ACOSTADO
@@ -842,7 +846,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                       <div className="w-100">
                         <div className="p-inputgroup justify-content-center">
                           <TextInput
-                            id="contenido.signosVitales.presionAterial.sentado.numerador"
+                            id="contenido.signosVitales.presionAterial.acostado.numerador"
                             className="text-center"
                             style={{ maxWidth: '6rem' }}
                             controller={{ name: 'contenido.signosVitales.presionAterial.acostado.numerador' }}
@@ -932,7 +936,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                     </div>
                   </div>
 
-                  <hr />
+                  <hr className="my-5" />
 
                   <div className="d-flex flex-row flex-wrap justify-content-around">
                     {/* PESO / kg */}
@@ -1050,7 +1054,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                     {/* FIN row */}
                   </div>
 
-                  <hr />
+                  <hr className="my-5" />
 
                   <div className="d-flex flex-row flex-wrap justify-content-between">
                     <div>
@@ -1106,13 +1110,13 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
             </div>
 
             <div className="row justify-content-center my-3">
-              <div className="col-12 border">
+              <div className="lg:col-11 border">
                 <div className="d-flex flex-column m-3">
                   <div className="d-flex flex-row flex-wrap justify-content-between">
                     <h4 className="my-1 font-bold">7. EXAMEN FÍSICO: </h4>
                     <div className="my-1">
-                      <h6>REDONDO = CON PATOLOGÍA: DESCRIBIRCON EL NUMERO</h6>
-                      <h6>CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
+                      <h6 className="font-bold">REDONDO = CON PATOLOGÍA: DESCRIBIRCON EL NUMERO</h6>
+                      <h6 className="font-bold">CUADRADO = SIN PATOLOGÍA: NO DESCRIBIR</h6>
                     </div>
 
                     <div className="w-100">
@@ -1207,7 +1211,7 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                       />
 
                       <TextArea controller={{ name: 'contenido.examenFisico.regional.observaciones' }} block />
-                      <hr />
+                      <hr className="my-5" />
                     </div>
 
                     <div className="w-100">
@@ -1276,11 +1280,11 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                 </div>
               </div>
             </div>
-            {/* SECCION 8 */}
+
             <div className="row justify-content-center my-3">
-              <div className="col-12 border">
+              <div className="lg:col-11 border">
                 <div className="d-flex flex-column m-3">
-                  <h4 className="font-bold">8. DIAGNOSTICOS</h4>
+                  <h4 className="font-bold my-4">8. DIAGNOSTICOS</h4>
                   <Controller
                     name="contenido.diagnosticos.items"
                     defaultValue={[]}
@@ -1454,11 +1458,11 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
                 </div>
               </div>
             </div>
-            {/* SECCION 9 */}
+
             <div className="row justify-content-center my-3">
-              <div className="col-12 border">
+              <div className="lg:col-11 border">
                 <div className="d-flex flex-column m-3">
-                  <h4 className="font-bold">9. PRUEBAS DIAGNÓSTICAS:</h4>
+                  <h4 className="font-bold my-4">9. PRUEBAS DIAGNÓSTICAS:</h4>
                   <h6>REGISTRAR LOS EXÁMENES DE LABORATORIO Y ESPECIALES SOLICITADOS</h6>
                   <div>
                     <TextArea controller={{ name: 'contenido.pruebasDiagnosticas.observaciones' }} block />
@@ -1467,10 +1471,10 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
               </div>
             </div>
             <div className="row justify-content-center my-3">
-              <div className="col-12 border">
+              <div className="lg:col-11 border">
                 <div className="d-flex flex-column m-3">
-                  <h4>10. TRATAMIENTO</h4>
-                  <h6>1.FUNCIONAL, 2.NUTRICIONAL, 3.PSICOLÓGICO, 4.SOCIAL, 5.EDUCATIVO, 6.FARMACOLÓGICO</h6>
+                  <h4 className="font-bold my-4">10. TRATAMIENTO</h4>
+                  <h6>1. FUNCIONAL, 2. NUTRICIONAL, 3. PSICOLÓGICO, 4. SOCIAL, 5. EDUCATIVO, 6. FARMACOLÓGICO</h6>
                   <div>
                     <TextArea controller={{ name: 'contenido.tratamiento.observaciones' }} block />
                   </div>
@@ -1496,9 +1500,9 @@ const FichaIngresoFormPage: NextPage<{ id: string | number; crudAction: CrudActi
 };
 
 FichaIngresoFormPage.getInitialProps = ({ query }) => query as any;
-FichaIngresoFormPage.help ={
-  title:'Formulario de registro de ficha de ingreso del paciente',
-  content:'Formulario de ingreso de datos de ficha de ingreso del paciente',
-}
+FichaIngresoFormPage.help = {
+  title: 'Formulario de registro de ficha de ingreso del paciente',
+  content: 'Formulario de ingreso de datos de ficha de ingreso del paciente',
+};
 
 export default FichaIngresoFormPage;
