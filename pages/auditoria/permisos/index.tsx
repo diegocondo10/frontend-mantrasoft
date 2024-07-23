@@ -35,14 +35,14 @@ const Permisos: NextPage<any> = (props) => {
       <main className="container-fluid">
         <h1 className="text-center my-5">
           Listado de permisos
-          <Button 
-            outlined 
-            sm 
-            icon={PrimeIcons.PLUS} 
-            variant="success" 
-            rounded 
-            href="/auditoria/permisos/create/form" 
-            tooltip='Agregar Registro'
+          <Button
+            outlined
+            sm
+            icon={PrimeIcons.PLUS}
+            variant="success"
+            rounded
+            href="/auditoria/permisos/create/form"
+            tooltip="Agregar Registro"
           />
         </h1>
 
@@ -68,7 +68,6 @@ const Permisos: NextPage<any> = (props) => {
                 style={{ width: '100px' } as CSSProperties}
                 body={(rowData) => (
                   <ButtonMenu
-                    block
                     label="Opciones"
                     icon={PrimeIcons.COG}
                     variant="info"
@@ -95,6 +94,6 @@ const Permisos: NextPage<any> = (props) => {
 Permisos.help = {
   title: 'Dashboard de permisos',
   content: 'Presenta información de los roles ingresados conjunto con las acciones a realizar sobre los registros',
-}
+};
 
 export default Permisos;

@@ -112,7 +112,7 @@ const GeneracionHorarioPage: NextPage<{ startDate: string; endDate: string }> = 
                       {fila?.dias?.map((dia, indexDia) => (
                         <th className="text-center p-0 m-0 align-vertical-middle" key={dia?.fecha}>
                           <Dropdown
-                            className="p-inputtext-sm rounded-0 dropdown__horario w-100"
+                            className="p-inputtext-sm rounded-0 dropdown__horario w-full"
                             options={query?.data?.data?.jornadas}
                             panelClassName="p-0 m-0 dropdown__horario"
                             dataKey="id"

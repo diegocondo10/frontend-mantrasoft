@@ -118,7 +118,7 @@ const HoraMedicacion = (props) => {
               <TextArea block controller={{ name: 'observacion', rules: { required: 'Este campo es obligatorio' } }} />
               <ErrorMessage name="observacion" />
 
-              <label htmlFor="autorizadoPor" className="w-100">
+              <label htmlFor="autorizadoPor" className="w-full">
                 Autorizado por:
               </label>
 

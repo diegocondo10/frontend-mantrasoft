@@ -1,0 +1,34 @@
+/* Importando la fuente Roboto desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif; /* Fuente principal */
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Roboto', sans-serif; /* Fuente para encabezados */
+}
+
+h4,
+h5,
+h6 {
+  font-family: 'Roboto', sans-serif; /* Fuente para subtítulos */
+}
+
+p {
+  font-family: 'Roboto', sans-serif; /* Fuente para párrafos */
+}
+
+em {
+  font-family: 'Roboto', sans-serif; /* Fuente para texto destacado */
+}
+
+strong {
+  font-family: 'Roboto', sans-serif; /* Fuente para texto importante */
+}
+
+label {
+  font-family: 'Roboto', sans-serif; /* Fuente para etiquetas */
+}

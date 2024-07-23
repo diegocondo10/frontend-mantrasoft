@@ -2,19 +2,11 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   swcMinify: true,
-  webpack5: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
-  cssLoaderOptions: {
-    url: false,
-  },
   typescript: {
     ignoreBuildErrors: true,
-    forceConsistentCasingInFileNames: false,
-  },
-  experimental: {
-    styledComponents: true,
   },
   reactStrictMode: true,
   compress: true,

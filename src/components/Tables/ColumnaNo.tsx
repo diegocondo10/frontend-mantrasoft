@@ -4,7 +4,7 @@ import React, { CSSProperties } from 'react';
 const ColumnaNo = (props = null) => {
   return (
     <Column
-      header="No"
+      header="#"
       bodyClassName="text-center"
       headerClassName="text-center"
       style={{ width: props?.width } as CSSProperties}

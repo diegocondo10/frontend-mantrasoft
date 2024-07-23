@@ -1,11 +1,13 @@
 @import '~normalize.css/normalize.css';
-@import '~bootswatch/dist/flatly/bootstrap.min.css';
 @import '~primeflex/primeflex.css';
 @import '~primeicons/primeicons.css';
+
 @import '~primereact/resources/primereact.min.css';
-@import '~primereact/resources/themes/tailwind-light/theme.css';
-@import '~react-bootstrap-toggle/dist/bootstrap2-toggle.css';
+@import '~primereact/resources/themes/lara-light-blue/theme.css';
+@import '~react-datepicker/dist/react-datepicker.css';
 @import './var.scss';
+@import './overrides/index.scss';
+@import './typography.scss';
 
 .grid-container {
   height: 100vh !important;
@@ -18,18 +20,14 @@
   }
 }
 
-label {
-  font-size: 1.3rem;
-}
-
 .mt-label {
   margin-top: 25.36px;
 }
 
 .checkbox-round {
   margin-top: -0.5rem;
-  width: 1em;
-  height: 1em;
+  width: 1.2em;
+  height: 1.2em;
   background-color: white;
   border-radius: 50%;
   vertical-align: middle;
@@ -47,8 +45,8 @@ label {
 
 .checkbox-cuadrado {
   margin-top: -0.5rem;
-  width: 1em;
-  height: 1em;
+  width: 1.2em;
+  height: 1.2em;
   background-color: white;
   border-radius: 0% !important;
   vertical-align: middle;
@@ -91,23 +89,15 @@ label {
   }
 }
 
-.d-print {
-  display: none;
-}
-
-// @media print {
-//   @page {
-//     size: landscape;
-//   }
-//   .d-print {
-//     display: flex;
-//   }
-//   .d-print-none {
-//     display: none;
-//   }
-//   // margin-left: 1rem;
-// }
-
 .overlay-medicacion {
   z-index: 1055 !important;
+}
+
+.p-column-filter.p-inputtext.p-component {
+  border-width: 1px;
+  border-color: #3b82f6;
+}
+
+th.p-filter-column {
+  padding: 0.5rem 0.5rem;
 }

@@ -13,7 +13,7 @@ const PERTENENECIAS = 'pertenencias/';
 const ALAS = 'alas/';
 const HORARIOS = 'horarios/';
 const SEGUIMIENTOS_ENFERMERIA = `seguimientos-enfermeria/`;
-const TRATAMIENTOS_BASE = `tratamientos-base/`;
+const TRATAMIENTOS_BASE = `tratamientos/`;
 const SIGNO_VITALES = 'signos-vitales/';
 /**
  * AUTH

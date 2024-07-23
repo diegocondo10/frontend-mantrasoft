@@ -1,5 +1,5 @@
+import { Checkbox } from 'primereact/checkbox';
 import React from 'react';
-import ReactToggle from 'react-bootstrap-toggle';
 import { Controller } from 'react-hook-form';
 import { ControllerProps } from './types';
 
@@ -13,23 +13,32 @@ export interface ToggleProps extends ControllerProps {
   active?: boolean;
 }
 
-const Toggle: React.FC<ToggleProps> = (props) => {
+const Toggle: React.FC<ToggleProps> = ({ name, rules, defaultValue, on = 'SI', off = 'NO', size }) => {
   return (
     <Controller
-      name={props.name}
-      rules={props.rules}
-      defaultValue={props.defaultValue}
+      name={name}
+      rules={rules}
+      defaultValue={defaultValue}
       render={({ field }) => (
-        <ReactToggle
-          onClick={field.onChange}
-          on={props?.on || 'SI'}
-          off={props?.on || 'NO'}
-          size={props.size || 'lg'}
-          handleClassName="bg-white"
-          offstyle={props.offstyle || 'dark'}
-          onstyle={props.offstyle || 'primary'}
-          active={field.value}
-        />
+        <div className="flex align-items-center gap-2">
+          <Checkbox
+            inputId={name}
+            checked={field.value}
+            onChange={(e) => {
+              field.onChange(e.checked);
+            }}
+          />
+          {field?.value && (
+            <label className="text-base text-blue-800" htmlFor={name}>
+              {on}
+            </label>
+          )}
+          {!field?.value && (
+            <label className="text-base text-blue-800" htmlFor={name}>
+              {off}
+            </label>
+          )}
+        </div>
       )}
     />
   );

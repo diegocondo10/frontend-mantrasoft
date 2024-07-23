@@ -17,8 +17,8 @@ export interface CheckOptionsInlineCirculoCuadradoProps {
 const CheckOptionsInlineCirculoCuadrado: React.FC<CheckOptionsInlineCirculoCuadradoProps> = (props) => {
   return (
     <React.Fragment>
-      <div className="d-flex flex-row flex-wrap">
-        {props.label && <label className="me-3 font-bold">{props.label}</label>}
+      <div className="flex flex-row flex-wrap">
+        {props.label && <label className="me-3 font-bold w-full text-xl">{props.label}</label>}
         <div>
           {props.options.map((option) => (
             <Controller
@@ -30,45 +30,36 @@ const CheckOptionsInlineCirculoCuadrado: React.FC<CheckOptionsInlineCirculoCuadr
                 ...option.controller.defaultValue,
               }}
               render={({ field }) => (
-                <div className="d-inline-flex flex-wrap me-5 w-full md:w-max">
-                  <div className="d-inline-flex flex-wrap">
-                    <div>
-                      <label style={{ fontSize: '1.25rem' }} className="me-2 select-all">
-                        {option.labelText}
-                      </label>
-                      <HiddenField name={`${option.controller.name}.label`} defaultValue={option.labelText} />
-                      <HiddenField name={`${option.controller.name}.valueCirculo`} defaultValue={option.valueCirculo} />
-                      <HiddenField
-                        name={`${option.controller.name}.valueCuadrado`}
-                        defaultValue={option.valueCuadrado}
-                      />
-                      <div className="d-inline-block">
-                        <input
-                          className="align-self-center checkbox-round"
-                          type="checkbox"
-                          id={`${option.labelText}-circulo`}
-                          checked={field.value?.circuloChecked}
-                          onChange={(evt) =>
-                            field.onChange({
-                              circuloChecked: evt.target.checked,
-                              cuadradoChecked: false,
-                            })
-                          }
-                        />
+                <div className="flex flex-wrap mr-5 w-full my-2">
+                  <label className="mr-2 select-all align-self-center">{option.labelText}</label>
+                  <HiddenField name={`${option.controller.name}.label`} defaultValue={option.labelText} />
+                  <HiddenField name={`${option.controller.name}.valueCirculo`} defaultValue={option.valueCirculo} />
+                  <HiddenField name={`${option.controller.name}.valueCuadrado`} defaultValue={option.valueCuadrado} />
+                  <div className="flex flex-row">
+                    <input
+                      className="align-self-center checkbox-round"
+                      type="checkbox"
+                      id={`${option.labelText}-circulo`}
+                      checked={field.value?.circuloChecked}
+                      onChange={(evt) =>
+                        field.onChange({
+                          circuloChecked: evt.target.checked,
+                          cuadradoChecked: false,
+                        })
+                      }
+                    />
 
-                        <input
-                          className="align-self-center ms-2 checkbox-cuadrado"
-                          type="checkbox"
-                          checked={field.value?.cuadradoChecked}
-                          onChange={(evt) =>
-                            field.onChange({
-                              cuadradoChecked: evt.target.checked,
-                              circuloChecked: false,
-                            })
-                          }
-                        />
-                      </div>
-                    </div>
+                    <input
+                      className="align-self-center ml-2 checkbox-cuadrado"
+                      type="checkbox"
+                      checked={field.value?.cuadradoChecked}
+                      onChange={(evt) =>
+                        field.onChange({
+                          cuadradoChecked: evt.target.checked,
+                          circuloChecked: false,
+                        })
+                      }
+                    />
                   </div>
                 </div>
               )}

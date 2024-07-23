@@ -18,7 +18,6 @@ import { useQuery } from 'react-query';
 import ReactToPrint from 'react-to-print';
 
 const HorariosPage: NextPage<any> = ({ start, end }) => {
-
   const methods = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -255,7 +254,7 @@ const HorariosPage: NextPage<any> = ({ start, end }) => {
                           {fila?.dias?.map((dia, indexDia) => (
                             <th className="text-center p-0 m-0 align-vertical-middle" key={dia?.fecha}>
                               <Dropdown
-                                className="p-inputtext-sm rounded-0 dropdown__horario w-100"
+                                className="p-inputtext-sm rounded-0 dropdown__horario w-full"
                                 options={query?.data?.data?.jornadas}
                                 placeholder="SELECCIONAR"
                                 panelClassName="p-0 m-0 dropdown__horario"

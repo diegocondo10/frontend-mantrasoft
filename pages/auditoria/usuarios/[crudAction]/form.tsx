@@ -2,19 +2,21 @@ import Button from '@src/components/Button';
 import DropDown from '@src/components/Forms/DropDown';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
 import TextInput from '@src/components/Forms/TextInput';
+import PageTitle from '@src/components/PageTitle';
 import { CrudActions } from '@src/emuns/crudActions';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
 import { urlCatalogoFormUsuarios, urlCreateUsuarios, urlUpdateUsuarios } from '@src/services/urls';
+import { CustomNextPage } from '@src/types/next';
+import { commandPush } from '@src/utils/router';
 import { AxiosResponse } from 'axios';
-import { NextPage } from 'next';
+import { GetServerSideProps } from 'next';
 import router from 'next/router';
-import { PrimeIcons } from 'primereact/api';
 import { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 
-const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }> = (props) => {
+const FormUsuarioPage: CustomNextPage<{ id: string | number; crudAction: CrudActions; title: string }> = (props) => {
   const methods = useForm({ mode: 'onChange' });
 
   const catalogo = useQuery<AxiosResponse<any>>(
@@ -68,96 +70,103 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
   };
   return (
     <FormProvider {...methods}>
-      <PrivateLayout title="Usuario" loading={{ loading: query.isFetching || catalogo.isFetching }}>
-        <main className="container">
-          <h1 className="text-center my-5">
-            <Button outlined rounded href="/auditoria/usuarios" icon={PrimeIcons.ARROW_LEFT} />
-            Formulario de Usuario
-          </h1>
-          <div className="row justify-content-center">
-            <div className="col-11 border">
-              <div className="row justify-content-center">
-                <div className="col-12">
-                  <form onSubmit={methods.handleSubmit(_onSubmit)} className="row justify-content-center py-5">
-                    <div className="col-10 my-1">
-                      <label htmlFor="username">Username: *</label>
-                      <TextInput
-                        block
-                        controller={{ name: 'username', rules: { required: 'Este campo es obligatorio' } }}
-                      />
-                      <ErrorMessage name="username" />
-                    </div>
+      <PrivateLayout
+        title="Usuario"
+        loading={{ loading: query.isFetching || catalogo.isFetching }}
+        breadCrumbItems={[
+          {
+            label: 'Usuarios',
+            command: commandPush('/auditoria/usuarios'),
+          },
+          {
+            label: props.title,
+          },
+        ]}
+      >
+        <main className="grid grid-nogutter justify-content-center my-5">
+          <div className="col-12">
+            <PageTitle>{props.title}</PageTitle>
+          </div>
+          <div className="col-11 lg:col-10 border-1 border-gray-200">
+            <form onSubmit={methods.handleSubmit(_onSubmit)} className="grid justify-content-center py-5">
+              <div className="col-10 my-1">
+                <label className="mb-2" htmlFor="username">
+                  Identificador: *
+                </label>
+                <TextInput
+                  disabled={crudAction === CrudActions.UPDATE}
+                  block
+                  controller={{ name: 'username', rules: { required: 'Este campo es obligatorio' } }}
+                />
+                <ErrorMessage name="username" />
+              </div>
 
-                    <div className="col-10 md:col-5 my-1">
-                      <label htmlFor="firstName">Primer nombre: *</label>
-                      <TextInput
-                        block
-                        controller={{ name: 'firstName', rules: { required: 'Este campo es obligatorio' } }}
-                      />
-                      <ErrorMessage name="firstName" />
-                    </div>
+              <div className="col-10 md:col-5 my-1">
+                <label className="mb-2" htmlFor="firstName">
+                  Primer nombre: *
+                </label>
+                <TextInput block controller={{ name: 'firstName', rules: { required: 'Este campo es obligatorio' } }} />
+                <ErrorMessage name="firstName" />
+              </div>
 
-                    <div className="col-10 md:col-5 my-1">
-                      <label htmlFor="secondName">Segundo nombre: *</label>
-                      <TextInput block controller={{ name: 'secondName' }} />
-                      <ErrorMessage name="secondName" />
-                    </div>
+              <div className="col-10 md:col-5 my-1">
+                <label className="mb-2" htmlFor="secondName">
+                  Segundo nombre: *
+                </label>
+                <TextInput block controller={{ name: 'secondName' }} />
+                <ErrorMessage name="secondName" />
+              </div>
 
-                    <div className="col-10 md:col-5 my-1">
-                      <label htmlFor="lastName">Primer apellido: *</label>
-                      <TextInput
-                        block
-                        controller={{ name: 'lastName', rules: { required: 'Este campo es obligatorio' } }}
-                      />
-                      <ErrorMessage name="lastName" />
-                    </div>
+              <div className="col-10 md:col-5 my-1">
+                <label className="mb-2" htmlFor="lastName">
+                  Primer apellido: *
+                </label>
+                <TextInput block controller={{ name: 'lastName', rules: { required: 'Este campo es obligatorio' } }} />
+                <ErrorMessage name="lastName" />
+              </div>
 
-                    <div className="col-10 md:col-5 my-1">
-                      <label htmlFor="secondLastName">Segundo apellido: *</label>
-                      <TextInput block controller={{ name: 'secondLastName' }} />
-                      <ErrorMessage name="secondLastName" />
-                    </div>
+              <div className="col-10 md:col-5 my-1">
+                <label className="mb-2" htmlFor="secondLastName">
+                  Segundo apellido: *
+                </label>
+                <TextInput block controller={{ name: 'secondLastName' }} />
+                <ErrorMessage name="secondLastName" />
+              </div>
 
-                    <div className="col-10 my-1">
-                      <label htmlFor="email">Email: *</label>
-                      <TextInput
-                        block
-                        controller={{ name: 'email', rules: { required: 'Este campo es obligatorio' } }}
-                      />
-                      <ErrorMessage name="email" />
-                    </div>
-                    <div className="col-10 my-1">
-                      <label htmlFor="rol" className="w-full">
-                        Rol Asignado: *
-                      </label>
-                      <DropDown
-                        controller={{
-                          name: 'rol',
-                          rules: {
-                            required: 'Este campo es obligatorio',
-                          },
-                        }}
-                        filter
-                        block
-                        options={catalogo?.data?.data?.roles}
-                      />
-                      <ErrorMessage name="rol" />
-                    </div>
+              <div className="col-10 my-1">
+                <label className="mb-2" htmlFor="email">
+                  Email: *
+                </label>
+                <TextInput block controller={{ name: 'email', rules: { required: 'Este campo es obligatorio' } }} />
+                <ErrorMessage name="email" />
+              </div>
+              <div className="col-10 my-1">
+                <label className="my-5" htmlFor="rol">
+                  Rol Asignado: *
+                </label>
+                <DropDown
+                  controller={{
+                    name: 'rol',
+                    rules: {
+                      required: 'Este campo es obligatorio',
+                    },
+                  }}
+                  filter
+                  block
+                  options={catalogo?.data?.data?.roles}
+                />
+                <ErrorMessage name="rol" />
+              </div>
 
-                    <div className="col-10">
-                      <div className="row">
-                        <div className="col-md-6 my-2">
-                          <Button label="Regresar" block href="/auditoria/usuarios/" variant="info" />
-                        </div>
-                        <div className="col-md-6 my-2">
-                          <Button label="Guardar" block type="submit" onClick={methods.handleSubmit(_onSubmit)} />
-                        </div>
-                      </div>
-                    </div>
-                  </form>
+              <div className="col-10 grid grid-nogutter justify-content-between">
+                <div className="md:col-5 my-2">
+                  <Button label="Regresar" block href="/auditoria/usuarios/" variant="info" outlined />
+                </div>
+                <div className="md:col-5 my-2">
+                  <Button label="Guardar" block type="submit" outlined onClick={methods.handleSubmit(_onSubmit)} />
                 </div>
               </div>
-            </div>
+            </form>
           </div>
         </main>
       </PrivateLayout>
@@ -165,8 +174,15 @@ const FormUsuarioPage: NextPage<{ id: string | number; crudAction: CrudActions }
   );
 };
 
-FormUsuarioPage.getInitialProps = ({ query }) => query as any;
-
+export const getServerSideProps: GetServerSideProps<any> = async ({ query }) => {
+  const crudAction = query.crudAction;
+  return {
+    props: {
+      ...query,
+      title: crudAction === CrudActions.CREATE ? 'Crear usuario' : 'Editar usuario',
+    },
+  };
+};
 FormUsuarioPage.help = {
   title: 'Formulario de registro de usuarios',
   content: 'Formulario de ingreso de parámetros para la creación de usuarios',

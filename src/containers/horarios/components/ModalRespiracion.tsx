@@ -59,14 +59,14 @@ const ModalRespiracion: React.FC<{ paciente: any }> = ({ paciente }) => {
       >
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <label htmlFor="valor" className="w-100">
+            <label htmlFor="valor" className="w-full">
               Ingrese la respiración
             </label>
             <RenderField
               name="id"
               defaultValue={null}
-              render={() => <strong className="text-center text-success w-100">Registrado</strong>}
-              renderIfNotValue={() => <strong className="text-center text-danger w-100">Sin Registrar</strong>}
+              render={() => <strong className="text-center text-success w-full">Registrado</strong>}
+              renderIfNotValue={() => <strong className="text-center text-danger w-full">Sin Registrar</strong>}
             />
             <div className="w-full my-3">
               <NumberInput

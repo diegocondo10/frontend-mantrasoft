@@ -67,7 +67,7 @@ const HeaderMedicamentoModal = ({ medicamento, index, paciente, medicacion }) =>
       {showForm && (
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <label htmlFor="autorizadoPor" className="w-100">
+            <label htmlFor="autorizadoPor" className="w-full">
               Autorizado por:
             </label>
 
@@ -100,7 +100,7 @@ const HeaderMedicamentoModal = ({ medicamento, index, paciente, medicacion }) =>
 
             <ErrorMessage name="autorizadoPor" />
 
-            <label htmlFor="hora" className="w-100">
+            <label htmlFor="hora" className="w-full">
               Hora: *
             </label>
             <TextInput
@@ -110,7 +110,7 @@ const HeaderMedicamentoModal = ({ medicamento, index, paciente, medicacion }) =>
             />
             <ErrorMessage name="hora" />
 
-            <label htmlFor="observacion" className="w-100">
+            <label htmlFor="observacion" className="w-full">
               Motivo:
             </label>
 

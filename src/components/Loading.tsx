@@ -8,24 +8,24 @@ export interface LoadingWrapperProps {
   className?: string;
 }
 
-const Loading: React.FC<LoadingWrapperProps> = (props) => {
-  if (!props.loading) {
-    return <>{props.children}</>;
+const Loading: React.FC<React.PropsWithChildren<LoadingWrapperProps>> = ({
+  loading = false,
+  texto = 'Cargando...',
+  className,
+  children,
+}) => {
+  if (!loading) {
+    return <>{children}</>;
   }
   return (
     <div
       style={{ height: '100%', overflow: 'hidden' }}
-      className={classNames('d-flex flex-column justify-content-center text-center', props?.className)}
+      className={classNames('flex flex-column justify-content-center text-center', className)}
     >
       <ProgressSpinner />
-      <h4>{props.texto}</h4>
+      <p className="text-xl">{texto}</p>
     </div>
   );
-};
-
-Loading.defaultProps = {
-  loading: false,
-  texto: 'Cargando...',
 };
 
 export default Loading;

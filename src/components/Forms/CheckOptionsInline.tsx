@@ -1,3 +1,4 @@
+import { Checkbox } from 'primereact/checkbox';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import ErrorMessage from './ErrorMessage';
@@ -19,28 +20,27 @@ const CheckOptionsInline: React.FC<CheckOptionsInlineProps> = (props) => {
     <Controller
       {...controller}
       render={({ field }) => (
-        <div className="d-flex flex-column">
-          <div className="d-inline-flex flex-wrap">
-            <label className="me-3 font-bold w-full md:w-max">{props.label}</label>
-            <div className="d-inline-flex flex-wrap">
-              {props.options.map((option) => (
-                <div key={option.labelText} className="w-full md:w-max">
-                  <label style={{ fontSize: '1.25rem' }} className="sm:mr-3" htmlFor={option.labelText}>
-                    {option.labelText}
-                    <input
-                      className="align-self-center ms-2"
-                      type="checkbox"
-                      //   value={option.value}
-                      checked={field.value === option.value}
-                      id={option.labelText}
-                      onChange={() => field.onChange(option.value)}
-                    />
-                  </label>
-                </div>
-              ))}
-            </div>
+        <div className="flex flex-column">
+          <div className="flex flex-row flex-wrap align-items-center">
+            <label className="mr-3 font-bold w-full md:w-max">{props.label}</label>
+            {props.options.map((option) => (
+              <div key={option.labelText} className="w-full md:w-max">
+                <label className="sm:mr-3 align-self-center" htmlFor={option.labelText}>
+                  {option.labelText}
+                  <Checkbox
+                    className="align-self-center ml-2"
+                    type="checkbox"
+                    checked={field.value === option.value}
+                    inputId={option.labelText}
+                    onChange={() => field.onChange(option.value)}
+                  />
+                </label>
+              </div>
+            ))}
           </div>
-          <ErrorMessage name={controller.name} />
+          <div className="text-center">
+            <ErrorMessage name={controller.name} />
+          </div>
         </div>
       )}
     />

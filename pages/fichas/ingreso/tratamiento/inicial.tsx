@@ -29,25 +29,26 @@ const TramientoInicialPage: NextPage<{ idFicha: string }> = ({ idFicha }) => {
   });
 
   const onSubmit = async (formData) => {
-    try {
-      setGuardando(true);
-      formData.fechaInicio = formatearFechaBackend(formData.fechaInicio);
-      formData.pacienteId = idFicha;
-      formData.medicamentos = formData.medicamentos.map((item) => ({
-        ...item,
-        medicamentoId: item.medicamento.value,
-        medicamento: undefined,
-        uuid: undefined,
-        id: undefined,
-      }));
-      formData.paciente = undefined;
+    console.log(JSON.stringify(formData));
+    // try {
+    //   setGuardando(true);
+    //   formData.fechaInicio = formatearFechaBackend(formData.fechaInicio);
+    //   formData.pacienteId = idFicha;
+    //   formData.medicamentos = formData.medicamentos.map((item) => ({
+    //     ...item,
+    //     medicamentoId: item.medicamento.value,
+    //     medicamento: undefined,
+    //     uuid: undefined,
+    //     id: undefined,
+    //   }));
+    //   formData.paciente = undefined;
 
-      await API.private().put(urlCreateOrUpdateTratamientoInicial(idFicha), formData);
-      alert('Se ha guardado la información');
-    } catch (error) {
-      console.error(error);
-      alert('Ha ocurrido un problema al guardar la información');
-    }
+    //   await API.private().put(urlCreateOrUpdateTratamientoInicial(idFicha), formData);
+    //   alert('Se ha guardado la información');
+    // } catch (error) {
+    //   console.error(error);
+    //   alert('Ha ocurrido un problema al guardar la información');
+    // }
     setGuardando(false);
   };
 

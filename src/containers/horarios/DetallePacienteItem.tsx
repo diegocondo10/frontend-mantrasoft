@@ -226,7 +226,7 @@ const DetallePacienteItem = ({ paciente, index, medicacion, loadingMedicamentos 
   return (
     <Accordion.Item eventKey={eventKey}>
       <Accordion.Header>
-        <div className="w-100 d-flex align-self-center flex-row flex-wrap justify-content-between">
+        <div className="w-full d-flex align-self-center flex-row flex-wrap justify-content-between">
           <h6>
             {paciente?.str} {isActive && query.isFetching && <i className={`${PrimeIcons.SPINNER} pi-spin`} />}
           </h6>

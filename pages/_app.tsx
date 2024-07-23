@@ -1,10 +1,11 @@
-import HelpButton from '@src/components/HelpButton';
 import '@styles/index.scss';
+import { es } from 'date-fns/locale/es';
 import moment from 'moment';
 import 'moment/locale/es';
 import { AppProps } from 'next/dist/shared/lib/router/router';
-import { addLocale, locale } from 'primereact/api';
-import React, { useEffect } from 'react';
+import { addLocale, PrimeReactProvider } from 'primereact/api';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
+import { registerLocale } from 'react-datepicker';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { defaults } from 'react-sweet-state';
 import { ToastProvider } from 'react-toast-notifications';
@@ -32,30 +33,50 @@ const setLocale = () => {
     monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
     today: 'Hoy',
     clear: 'Limpiar',
+    apply: 'Aplicar',
   });
-  locale('es');
+  // locale('es');
   moment.locale('es');
 };
 
-const Hydratation: React.FC = ({ children }) => {
-  return <div suppressHydrationWarning>{typeof window === 'undefined' ? null : children}</div>;
+const Hydratation: React.FC<PropsWithChildren> = ({ children }) => {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
+  return <>{children}</>;
 };
+
 export const queryClient = new QueryClient();
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     setLocale();
     defaults.devtools = true;
+    registerLocale('es', es);
   }, []);
 
   return (
     <Hydratation>
-      <QueryClientProvider client={queryClient}>
-        <ToastProvider autoDismiss autoDismissTimeout={10000} placement="top-right">
-          <Component {...pageProps} />
-        </ToastProvider>
-      </QueryClientProvider>
-      {Component?.help && <HelpButton title={Component.help?.title} content={Component?.help?.content} />}
+      <PrimeReactProvider
+        value={{
+          locale: 'es',
+        }}
+      >
+        <QueryClientProvider client={queryClient}>
+          <ToastProvider autoDismiss autoDismissTimeout={10000} placement="top-right">
+            <Component {...pageProps} />
+          </ToastProvider>
+        </QueryClientProvider>
+        {/* {Component?.help && <HelpButton title={Component.help?.title} content={Component?.help?.content} />} */}
+      </PrimeReactProvider>
     </Hydratation>
   );
 }
+
 export default MyApp;

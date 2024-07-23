@@ -10,18 +10,17 @@ import {
   urlListarAlasLabelValueHabitaciones,
   urlUpdateHabitacion,
 } from '@src/services/urls';
+import { CustomNextPage } from '@src/types/next';
+import { commandPush } from '@src/utils/router';
 import { AxiosResponse } from 'axios';
 import classNames from 'classnames';
-import { NextPage } from 'next';
 import { useRouter } from 'next/dist/client/router';
-import { PrimeIcons } from 'primereact/api';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
-import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useMutation, useQuery } from 'react-query';
 
-const HabitacionFormPage: NextPage<{ crudAction: CrudActions; id?: string | number }> = ({ crudAction, id }) => {
+const HabitacionFormPage: CustomNextPage<{ crudAction: CrudActions; id?: string | number }> = ({ crudAction, id }) => {
   const methods = useForm({ mode: 'onChange' });
   const router = useRouter();
   const { addErrorToast } = useToasts();
@@ -61,89 +60,85 @@ const HabitacionFormPage: NextPage<{ crudAction: CrudActions; id?: string | numb
       loading={{
         loading: query.isLoading || createMutation.isLoading || updateMutation.isLoading,
       }}
+      breadCrumbItems={[
+        {
+          label: 'Habitaciones',
+          command: commandPush('/habitaciones'),
+        },
+        {
+          label: 'Formulario de habitaciones',
+        },
+      ]}
     >
-      <main className="container-fluid">
-        <div className="d-flex flex-row my-3 justify-content-center">
-          <div className="align-self-center">
-            <Button href="/habitaciones/" sm rounded icon={PrimeIcons.ARROW_LEFT} outlined />
-          </div>
-          {CrudActions.CREATE === crudAction && (
-            <h3 className="text-center align-self-center">Registro de información</h3>
-          )}
-          {CrudActions.UPDATE === crudAction && <h3 className="text-center align-self-center">Editar información</h3>}
+      <main className="grid grid-nogutter justify-content-center my-5">
+        <div className="col-12 text-center">
+          <p className="text-5xl text-gray-600">
+            {crudAction === CrudActions.UPDATE && 'Editar habitación'}
+            {crudAction === CrudActions.CREATE && 'Crear habitación'}
+          </p>
         </div>
+        <div className="col-11 md:col-8 lg:col-6 border-1 border-gray-300">
+          <div className="p-6">
+            <FormProvider {...methods}>
+              <form onSubmit={methods.handleSubmit(_onSubmit)} className="grid justify-content-around">
+                <div className="col-12 my-2">
+                  <label htmlFor="ala">Ala: *</label>
+                  <Controller
+                    name="ala"
+                    rules={{ required: 'Este campo es obligatorio' }}
+                    render={({ field, fieldState }) => (
+                      <Dropdown
+                        inputId="ala"
+                        options={queryAlas?.data?.data || []}
+                        {...field}
+                        placeholder="Seleccione"
+                        className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
+                      />
+                    )}
+                  />
+                  <ErrorMessage name="ala" />
+                </div>
+                <div className="col-12 md:col-6 my-2">
+                  <label>N° de Habitación: *</label>
+                  <Controller
+                    name="numero"
+                    rules={{ required: 'Este campo es obligatorio' }}
+                    render={({ field, fieldState }) => (
+                      <InputText
+                        id="numero"
+                        {...field}
+                        className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
+                      />
+                    )}
+                  />
+                  <ErrorMessage name="numero" />
+                </div>
+                <div className="col-12 md:col-6 my-2">
+                  <label>Capacidad: *</label>
+                  <Controller
+                    name="capacidadPacientes"
+                    rules={{ required: 'Este campo es obligatorio' }}
+                    render={({ field, fieldState }) => (
+                      <InputText
+                        id="capacidadPacientes"
+                        {...field}
+                        className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
+                      />
+                    )}
+                  />
+                  <ErrorMessage name="capacidadPacientes" />
+                </div>
 
-        <div className="row justify-content-center">
-          <div className="col-11 border">
-            <div className="row justify-content-center">
-              <div className="col-11">
-                <FormProvider {...methods}>
-                  <form onSubmit={methods.handleSubmit(_onSubmit)} className="row">
-                    <div className="col-md-6">
-                      <label htmlFor="ala">Ala: *</label>
-                      <Controller
-                        name="ala"
-                        rules={{ required: 'Este campo es obligatorio' }}
-                        render={({ field, fieldState }) => (
-                          <Dropdown
-                            inputId="ala"
-                            options={queryAlas?.data?.data || []}
-                            {...field}
-                            showClear
-                            placeholder="Seleccione"
-                            className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
-                          />
-                        )}
-                      />
-                      <ErrorMessage name="ala" />
-                    </div>
-                    <div className="col-md-6">
-                      <label>N° de Habitación: *</label>
-                      <Controller
-                        name="numero"
-                        rules={{ required: 'Este campo es obligatorio' }}
-                        render={({ field, fieldState }) => (
-                          <InputText
-                            id="numero"
-                            {...field}
-                            className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
-                          />
-                        )}
-                      />
-                      <ErrorMessage name="numero" />
-                    </div>
-                    <div className="col-md-6">
-                      <label>Capacidad: *</label>
-                      <Controller
-                        name="capacidadPacientes"
-                        rules={{ required: 'Este campo es obligatorio' }}
-                        render={({ field, fieldState }) => (
-                          <InputText
-                            id="capacidadPacientes"
-                            {...field}
-                            className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
-                          />
-                        )}
-                      />
-                      <ErrorMessage name="capacidadPacientes" />
-                    </div>
-
-                    <div className="row mt-3">
-                      <div className="col-12">
-                        <div className="row">
-                          <div className="col-md-6">
-                            <Button label="Regresar" block href="/habitaciones/" variant="info" />
-                          </div>
-                          <div className="col-md-6">
-                            <Button label="Guardar" block type="submit" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </FormProvider>
-              </div>
-            </div>
+                <div className="col-10 grid grid-nogutter justify-content-between">
+                  <div className="col-12 md:col-5 my-2">
+                    <Button outlined label="Regresar" block href="/habitaciones" variant="info" />
+                  </div>
+                  <div className="col-12 md:col-5 my-2">
+                    <Button outlined label="Guardar" block type="submit" onClick={methods.handleSubmit(_onSubmit)} />
+                  </div>
+                </div>
+              </form>
+            </FormProvider>
           </div>
         </div>
       </main>
@@ -152,9 +147,9 @@ const HabitacionFormPage: NextPage<{ crudAction: CrudActions; id?: string | numb
 };
 
 HabitacionFormPage.getInitialProps = ({ query }) => query as any;
-HabitacionFormPage.help ={
-  title:'Formulario de registro de habitación',
-  content:'Formulario de ingreso de datos de habitaciones',
-}
+HabitacionFormPage.help = {
+  title: 'Formulario de registro de habitación',
+  content: 'Formulario de ingreso de datos de habitaciones',
+};
 
 export default HabitacionFormPage;

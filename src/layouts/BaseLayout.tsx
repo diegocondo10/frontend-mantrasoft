@@ -9,24 +9,23 @@ export interface BaseLayoutProps extends HeadHtmlProps {
   loading?: LoadingWrapperProps;
 }
 
-const BaseLayout: React.FC<BaseLayoutProps> = (props) => {
+const BaseLayout: React.FC<BaseLayoutProps> = ({ header, loading, title, children }) => {
   const headerRef = useRef<HTMLElement>(null);
   return (
-    <React.Fragment>
-      <HeadHtml title={props.title} />
-      <div className="d-flex flex-row vh-100 w-100">
-        <div className="d-flex flex-column w-100">
-          {props.header && <header ref={headerRef}>{props.header}</header>}
-          <Loading {...props?.loading}>
+    <>
+      <HeadHtml title={title} />
+      <div className="flex flex-row h-screen w-full">
+        <div className="flex flex-column w-full">
+          {header && <header ref={headerRef}>{header}</header>}
+          <Loading {...loading}>
             <div
-              className="m-0 p-0"
+              className="m-0 p-0 overflow-y-auto"
               style={{
-                overflowY: 'auto',
-                height: `calc(100% - ${headerRef?.current?.offsetHeight || 0})`,
+                height: `calc(100% - ${headerRef.current?.offsetHeight || 0}px)`,
                 scrollBehavior: 'smooth',
               }}
             >
-              {props.children}
+              {children}
               <ScrollTop
                 target="parent"
                 threshold={400}
@@ -37,7 +36,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = (props) => {
           </Loading>
         </div>
       </div>
-    </React.Fragment>
+    </>
   );
 };
 

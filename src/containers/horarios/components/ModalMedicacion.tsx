@@ -148,7 +148,7 @@ const ModalMedicacion = ({ medicacion, loadingMedicamentos, paciente }) => {
                   <ErrorMessage name="medicamento" />
                 </div>
                 <div className="w-full">
-                  <label htmlFor="hora" className="w-100">
+                  <label htmlFor="hora" className="w-full">
                     Hora: *
                   </label>
                   <TextInput

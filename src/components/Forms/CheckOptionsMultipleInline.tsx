@@ -1,3 +1,4 @@
+import { Checkbox } from 'primereact/checkbox';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import HiddenField from './HiddenField';
@@ -17,7 +18,7 @@ const CheckOptionsMultipleInline: React.FC<CheckOptionsMultipleInlineProps> = (p
   return (
     <React.Fragment>
       <div className="d-flex flex-row flex-wrap">
-        {props.label && <label className="me-3 w-100 font-bold">{props.label}</label>}
+        {props.label && <label className="mr-3 w-full font-bold text-xl">{props.label}</label>}
         <div>
           {props.options.map((option) => (
             <Controller
@@ -28,25 +29,23 @@ const CheckOptionsMultipleInline: React.FC<CheckOptionsMultipleInlineProps> = (p
                 ...option.controller?.defaultValue,
               }}
               render={({ field }) => (
-                <div className="d-inline-flex flex-wrap w-full md:w-max md:mr-5">
-                  <div className="d-inline-flex flex-wrap">
-                    <label style={{ fontSize: '1.25rem' }} htmlFor={option.labelText}>
-                      {option.labelText}
-                      <HiddenField name={`${option.controller.name}.label`} defaultValue={option.labelText} />
-                      <HiddenField name={`${option.controller.name}.value`} defaultValue={option.value} />
-                      <input
-                        className="align-self-center ms-1"
-                        type="checkbox"
-                        id={option.labelText}
-                        checked={field.value?.checked}
-                        onChange={(evt) => {
-                          field.onChange({
-                            checked: evt.target.checked,
-                          });
-                        }}
-                      />
-                    </label>
-                  </div>
+                <div className="flex flex-row w-full md:w-max md:mr-5 my-1">
+                  <label className="align-self-center" htmlFor={option.labelText}>
+                    {option.labelText}
+                    <HiddenField name={`${option.controller.name}.label`} defaultValue={option.labelText} />
+                    <HiddenField name={`${option.controller.name}.value`} defaultValue={option.value} />
+                  </label>
+                  <Checkbox
+                    className="align-self-center ml-1"
+                    type="checkbox"
+                    inputId={option.labelText}
+                    checked={field.value?.checked}
+                    onChange={(evt) => {
+                      field.onChange({
+                        checked: evt.target.checked,
+                      });
+                    }}
+                  />
                 </div>
               )}
             />

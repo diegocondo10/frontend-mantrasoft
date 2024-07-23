@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { CalendarProps, Calendar } from 'primereact/calendar';
+import { Calendar, CalendarProps } from 'primereact/calendar';
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import { ControllerProps } from './types';
@@ -20,7 +20,8 @@ const DateInput: React.FC<DateInputProps> = (props) => {
           {...rest}
           locale="es"
           dateFormat="dd/mm/yy"
-          className={classNames(rest.className, { 'p-invalid': fieldState.invalid, 'w-full': props.block })}
+          className={classNames(rest.className, { 'w-full': props.block })}
+          invalid={fieldState.invalid}
           name={field.name}
           inputRef={field.ref}
           placeholder="DD/MM/yyyy"
