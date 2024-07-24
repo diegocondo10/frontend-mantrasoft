@@ -9,21 +9,6 @@
 @import './overrides/index.scss';
 @import './typography.scss';
 
-.grid-container {
-  height: 100vh !important;
-  width: 100%;
-  display: grid;
-  .center {
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-  }
-}
-
-.mt-label {
-  margin-top: 25.36px;
-}
-
 .checkbox-round {
   margin-top: -0.5rem;
   width: 1.2em;
@@ -89,15 +74,26 @@
   }
 }
 
-.overlay-medicacion {
-  z-index: 1055 !important;
+// Mixin para bordes
+@mixin border-style($color) {
+  border-width: $border-width;
+  border-color: $color;
 }
 
-.p-column-filter.p-inputtext.p-component {
-  border-width: 1px;
-  border-color: #3b82f6;
+.p-datatable-table {
+  th.p-filter-column {
+    padding: $padding $padding;
+  }
+
+  .p-column-filter {
+    .p-inputtext.p-component,
+    .p-multiselect.p-component {
+      @include border-style($primary-color);
+    }
+  }
 }
 
-th.p-filter-column {
-  padding: 0.5rem 0.5rem;
+.custom-datepicker-panel {
+  z-index: 99999999 !important; /* Ajusta el z-index según sea necesario */
+  background-color: red;
 }

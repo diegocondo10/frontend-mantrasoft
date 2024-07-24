@@ -1,32 +1,35 @@
 import Button from '@src/components/Button';
 import ButtonMenu from '@src/components/ButtonMenu';
-import ColumnaNo from '@src/components/Tables/ColumnaNo';
-import TablaPaginada from '@src/components/Tables/TablaPaginada';
-import usePagination from '@src/hooks/usePagination';
+import PageTitle from '@src/components/PageTitle';
+import PaginatedTable from '@src/components/Tables/PaginatedTable';
+import usePagination from '@src/hooks/v2/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
-import API from '@src/services/api';
-import { urlDeleteHabitacion, urlListarHabitaciones } from '@src/services/urls';
+import { urlListarHabitaciones } from '@src/services/urls';
 import { CustomNextPage } from '@src/types/next';
 import { commandPush } from '@src/utils/router';
-import { PrimeIcons } from 'primereact/api';
+import { FilterMatchMode, PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { InputText } from 'primereact/inputtext';
-import { CSSProperties, useState } from 'react';
+import { CSSProperties } from 'react';
 
 const HabitacionesPage: CustomNextPage = () => {
-  const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch, refetch } = usePagination({
+  const pagination = usePagination({
     uri: urlListarHabitaciones,
     key: 'ListadoHabitaciones',
+    defaultFilters: {
+      numero: {
+        value: '',
+        matchMode: FilterMatchMode.EQUALS,
+      },
+      capacidad_pacientes: {
+        value: '',
+        matchMode: FilterMatchMode.EQUALS,
+      },
+      ala: {
+        value: [],
+        matchMode: FilterMatchMode.EQUALS,
+      },
+    },
   });
-
-  const cabecera = (
-    <div className="flex flex-wrap justify-content-between">
-      <InputText className="w-20rem border-1 border-primary" type="search" placeholder="Buscar" value={search} onChange={setSearch} />
-      <Button icon={PrimeIcons.PLUS} href="/habitaciones/create/form/" label="Agregar" outlined />
-    </div>
-  );
-
-  const [eliminando, setEliminando] = useState(false);
 
   return (
     <PrivateLayout
@@ -38,25 +41,41 @@ const HabitacionesPage: CustomNextPage = () => {
       ]}
     >
       <main className="flex flex-column">
-        <p className="text-center my-5 text-5xl text-gray-600">Habitaciones</p>
-
-        <TablaPaginada
-          value={data?.data?.data || []}
-          header={cabecera}
-          first={page}
-          rows={data?.data?.pagina?.registrosPorPagina}
-          totalRecords={data?.data?.pagina?.registrosTotales}
-          onChangePage={setPage}
-          onOrdering={setOrdering}
-          multiSortMeta={ordering}
-          loading={isLoading || eliminando}
+        <PageTitle>Habitaciones</PageTitle>
+        <PaginatedTable
+          {...pagination.tableProps}
+          showIndexColumn
+          header={
+            <div className="flex flex-wrap">
+              <Button
+                className="ml-auto"
+                icon={PrimeIcons.PLUS}
+                href="/habitaciones/create/form/"
+                label="Agregar"
+                outlined
+              />
+            </div>
+          }
         >
-          {ColumnaNo()}
-
-          <Column header="No. habitación" field="numero" sortable />
-          <Column header="Capacidad" field="capacidadPacientes" sortable />
-          <Column header="Ala" field="alaTitulo" />
-          <Column header="Fecha de registro" field="createdAtStr" sortable sortField="createdAt" />
+          <Column
+            header="No. habitación"
+            field="numero"
+            sortable
+            filter
+            filterPlaceholder="Buscar"
+            showFilterMenu={false}
+          />
+          <Column
+            header="Capacidad"
+            field="capacidadPacientes"
+            sortable
+            filter
+            filterField="capacidad_pacientes"
+            filterPlaceholder="Buscar"
+            showFilterMenu={false}
+          />
+          <Column header="Ala" field="ala" sortable filter filterPlaceholder="Buscar" showFilterMenu={false} />
+          <Column header="Fecha de registro" field="createdAt" sortable sortField="createdAt" />
           <Column
             header="Acciones"
             bodyClassName="p-0 m-0 text-center"
@@ -73,7 +92,7 @@ const HabitacionesPage: CustomNextPage = () => {
               />
             )}
           />
-        </TablaPaginada>
+        </PaginatedTable>
       </main>
     </PrivateLayout>
   );

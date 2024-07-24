@@ -44,7 +44,7 @@ const PrivateNavbar = () => {
             {
               label: 'Horarios',
               icon: PrimeIcons.CLOCK,
-              url: '/horarios/',
+              url: '/horarios/asignacion',
             },
             {
               label: 'Medicamentos',

@@ -1,4 +1,4 @@
-import { urlEnfermeras, urlJornadas } from '@src/containers/horarios/urls';
+import { urlCreateUpdateHorario, urlEnfermeras, urlHorarioByDate, urlJornadas } from '@src/containers/horarios/urls';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
 import { CustomNextPage } from '@src/types/next';
@@ -15,29 +15,51 @@ interface AsignacionHorarionsPageProps {
   q: string | null;
 }
 
+interface Enfermera {
+  value: number;
+  label: string;
+}
+
+interface Jornada {
+  id: string;
+  codigo: string;
+  color: string;
+  colorLetra: string;
+}
+
+interface Filas {
+  [key: string]: { value: string };
+}
+
+const buildStringDate = (date: Date): string => date.toISOString().split('T')[0];
+
+const getDiasDelMes = (selectedDate: Date) => {
+  const year = selectedDate.getFullYear();
+  const month = selectedDate.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  return Array.from({ length: daysInMonth }, (_, i) => new Date(year, month, i + 1));
+};
+
 const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({ q }) => {
   const router = useRouter();
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date(q || Date.now()));
 
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date(q));
+  const [enfermeras, setEnfermeras] = useState<Enfermera[]>([]);
 
-  const [enfermeras, setEnfermeras] = useState([]);
-  const [jornadas, setJornadas] = useState([]);
+  const [jornadas, setJornadas] = useState<Jornada[]>([]);
 
-  const [jornadasIndex, setJornadasIndex] = useState({});
+  const [jornadasIndex, setJornadasIndex] = useState<Record<number, Jornada>>({});
 
-  const [filas, setFilas] = useState({});
+  const [filas, setFilas] = useState<Filas>({});
 
-  const diasDelMes = useMemo(() => {
-    const year = selectedDate.getFullYear();
-    const month = selectedDate.getMonth();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    return Array.from({ length: daysInMonth }, (_, i) => new Date(year, month, i + 1));
-  }, [selectedDate]);
+  const diasDelMes = useMemo<Date[]>(() => getDiasDelMes(selectedDate), [selectedDate]);
 
   const queryCatalogos = useQuery(
     ['catalogos-horarios-asignacion'],
-    () => Promise.all([API.private().get(urlEnfermeras), API.private().get(urlJornadas)]),
+    ({ signal }) =>
+      Promise.all([API.private().get(urlEnfermeras, { signal }), API.private().get(urlJornadas, { signal })]),
     {
+      refetchOnWindowFocus: false,
       onSuccess: (response) => {
         setEnfermeras(response[0].data);
         setJornadas(response[1].data);
@@ -48,23 +70,42 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
           }, {}),
         );
       },
+    },
+  );
+
+  const queryAsignaciones = useQuery(
+    ['asignaciones', q],
+    ({ signal }) => API.private().post(urlHorarioByDate, { fecha: q }, { signal }),
+    {
       refetchOnWindowFocus: false,
+      onSuccess: ({ data }) => {
+        setFilas(data);
+      },
+      cacheTime: 0,
     },
   );
 
   const onSelectDate = (date: Date) => {
-    const formattedDate = date.toISOString().split('T')[0];
     router.replace({
       pathname: router.pathname,
-      query: { q: formattedDate },
+      query: {
+        q: buildStringDate(date),
+      },
     });
     setSelectedDate(date);
   };
 
-  const onChangeValue = (rowData: any, day: Date) => (event: DropdownChangeEvent) => {
+  const onChangeValue = (rowData: Enfermera, day: Date) => (event: DropdownChangeEvent) => {
+    const fechaString = buildStringDate(day);
+    const key = `${rowData.value}--${fechaString}`;
+    API.private().post(urlCreateUpdateHorario(rowData.value, event.value.id), {
+      fecha: fechaString,
+    });
     setFilas({
       ...filas,
-      [`${rowData.value}-${day.toDateString()}`]: event.value,
+      [key]: {
+        value: event.value.id,
+      },
     });
   };
 
@@ -84,19 +125,22 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
     >
       <main className="grid grid-nogutter justify-content-center">
         <div className="col-11 md:col-5 border-1 border-gray-200 text-center my-4 p-5">
-          <div className="flex flex-column">
-            <label htmlFor="fecha">Seleccione:*</label>
-            <DatePicker
-              id="fecha"
-              selected={selectedDate}
-              onChange={onSelectDate}
-              showMonthYearPicker
-              locale="es"
-              className="p-inputtext p-component font-semibold text-center"
-              calendarClassName="p-input"
-              dateFormat="MM/yyyy"
-              renderMonthContent={(_, fullMonthText) => <p className="uppercase">{fullMonthText}</p>}
-            />
+          <div className="max-w-19rem mx-auto">
+            <div className="flex flex-column">
+              <label htmlFor="fecha">Seleccione:*</label>
+              <DatePicker
+                id="fecha"
+                selected={selectedDate}
+                onChange={onSelectDate}
+                showMonthYearPicker
+                locale="es"
+                className="p-inputtext p-component font-semibold text-center"
+                calendarClassName="p-input"
+                dateFormat="MM/yyyy"
+                renderMonthContent={(_, fullMonthText) => <p className="uppercase">{fullMonthText}</p>}
+                portalId="root-portal"
+              />
+            </div>
           </div>
         </div>
 
@@ -106,20 +150,21 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
             scrollable
             scrollHeight="400px"
             showGridlines
-            frozenWidth="200px" // Ancho de las columnas congeladas
-            className="p-datatable-frozen" // Clase adicional para aplicar estilos personalizados si es necesario
+            frozenWidth="200px"
+            className="p-datatable-frozen"
+            loading={queryAsignaciones.isLoading}
           >
             <Column
               header="No"
               className="p-0 m-0 text-center font-bold"
-              style={{ zIndex: 99 }}
+              style={{ zIndex: 1 }}
               frozen
               body={(_, rowData) => rowData?.rowIndex + 1}
             />
             <Column
               header="Enfermera/o"
               field="label"
-              style={{ minWidth: '18rem', zIndex: 99 }}
+              style={{ minWidth: '18rem', zIndex: 1 }}
               frozen
               className="p-0 m-0 text-center"
             />
@@ -134,8 +179,8 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
                       className="p-inputtext-sm outline-none border-noround dropdown__horario w-full"
                       options={jornadas}
                       dropdownIcon={null}
-                      value={filas[`${rowData.value}-${day.toDateString()}`]}
-                      optionValue="id"
+                      placeholder="NA"
+                      value={jornadasIndex[filas[`${rowData.value}--${buildStringDate(day)}`]?.value]}
                       optionLabel="codigo"
                       onChange={onChangeValue(rowData, day)}
                       scrollHeight="6"

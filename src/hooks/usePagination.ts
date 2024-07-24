@@ -3,6 +3,11 @@ import { useCallback, useState } from 'react';
 import { useQuery } from 'react-query';
 import API from 'src/services/api';
 
+/**
+ * 
+ * @deprecated ahora se usa el usePagination hooks/v2
+ * 
+ */
 const usePagination = ({ uri, key }) => {
   const [page, setPage] = useState(0);
   const [ordering, setOrdering] = useState(null);

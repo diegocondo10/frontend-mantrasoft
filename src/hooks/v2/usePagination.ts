@@ -1,6 +1,11 @@
 import API from '@src/services/api';
-import { AxiosResponse } from 'axios';
-import { DataTableBaseProps, DataTableFilterMeta, DataTableFilterMetaData } from 'primereact/datatable';
+import { AxiosError, AxiosResponse } from 'axios';
+import {
+  DataTableBaseProps,
+  DataTableFilterMeta,
+  DataTableFilterMetaData,
+  DataTableSortMeta,
+} from 'primereact/datatable';
 import { useState } from 'react';
 import { QueryKey, useQuery, UseQueryResult } from 'react-query';
 
@@ -14,11 +19,17 @@ interface BuildUrlParams {
   url: string;
   page: number;
   filters: DataTableFilterMeta;
+  ordering: DataTableSortMeta[];
 }
 
-const buildUrl = ({ url, page, filters = {} }: BuildUrlParams): string => {
+const buildUrl = ({ url, page, filters = {}, ordering }: BuildUrlParams): string => {
   const queryString = new URLSearchParams();
-
+  if (ordering) {
+    const orderString = ordering.map((sort) => `${sort.order === 1 ? '' : '-'}${sort.field}`).join(',');
+    if (orderString !== '') {
+      queryString.append('ordering', orderString);
+    }
+  }
   if (page > 0) {
     queryString.append('page', String(page + 1));
   }
@@ -35,20 +46,22 @@ const buildUrl = ({ url, page, filters = {} }: BuildUrlParams): string => {
   return url + (queryParams ? `?${queryParams}` : '');
 };
 
-interface ResponseApi {
-  pagina: {
-    registrosTotales: number;
-    paginasTotales: number;
-    registrosPorPagina: number;
-  };
-  data: any[];
+interface Pagination {
+  registrosTotales: number;
+  paginasTotales: number;
+  registrosPorPagina: number;
 }
 
-const usePagination = <TData extends ResponseApi>({
+interface ResponseApi<T> {
+  pagina: Pagination;
+  data: T[];
+}
+
+const usePagination = <TData extends ResponseApi<any>>({
   uri,
   key,
   defaultFilters = {},
-}: PaginationOptions): UseQueryResult<AxiosResponse<TData>, unknown> & {
+}: PaginationOptions): UseQueryResult<AxiosResponse<TData>, AxiosError> & {
   page: number;
   setPage: (page: number) => void;
   filters: DataTableFilterMeta;
@@ -58,15 +71,13 @@ const usePagination = <TData extends ResponseApi>({
   const [page, setPage] = useState(0);
   const [filters, setFilters] = useState<DataTableFilterMeta>(defaultFilters);
 
-  const query = useQuery<AxiosResponse<TData>, unknown>(
-    [key, uri, page, filters],
+  const [multiSortMeta, setMultiSortMeta] = useState([]);
+
+  const query = useQuery<AxiosResponse<TData>, AxiosError>(
+    [key, uri, page, filters, multiSortMeta],
     async ({ signal }) => {
-      const url = buildUrl({
-        url: uri,
-        page,
-        filters,
-      });
-      return API.private().get<any>(url, { signal });
+      const url = buildUrl({ url: uri, page, filters, ordering: multiSortMeta });
+      return API.private().get<TData>(url, { signal });
     },
     {
       keepPreviousData: true,
@@ -83,18 +94,16 @@ const usePagination = <TData extends ResponseApi>({
     filters,
     setFilters,
     tableProps: {
-      onPage: (event) => {
-        setPage(event.page);
-      },
-      onFilter: (event) => {
-        setFilters(event.filter);
-      },
+      onPage: (event) => setPage(event.page),
+      onFilter: (event) => setFilters(event.filters),
       filters,
-      value: query.data.data?.data || [],
+      value: query.data?.data?.data || [],
       rows: query.data?.data?.pagina?.registrosPorPagina,
       totalRecords: query.data?.data?.pagina?.registrosTotales,
       first: page,
       loading: query.isLoading,
+      multiSortMeta: multiSortMeta,
+      onSort: (event) => setMultiSortMeta(event.multiSortMeta),
     },
   };
 };
