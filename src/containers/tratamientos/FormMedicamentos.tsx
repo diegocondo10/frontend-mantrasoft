@@ -35,7 +35,7 @@ const FormMedicamentos: React.FC<{ medicamentos: any[]; frecuencias: any[] }> = 
 
   return (
     <React.Fragment>
-      <Button outlined sm label="Agregar" icon={PrimeIcons.PLUS} variant="success" onClick={() => setVisible(true)} />
+      <Button outlined sm label="Agregar" icon={PrimeIcons.PLUS}  onClick={() => setVisible(true)} />
       {visible && (
         <Dialog
           draggable={false}

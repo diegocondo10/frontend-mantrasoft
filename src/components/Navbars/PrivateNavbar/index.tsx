@@ -33,6 +33,11 @@ const PrivateNavbar = () => {
           url: '/auditoria/usuarios/',
         },
         {
+          label: 'Horarios',
+          icon: PrimeIcons.CLOCK,
+          url: '/horarios/asignacion',
+        },
+        {
           icon: PrimeIcons.FOLDER,
           label: 'Catalogos',
           items: [
@@ -41,11 +46,7 @@ const PrivateNavbar = () => {
               icon: PrimeIcons.BUILDING,
               url: '/habitaciones/',
             },
-            {
-              label: 'Horarios',
-              icon: PrimeIcons.CLOCK,
-              url: '/horarios/asignacion',
-            },
+
             {
               label: 'Medicamentos',
               icon: PrimeIcons.LIST,

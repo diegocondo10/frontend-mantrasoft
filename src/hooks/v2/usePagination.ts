@@ -1,12 +1,13 @@
 import API from '@src/services/api';
 import { AxiosError, AxiosResponse } from 'axios';
+import debounce from 'lodash/debounce';
 import {
   DataTableBaseProps,
   DataTableFilterMeta,
   DataTableFilterMetaData,
   DataTableSortMeta,
 } from 'primereact/datatable';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { QueryKey, useQuery, UseQueryResult } from 'react-query';
 
 interface PaginationOptions {
@@ -62,6 +63,7 @@ const usePagination = <TData extends ResponseApi<any>>({
   key,
   defaultFilters = {},
 }: PaginationOptions): UseQueryResult<AxiosResponse<TData>, AxiosError> & {
+  isQueryLoading: boolean;
   page: number;
   setPage: (page: number) => void;
   filters: DataTableFilterMeta;
@@ -70,13 +72,25 @@ const usePagination = <TData extends ResponseApi<any>>({
 } => {
   const [page, setPage] = useState(0);
   const [filters, setFilters] = useState<DataTableFilterMeta>(defaultFilters);
-
   const [multiSortMeta, setMultiSortMeta] = useState([]);
 
+  const [queryFilters, setQueryFilters] = useState<DataTableFilterMeta>(defaultFilters);
+
+  const debouncedFilter = useCallback(
+    debounce((newFilters) => {
+      setQueryFilters(newFilters);
+    }, 300),
+    [],
+  );
+
+  useEffect(() => {
+    debouncedFilter(filters);
+  }, [filters, debouncedFilter]);
+
   const query = useQuery<AxiosResponse<TData>, AxiosError>(
-    [key, uri, page, filters, multiSortMeta],
+    [key, uri, page, queryFilters, multiSortMeta],
     async ({ signal }) => {
-      const url = buildUrl({ url: uri, page, filters, ordering: multiSortMeta });
+      const url = buildUrl({ url: uri, page, filters: queryFilters, ordering: multiSortMeta });
       return API.private().get<TData>(url, { signal });
     },
     {
@@ -93,6 +107,7 @@ const usePagination = <TData extends ResponseApi<any>>({
     setPage,
     filters,
     setFilters,
+    isQueryLoading: query.isLoading || query.isFetching,
     tableProps: {
       onPage: (event) => setPage(event.page),
       onFilter: (event) => setFilters(event.filters),
@@ -101,7 +116,7 @@ const usePagination = <TData extends ResponseApi<any>>({
       rows: query.data?.data?.pagina?.registrosPorPagina,
       totalRecords: query.data?.data?.pagina?.registrosTotales,
       first: page,
-      loading: query.isLoading,
+      loading: query.isLoading || query.isFetching,
       multiSortMeta: multiSortMeta,
       onSort: (event) => setMultiSortMeta(event.multiSortMeta),
     },

@@ -24,11 +24,6 @@ const useUsuario = () => {
     isValidSession();
   }, [usuario]);
 
-  const tienePermiso = (permiso: string) => {
-    return true;
-    // return usuario?.permisos?.some?.((item: string) => item === permiso);
-  };
-
   const setUsuario = (data: Perfil) => {
     localStorage.setItem('usuario', JSON.stringify(data));
   };
@@ -37,7 +32,6 @@ const useUsuario = () => {
     isValidSession,
     setUsuario,
     usuario,
-    tienePermiso,
   };
 };
 

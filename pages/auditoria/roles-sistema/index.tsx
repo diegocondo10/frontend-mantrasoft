@@ -42,7 +42,7 @@ const RolesSistemaPage: NextPage<any> = () => {
             outlined
             sm
             icon={PrimeIcons.PLUS}
-            variant="success"
+            
             rounded
             href="/auditoria/roles-sistema/create/form"
             tooltip='Agregar registro'

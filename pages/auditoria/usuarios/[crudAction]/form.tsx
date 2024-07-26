@@ -87,12 +87,10 @@ const FormUsuarioPage: CustomNextPage<{ id: string | number; crudAction: CrudAct
           <div className="col-12">
             <PageTitle>{props.title}</PageTitle>
           </div>
-          <div className="col-11 lg:col-10 border-1 border-gray-200">
+          <div className="col-11 md:col-10 lg:col-8 xl:col-6 border-1 border-gray-200">
             <form onSubmit={methods.handleSubmit(_onSubmit)} className="grid justify-content-center py-5">
-              <div className="col-10 my-1">
-                <label className="mb-2" htmlFor="username">
-                  Identificador: *
-                </label>
+              <div className="field col-10 my-1">
+                <label htmlFor="username">Identificador: *</label>
                 <TextInput
                   disabled={crudAction === CrudActions.UPDATE}
                   block
@@ -101,49 +99,37 @@ const FormUsuarioPage: CustomNextPage<{ id: string | number; crudAction: CrudAct
                 <ErrorMessage name="username" />
               </div>
 
-              <div className="col-10 md:col-5 my-1">
-                <label className="mb-2" htmlFor="firstName">
-                  Primer nombre: *
-                </label>
+              <div className="field col-10 md:col-5 my-1">
+                <label htmlFor="firstName">Primer nombre: *</label>
                 <TextInput block controller={{ name: 'firstName', rules: { required: 'Este campo es obligatorio' } }} />
                 <ErrorMessage name="firstName" />
               </div>
 
-              <div className="col-10 md:col-5 my-1">
-                <label className="mb-2" htmlFor="secondName">
-                  Segundo nombre: *
-                </label>
+              <div className="field col-10 md:col-5 my-1">
+                <label htmlFor="secondName">Segundo nombre: *</label>
                 <TextInput block controller={{ name: 'secondName' }} />
                 <ErrorMessage name="secondName" />
               </div>
 
-              <div className="col-10 md:col-5 my-1">
-                <label className="mb-2" htmlFor="lastName">
-                  Primer apellido: *
-                </label>
+              <div className="field col-10 md:col-5 my-1">
+                <label htmlFor="lastName">Primer apellido: *</label>
                 <TextInput block controller={{ name: 'lastName', rules: { required: 'Este campo es obligatorio' } }} />
                 <ErrorMessage name="lastName" />
               </div>
 
-              <div className="col-10 md:col-5 my-1">
-                <label className="mb-2" htmlFor="secondLastName">
-                  Segundo apellido: *
-                </label>
+              <div className="field col-10 md:col-5 my-1">
+                <label htmlFor="secondLastName">Segundo apellido: *</label>
                 <TextInput block controller={{ name: 'secondLastName' }} />
                 <ErrorMessage name="secondLastName" />
               </div>
 
-              <div className="col-10 my-1">
-                <label className="mb-2" htmlFor="email">
-                  Email: *
-                </label>
+              <div className="field col-10 my-1">
+                <label htmlFor="email">Email: *</label>
                 <TextInput block controller={{ name: 'email', rules: { required: 'Este campo es obligatorio' } }} />
                 <ErrorMessage name="email" />
               </div>
-              <div className="col-10 my-1">
-                <label className="my-5" htmlFor="rol">
-                  Rol Asignado: *
-                </label>
+              <div className="field col-10 my-1">
+                <label htmlFor="rol">Rol Asignado: *</label>
                 <DropDown
                   controller={{
                     name: 'rol',

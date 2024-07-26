@@ -5,12 +5,14 @@ import PageTitle from '@src/components/PageTitle';
 import { PAISES } from '@src/constants/paises';
 import { REQUIRED_RULE } from '@src/constants/rules';
 import { CrudActions } from '@src/emuns/crudActions';
+import { useParametros } from '@src/hooks/useParametros';
 import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
+import { PARAMETROS } from '@src/services/parametro/parametro.enum';
 import { urlCreatePersona, urlDetailPersona, urlUpdatePersona } from '@src/services/urls';
 import { CustomNextPage } from '@src/types/next';
-import { formatearFechaBackend } from '@src/utils/date';
+import { formatearFechaBackend, toFrontDate } from '@src/utils/date';
 import { commandPush } from '@src/utils/router';
 import { AxiosResponse } from 'axios';
 import classNames from 'classnames';
@@ -35,12 +37,19 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
   const query = useQuery(['persona', crudAction, id], () => API.private().get(urlDetailPersona(id)), {
     enabled: crudAction === CrudActions.UPDATE,
     onSuccess: (data) => {
-      methods.reset(data?.data);
+      methods.reset({
+        ...data?.data,
+        fechaNacimiento: toFrontDate(data?.data?.fechaNacimiento),
+      });
     },
     onError: () => {
-      addErrorToast('No se ha podido encontrar el registro');
+      addErrorToast('No se ha encontrado el registro');
       router.push('/personas');
     },
+  });
+
+  const queryParametros = useParametros({
+    codigos: [PARAMETROS.IDENTIFICACIONES],
   });
 
   const updateMutation = useMutation<any>((formData: any) => API.private().put(urlUpdatePersona(id), formData));
@@ -65,7 +74,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
     } catch (error) {
       console.log(error);
       methods.reset(formData);
-      alert('Ha ocurrido un problema al guardar la información');
+      addErrorToast('Ha ocurrido un problema al guardar la información');
     }
   };
 
@@ -73,7 +82,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
     <FormProvider {...methods}>
       <PrivateLayout
         loading={{
-          loading: query.isLoading || createMutation.isLoading || updateMutation.isLoading,
+          loading: query.isLoading || queryParametros.isLoading || createMutation.isLoading || updateMutation.isLoading,
         }}
         breadCrumbItems={[
           {
@@ -92,7 +101,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
           <div className="col-11 lg:col-10 xl:col-8 border border-1 border-gray-200 mb-5">
             <div className="p-6">
               <form onSubmit={methods.handleSubmit(_onSubmit)} className="grid justify-content-center mb-5">
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label htmlFor="tipoIdentificacion">Tipo de identificación: *</label>
                   <Controller
                     name="tipoIdentificacion"
@@ -100,7 +109,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                     render={({ field, fieldState }) => (
                       <Dropdown
                         inputId="tipoIdentificacion"
-                        options={['CÉDULA', 'PASAPORTE', 'OTRO']}
+                        options={queryParametros?.data.IDENTIFICACIONES}
                         {...field}
                         placeholder="Seleccione"
                         className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
@@ -109,7 +118,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="tipoIdentificacion" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Identificación: *</label>
                   <Controller
                     name="identificacion"
@@ -124,7 +133,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="identificacion" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Primer Nombre: *</label>
                   <Controller
                     name="primerNombre"
@@ -139,7 +148,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="primerNombre" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Segundo Nombre: *</label>
                   <Controller
                     name="segundoNombre"
@@ -153,7 +162,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="segundoNombre" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Primer Apellido: *</label>
                   <Controller
                     name="primerApellido"
@@ -168,7 +177,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="primerApellido" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Segundo Apellido: *</label>
                   <Controller
                     name="segundoApellido"
@@ -182,7 +191,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="segundoApellido" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Fecha de Nacimiento: *</label>
                   <Controller
                     name="fechaNacimiento"
@@ -201,7 +210,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="fechaNacimiento" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Celular: *</label>
                   <Controller
                     name="celular"
@@ -216,7 +225,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="celular" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Teléfono: *</label>
                   <Controller
                     name="telefono"
@@ -232,7 +241,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   <ErrorMessage name="telefono" />
                 </div>
                 {/** ESpecial**/}
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Correo: *</label>
                   <Controller
                     name="correo"
@@ -248,7 +257,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="correo" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label htmlFor="estadoCivil">Estado Civil: *</label>
                   <Controller
                     name="estadoCivil"
@@ -265,7 +274,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="estadoCivil" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label htmlFor="genero">Género: *</label>
                   <Controller
                     name="genero"
@@ -282,7 +291,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="genero" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label htmlFor="sexo">Sexo: *</label>
                   <Controller
                     name="sexo"
@@ -299,13 +308,14 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="sexo" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label htmlFor="pais">País: *</label>
                   <Controller
                     name="pais"
                     rules={{
                       ...REQUIRED_RULE,
                     }}
+                    defaultValue={'ECUADOR'}
                     render={({ field, fieldState }) => (
                       <Dropdown
                         inputId="pais"
@@ -320,7 +330,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="pais" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Calle Principal: *</label>
                   <Controller
                     name="callePrincipal"
@@ -335,14 +345,14 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="callePrincipal" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Número de casa:</label>
                   <Controller
                     name="numeroCasa"
                     render={({ field }) => <InputText id="NumeroCasa" {...field} className={classNames('w-full')} />}
                   />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Calle Secundaria:</label>
                   <Controller
                     name="calleSecundaria"
@@ -356,14 +366,14 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="calleSecundaria" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Referencia:</label>
                   <Controller
                     name="referencia"
                     render={({ field }) => <InputText id="referencia" {...field} className={classNames('w-full')} />}
                   />
                 </div>
-                <div className="col-12 my-2">
+                <div className="field col-12 my-2">
                   <label>Sector:</label>
                   <Controller
                     name="sector"
@@ -374,7 +384,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   <hr className="my-5" />
                 </div>
 
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label htmlFor="sexo">Tipo de Sangre: *</label>
                   <Controller
                     name="tipoSangre"
@@ -393,25 +403,25 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
                   />
                   <ErrorMessage name="tipoSangre" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label htmlFor="tieneIess">Tiene seguro de IESS?</label>
                   <Toggle name="tieneIess" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label htmlFor="tieneHipertencion">Tiene Hipertención?</label>
                   <Toggle name="tieneHipertencion" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label htmlFor="tieneDiabetes">Tiene diabetes?</label>
                   <Toggle name="tieneDiabetes" />
                 </div>
 
                 <div className="col-11">
                   <div className="grid">
-                    <div className="col-12 md:col-6 my-2">
+                    <div className="field col-12 md:col-6 my-2">
                       <Button label="Regresar" block href="/personas" variant="info" outlined />
                     </div>
-                    <div className="col-12 md:col-6 my-2">
+                    <div className="field col-12 md:col-6 my-2">
                       <Button label="Guardar" block type="submit" outlined />
                     </div>
                   </div>

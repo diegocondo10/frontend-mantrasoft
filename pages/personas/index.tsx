@@ -2,45 +2,68 @@ import Button from '@src/components/Button';
 import ButtonMenu from '@src/components/ButtonMenu';
 import PageTitle from '@src/components/PageTitle';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
-import TablaPaginada from '@src/components/Tables/TablaPaginada';
-import usePagination from '@src/hooks/usePagination';
+import PaginatedTable from '@src/components/Tables/PaginatedTable';
+import { useParametros } from '@src/hooks/useParametros';
+import usePagination from '@src/hooks/v2/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
+import { PARAMETROS } from '@src/services/parametro/parametro.enum';
 import { urlDeletePersona, urlListarPersonas } from '@src/services/urls';
 import { CustomNextPage } from '@src/types/next';
 import { commandPush } from '@src/utils/router';
-import { PrimeIcons } from 'primereact/api';
+import { FilterMatchMode, PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { InputText } from 'primereact/inputtext';
+import { MultiSelect } from 'primereact/multiselect';
 import { CSSProperties, useState } from 'react';
 
 const PersonasPage: CustomNextPage = () => {
-  const { isLoading, data, page, setPage, setOrdering, ordering, search, setSearch, refetch } = usePagination({
+  const queryParametros = useParametros({
+    codigos: [PARAMETROS.IDENTIFICACIONES],
+  });
+
+  const pagination = usePagination({
+    key: urlListarPersonas,
     uri: urlListarPersonas,
-    key: 'ListadoPersonas',
+    defaultFilters: {
+      tipo_identificacion: {
+        value: [],
+        matchMode: FilterMatchMode.IN,
+      },
+      identificacion: {
+        value: '',
+        matchMode: FilterMatchMode.CONTAINS,
+      },
+      nombres: {
+        value: '',
+        matchMode: FilterMatchMode.CONTAINS,
+      },
+      celular: {
+        value: '',
+        matchMode: FilterMatchMode.CONTAINS,
+      },
+      telefono: {
+        value: '',
+        matchMode: FilterMatchMode.CONTAINS,
+      },
+      correo: {
+        value: '',
+        matchMode: FilterMatchMode.CONTAINS,
+      },
+    },
   });
 
   const [eliminando, setEliminando] = useState(false);
 
   const cabecera = () => (
-    <div className="flex flex-wrap lg:justify-content-between">
-      <span className="p-inputgroup w-full lg:w-6">
-        <InputText
-          className="border-1 border-primary"
-          type="search"
-          placeholder="Buscar"
-          value={search}
-          onChange={setSearch}
-        />
-      </span>
-      <Button icon={PrimeIcons.PLUS} href="/personas/create/form/" label="Agregar" outlined />
+    <div className="flex flex-wrap ">
+      <Button className="ml-auto" icon={PrimeIcons.PLUS} href="/personas/create/form/" label="Agregar" outlined />
     </div>
   );
 
   return (
     <PrivateLayout
       loading={{
-        loading: isLoading,
+        loading: pagination.isLoading || queryParametros.isLoading,
       }}
       breadCrumbItems={[
         {
@@ -50,24 +73,72 @@ const PersonasPage: CustomNextPage = () => {
     >
       <main className="flex flex-column">
         <PageTitle>Pacientes</PageTitle>
-        <TablaPaginada
-          value={data?.data?.data || []}
-          header={cabecera}
-          first={page}
-          rows={data?.data?.pagina?.registrosPorPagina}
-          totalRecords={data?.data?.pagina?.registrosTotales}
-          onChangePage={setPage}
-          onOrdering={setOrdering}
-          multiSortMeta={ordering}
-          loading={isLoading || eliminando}
-        >
+        <PaginatedTable {...pagination.tableProps} header={cabecera}>
           {ColumnaNo()}
-          <Column header="Tipo de identificación" field="tipoIdentificacion" sortable />
-          <Column header="Identificación" field="identificacion" sortable />
-          <Column header="Nombres" field="nombresApellidos" sortable sortField="primerApellido" />
-          <Column header="Celular" field="celular" sortable />
-          <Column header="Telefono" field="telefono" sortable />
-          <Column header="Correo" field="correo" sortable />
+          <Column
+            header="Tipo de identificación"
+            field="tipoIdentificacion"
+            sortable
+            filter
+            showFilterMenu={false}
+            filterField="tipo_identificacion"
+            filterElement={(filter) => (
+              <MultiSelect
+                value={filter.value}
+                options={queryParametros.data?.IDENTIFICACIONES}
+                loading={queryParametros.isLoading}
+                maxSelectedLabels={0}
+                selectedItemsLabel="{} items"
+                placeholder="Seleccione"
+                onChange={(e) => filter.filterApplyCallback(e.value)}
+              />
+            )}
+          />
+          <Column
+            header="Identificación"
+            field="identificacion"
+            sortable
+            filter
+            showFilterMenu={false}
+            filterField="identificacion"
+            filterType="select"
+          />
+          <Column
+            header="Nombres"
+            field="nombresApellidos"
+            sortable
+            sortField="nombres"
+            filter
+            showFilterMenu={false}
+            filterField="nombres"
+          />
+          <Column
+            header="Celular"
+            field="celular"
+            sortable
+            filter
+            showFilterMenu={false}
+            filterField="celular"
+            filterType="number"
+          />
+          <Column
+            header="Telefono"
+            field="telefono"
+            sortable
+            filter
+            showFilterMenu={false}
+            filterField="telefono"
+            filterType="number"
+          />
+          <Column
+            header="Correo"
+            field="correo"
+            sortable
+            filter
+            showFilterMenu={false}
+            filterField="correo"
+            filterType="email"
+          />
           <Column
             header="Acciones"
             bodyClassName="p-0 m-0 text-center"
@@ -93,7 +164,6 @@ const PersonasPage: CustomNextPage = () => {
                         try {
                           setEliminando(true);
                           await API.private().delete(urlDeletePersona(rowData.id));
-                          refetch();
                         } catch (error) {
                           alert('Se ha eliminado el registro exitosamente');
                         }
@@ -105,7 +175,7 @@ const PersonasPage: CustomNextPage = () => {
               />
             )}
           />
-        </TablaPaginada>
+        </PaginatedTable>
       </main>
     </PrivateLayout>
   );

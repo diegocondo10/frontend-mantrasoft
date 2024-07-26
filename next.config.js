@@ -8,7 +8,7 @@ module.exports = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  reactStrictMode: true,
+  reactStrictMode: false,
   compress: true,
   webpack: (config, _) => {
     config.resolve.extensions = [...config.resolve.extensions, ...['.gql', '.graphql']];

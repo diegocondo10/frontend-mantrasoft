@@ -39,7 +39,7 @@ const Permisos: NextPage<any> = (props) => {
             outlined
             sm
             icon={PrimeIcons.PLUS}
-            variant="success"
+            
             rounded
             href="/auditoria/permisos/create/form"
             tooltip="Agregar Registro"

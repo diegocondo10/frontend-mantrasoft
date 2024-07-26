@@ -79,7 +79,7 @@ const FormMedicamentosPage: CustomNextPage<any> = ({ crudAction, id }) => {
           <div className="col-11 md:col-8 lg:col-6 border-1 border-gray-300">
             <div className="p-7">
               <form onSubmit={methods.handleSubmit(_onSubmit)} className="grid justify-content-around">
-                <div className="col-12">
+                <div className="field col-12">
                   <label htmlFor="nombre">Nombre: *</label>
                   <Controller
                     name="nombre"
@@ -96,7 +96,7 @@ const FormMedicamentosPage: CustomNextPage<any> = ({ crudAction, id }) => {
                   <ErrorMessage name="nombre" />
                 </div>
 
-                <div className="col-12">
+                <div className="field col-12">
                   <label htmlFor="descripcion">Descripción: *</label>
                   <Controller
                     name="descripcion"
@@ -112,7 +112,7 @@ const FormMedicamentosPage: CustomNextPage<any> = ({ crudAction, id }) => {
                   />
                 </div>
 
-                <div className="col-12 md:col-6">
+                <div className="field col-12 md:col-6">
                   <label htmlFor="via">Via: *</label>
                   <Controller
                     name="via"
@@ -130,7 +130,7 @@ const FormMedicamentosPage: CustomNextPage<any> = ({ crudAction, id }) => {
                   />
                   <ErrorMessage name="via" />
                 </div>
-                <div className="col-12 md:col-6">
+                <div className="field col-12 md:col-6">
                   <label htmlFor="via">Variante: *</label>
                   <Controller
                     name="variante"

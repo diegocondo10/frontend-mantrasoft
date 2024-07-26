@@ -106,7 +106,7 @@ const PertenenciasPage: NextPage<{ id?: string | number }> = (props) => {
             Registro de pertenencias del paciente
             <Button
               outlined
-              variant="success"
+              
               icon={PrimeIcons.PLUS}
               rounded
               onClick={() => {

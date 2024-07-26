@@ -64,7 +64,7 @@ const TratamientosPage: CustomNextPage<{
               <span className="p-inputgroup w-full">
                 <Button
                   href={`/tratamientos/create/form?idFicha=${id}&back=${currentEncodedPath}`}
-                  variant="success"
+                  
                   outlined
                   icon={PrimeIcons.PLUS}
                   label="Agregar"

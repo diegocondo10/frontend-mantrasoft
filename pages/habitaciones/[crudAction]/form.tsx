@@ -77,11 +77,11 @@ const HabitacionFormPage: CustomNextPage<{ crudAction: CrudActions; id?: string 
             {crudAction === CrudActions.CREATE && 'Crear habitación'}
           </p>
         </div>
-        <div className="col-11 md:col-8 lg:col-6 border-1 border-gray-300">
+        <div className="col-11 md:col-8 lg:col-6 xl:col-5 border-1 border-gray-300">
           <div className="p-6">
             <FormProvider {...methods}>
               <form onSubmit={methods.handleSubmit(_onSubmit)} className="grid justify-content-around">
-                <div className="col-12 my-2">
+                <div className="field col-12 my-2">
                   <label htmlFor="ala">Ala: *</label>
                   <Controller
                     name="ala"
@@ -98,7 +98,7 @@ const HabitacionFormPage: CustomNextPage<{ crudAction: CrudActions; id?: string 
                   />
                   <ErrorMessage name="ala" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>N° de Habitación: *</label>
                   <Controller
                     name="numero"
@@ -113,7 +113,7 @@ const HabitacionFormPage: CustomNextPage<{ crudAction: CrudActions; id?: string 
                   />
                   <ErrorMessage name="numero" />
                 </div>
-                <div className="col-12 md:col-6 my-2">
+                <div className="field col-12 md:col-6 my-2">
                   <label>Capacidad: *</label>
                   <Controller
                     name="capacidadPacientes"

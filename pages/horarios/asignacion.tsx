@@ -2,6 +2,7 @@ import { urlCreateUpdateHorario, urlEnfermeras, urlHorarioByDate, urlJornadas } 
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
 import { CustomNextPage } from '@src/types/next';
+import { format } from 'date-fns';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Column } from 'primereact/column';
@@ -32,6 +33,10 @@ interface Filas {
 }
 
 const buildStringDate = (date: Date): string => date.toISOString().split('T')[0];
+const getDayInitial = (date: Date): string => {
+  const days = ['D', 'L', 'M', 'X', 'J', 'V', 'S'];
+  return days[date.getDay()];
+};
 
 const getDiasDelMes = (selectedDate: Date) => {
   const year = selectedDate.getFullYear();
@@ -108,7 +113,10 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
       },
     });
   };
-
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return format(date, "MMMM 'de' yyyy");
+  };
   return (
     <PrivateLayout
       loading={{
@@ -119,7 +127,7 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
           label: 'Asignación de horarios',
         },
         {
-          label: q,
+          label: formatDate(q),
         },
       ]}
     >
@@ -134,12 +142,13 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
                 onChange={onSelectDate}
                 showMonthYearPicker
                 locale="es"
-                className="p-inputtext p-component font-semibold text-center"
+                className="p-inputtext p-component font-semibold text-center uppercase"
                 calendarClassName="p-input"
-                dateFormat="MM/yyyy"
+                dateFormat="MMMM/yyyy"
                 renderMonthContent={(_, fullMonthText) => <p className="uppercase">{fullMonthText}</p>}
                 portalId="root-portal"
               />
+              <p className="mt-3">Seleccione una fecha para visualizar y asignar los horarios de las enfermeras.</p>
             </div>
           </div>
         </div>
@@ -168,49 +177,54 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
               frozen
               className="p-0 m-0 text-center"
             />
-            {diasDelMes.map((day, index) => (
+            {diasDelMes.map((day) => (
               <Column
                 key={JSON.stringify(day)}
-                className="p-0 m-0"
-                header={day.getDate().toString()}
+                className="p-0 m-0 text-center"
+                headerClassName='text-center'
+                header={
+                  <>
+                    {day.getDate().toString()}
+                    <br />
+                    {getDayInitial(day)}
+                  </>
+                }
                 body={(rowData) => (
-                  <div>
-                    <Dropdown
-                      className="p-inputtext-sm outline-none border-noround dropdown__horario w-full"
-                      options={jornadas}
-                      dropdownIcon={null}
-                      placeholder="NA"
-                      value={jornadasIndex[filas[`${rowData.value}--${buildStringDate(day)}`]?.value]}
-                      optionLabel="codigo"
-                      onChange={onChangeValue(rowData, day)}
-                      scrollHeight="6"
-                      panelClassName="p-0 m-0 dropdown__horario flex flex-column align-items-center"
-                      itemTemplate={(item) => (
-                        <div
-                          className="text-center py-2 font-bold  border-1"
-                          style={{
-                            width: '50px',
-                            backgroundColor: item.color,
-                            color: item?.colorLetra,
-                          }}
-                        >
-                          <strong>{item.codigo}</strong>
-                        </div>
-                      )}
-                      valueTemplate={(item) => (
-                        <div
-                          style={{
-                            backgroundColor: item?.color,
-                            color: item?.colorLetra,
-                            height: '34.06px',
-                          }}
-                          className="w-full flex flex-column align-items-center justify-content-center font-bold"
-                        >
-                          <span>{item?.codigo || 'NA'}</span>
-                        </div>
-                      )}
-                    />
-                  </div>
+                  <Dropdown
+                    className="p-inputtext-sm outline-none border-noround dropdown__horario w-full"
+                    options={jornadas}
+                    dropdownIcon={null}
+                    placeholder="NA"
+                    value={jornadasIndex[filas[`${rowData.value}--${buildStringDate(day)}`]?.value]}
+                    optionLabel="codigo"
+                    onChange={onChangeValue(rowData, day)}
+                    scrollHeight="6"
+                    panelClassName="p-0 m-0 dropdown__horario flex flex-column align-items-center"
+                    itemTemplate={(item) => (
+                      <div
+                        className="text-center py-2 font-bold  border-1"
+                        style={{
+                          width: '50px',
+                          backgroundColor: item.color,
+                          color: item?.colorLetra,
+                        }}
+                      >
+                        <strong>{item.codigo}</strong>
+                      </div>
+                    )}
+                    valueTemplate={(item) => (
+                      <div
+                        style={{
+                          backgroundColor: item?.color,
+                          color: item?.colorLetra,
+                          height: '34.06px',
+                        }}
+                        className="w-full flex flex-column align-items-center justify-content-center font-bold"
+                      >
+                        <span>{item?.codigo || 'NA'}</span>
+                      </div>
+                    )}
+                  />
                 )}
               />
             ))}
