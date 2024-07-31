@@ -1,19 +1,16 @@
 import Button from '@src/components/Button';
 import ButtonMenu from '@src/components/ButtonMenu';
-import ColumnaNo from '@src/components/Tables/ColumnaNo';
-import TablaPaginada from '@src/components/Tables/TablaPaginada';
+import PaginatedTable from '@src/components/Tables/PaginatedTable';
 import { urlListarTratamientosPaciente } from '@src/containers/tratamientos/urls';
 import { CrudActions } from '@src/emuns/crudActions';
 import useCurrentPath from '@src/hooks/useCurrentPath';
-import usePagination from '@src/hooks/usePagination';
+import usePagination from '@src/hooks/v2/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
-import API from '@src/services/api';
-import { urlDetailPersona } from '@src/services/urls';
+import { FichaIngresoService } from '@src/services/fichaIngreso/fichaIngreso.service';
 import { CustomNextPage } from '@src/types/next';
 import { commandPush } from '@src/utils/router';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { CSSProperties } from 'react';
 import { useQuery } from 'react-query';
 
 const TratamientosPage: CustomNextPage<{
@@ -22,22 +19,26 @@ const TratamientosPage: CustomNextPage<{
   urlListarTratamientos: string;
   pacienteId: string;
 }> = ({ id, urlListarTratamientos, pacienteId }) => {
-  const { isLoading, data, page, setPage } = usePagination({
+  const pagination = usePagination({
     uri: urlListarTratamientos,
     key: [urlListarTratamientos, id],
   });
 
   const { currentEncodedPath } = useCurrentPath();
 
-  const queryPaciente = useQuery(['paciente', pacienteId], () => API.private().get(urlDetailPersona(id)), {
-    refetchOnWindowFocus: false,
-  });
+  const queryResumen = useQuery<any>(
+    ['resumen-ficha-paciente', id],
+    () => new FichaIngresoService().resumenFichaPaciente(id),
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
 
   return (
     <PrivateLayout
       title="Tratamientos"
       loading={{
-        loading: isLoading === true || queryPaciente.isLoading === true,
+        loading: pagination.isLoading || queryResumen.isLoading,
       }}
       breadCrumbItems={[
         {
@@ -51,35 +52,31 @@ const TratamientosPage: CustomNextPage<{
     >
       <main className="flex flex-column">
         <h1 className="text-center">Tratamientos</h1>
-        <h2 className="text-center">{queryPaciente?.data?.data?.nombresApellidos}</h2>
-        <TablaPaginada
-          value={data?.data?.data || []}
-          first={page}
-          rows={data?.data?.pagina?.registrosPorPagina}
-          onChangePage={setPage}
-          totalRecords={data?.data?.pagina?.registrosTotales}
-          loading={isLoading}
+        <p className="text-center text-2xl">
+          {queryResumen.data?.data?.paciente?.nombresApellidos}
+          <span className="mx-2" />
+          {queryResumen.data?.data?.ficha?.ubicacion}
+        </p>
+        <PaginatedTable
+          {...pagination.tableProps}
           header={
-            <div className="d-flex flex-row">
-              <span className="p-inputgroup w-full">
-                <Button
-                  href={`/tratamientos/create/form?idFicha=${id}&back=${currentEncodedPath}`}
-                  
-                  outlined
-                  icon={PrimeIcons.PLUS}
-                  label="Agregar"
-                />
-              </span>
+            <div className="flex flex-row">
+              <Button
+                href={`/tratamientos/create/form?idFicha=${id}&back=${currentEncodedPath}`}
+                outlined
+                className="ml-auto"
+                icon={PrimeIcons.PLUS}
+                label="Agregar"
+              />
             </div>
           }
         >
-          {ColumnaNo()}
           <Column header="Fecha inicio" field="fechaInicio" />
           <Column header="Fecha fin" field="fechaFin" />
           <Column header="Asignado por" field="asignadoPor.fullName" />
           <Column
-            bodyClassName="p-0 m-0"
-            style={{ width: '100px' } as CSSProperties}
+            bodyClassName="p-0 m-0 text-center"
+            style={{ width: '100px' }}
             header="Opciones"
             body={(rowData) => (
               <ButtonMenu
@@ -95,7 +92,7 @@ const TratamientosPage: CustomNextPage<{
               />
             )}
           />
-        </TablaPaginada>
+        </PaginatedTable>
       </main>
     </PrivateLayout>
   );

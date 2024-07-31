@@ -35,7 +35,7 @@ const FormMedicamentos: React.FC<{ medicamentos: any[]; frecuencias: any[] }> = 
 
   return (
     <React.Fragment>
-      <Button outlined sm label="Agregar" icon={PrimeIcons.PLUS}  onClick={() => setVisible(true)} />
+      <Button outlined sm label="Agregar" icon={PrimeIcons.PLUS} onClick={() => setVisible(true)} />
       {visible && (
         <Dialog
           draggable={false}
@@ -51,6 +51,11 @@ const FormMedicamentos: React.FC<{ medicamentos: any[]; frecuencias: any[] }> = 
                 <DropDown
                   options={medicamentos}
                   block
+                  filter
+                  filterMatchMode="contains"
+                  filterPlaceholder="Buscar..."
+                  filterInputAutoFocus
+                  panelClassName='border border-1 border-gray-400'
                   controller={{
                     name: 'medicamento',
                     rules: {
