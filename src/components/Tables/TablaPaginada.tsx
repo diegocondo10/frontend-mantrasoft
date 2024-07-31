@@ -39,6 +39,6 @@ const TablaPaginada: React.FC<TablaPaginadaProps> = React.forwardRef<DataTable<a
   },
 );
 
-TablaPaginada.defaultProps = defaultProps;
+// TablaPaginada.defaultProps = defaultProps;
 TablaPaginada.displayName = 'TablaPaginada';
 export default TablaPaginada;

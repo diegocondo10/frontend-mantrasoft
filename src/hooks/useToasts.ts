@@ -1,5 +1,3 @@
-import axios from 'axios';
-import _ from 'lodash';
 import { ReactNode } from 'react';
 import {
   AddToast,
@@ -13,13 +11,13 @@ import {
 
 type CallbackType = (id: string) => void;
 
-type ToatsType = (content: ReactNode, extraProps?: Options, callback?: CallbackType) => void;
+type ToastType = (content: ReactNode, extraProps?: Options, callback?: CallbackType) => void;
 
 export interface UseToastsProps {
-  addSuccessToast: ToatsType;
-  addErrorToast: ToatsType;
-  addWarningToast: ToatsType;
-  addInfoToast: ToatsType;
+  addSuccessToast: ToastType;
+  addErrorToast: ToastType;
+  addWarningToast: ToastType;
+  addInfoToast: ToastType;
   addToast: AddToast;
   removeToast: RemoveToast;
   removeAllToasts: RemoveAllToasts;
@@ -29,15 +27,15 @@ export interface UseToastsProps {
     appearance: AppearanceTypes;
   }>;
   updateToast: UpdateToast;
-  addApiErrorToast: Function;
 }
 
 export interface BaseToastProps {
-  content: string;
+  content: ReactNode;
   extraProps?: Options;
   callback?: CallbackType;
 }
-const ToatsTypes = ['Error', 'Info', 'Success', 'Warning'];
+
+const ToastTypes: Array<AppearanceTypes> = ['error', 'info', 'success', 'warning'];
 
 const useToasts = (): UseToastsProps => {
   const { addToast, ...rest } = baseHook();
@@ -47,11 +45,12 @@ const useToasts = (): UseToastsProps => {
   };
 
   const buildToast = () => {
-    const entries = ToatsTypes.map((toastType) => {
+    const entries = ToastTypes.map((toastType) => {
+      const capitalizedToastType = toastType.charAt(0).toUpperCase() + toastType.slice(1);
       return [
-        `add${toastType}Toast`,
-        (content: string, extraProps?: Options, callback?: CallbackType) => {
-          baseToast({ content, extraProps, callback }, toastType.toLowerCase() as AppearanceTypes);
+        `add${capitalizedToastType}Toast`,
+        (content: ReactNode, extraProps?: Options, callback?: CallbackType) => {
+          baseToast({ content, extraProps, callback }, toastType);
         },
       ];
     });
@@ -59,25 +58,10 @@ const useToasts = (): UseToastsProps => {
     return Object.fromEntries(entries);
   };
 
-  const addApiErrorToast = (
-    error: Error,
-    { level = 'warning', path = 'nonFieldErrors' }: { level?: AppearanceTypes; path?: string },
-  ) => {
-    if (axios.isAxiosError(error)) {
-      baseToast(
-        {
-          content: _.get(error?.response?.data, path, ''),
-        },
-        level,
-      );
-    }
-  };
-
   return {
     ...buildToast(),
     ...rest,
-    addApiErrorToast,
-  };
+  } as UseToastsProps;
 };
 
 export default useToasts;

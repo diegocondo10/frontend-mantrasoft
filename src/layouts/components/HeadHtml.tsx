@@ -16,7 +16,4 @@ const HeadHtml: React.FC<HeadHtmlProps> = (props) => {
   );
 };
 
-HeadHtml.defaultProps = {
-  title: 'Mantra',
-};
 export default HeadHtml;

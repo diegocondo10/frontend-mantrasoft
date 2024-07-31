@@ -1,6 +1,8 @@
-import { urlCreateUpdateHorario, urlEnfermeras, urlHorarioByDate, urlJornadas } from '@src/containers/horarios/urls';
+import JornadasDialog from '@src/containers/horarios/AsignacionHorarios/components/JornadasDialog';
+import { urlEnfermeras, urlHorarioByDate, urlJornadas } from '@src/containers/horarios/urls';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
+import { HorarioService } from '@src/services/horarios/Horario.service';
 import { CustomNextPage } from '@src/types/next';
 import { format } from 'date-fns';
 import { GetServerSideProps } from 'next';
@@ -103,9 +105,7 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
   const onChangeValue = (rowData: Enfermera, day: Date) => (event: DropdownChangeEvent) => {
     const fechaString = buildStringDate(day);
     const key = `${rowData.value}--${fechaString}`;
-    API.private().post(urlCreateUpdateHorario(rowData.value, event.value.id), {
-      fecha: fechaString,
-    });
+    new HorarioService().asignar(rowData.value, event.value.id, fechaString);
     setFilas({
       ...filas,
       [key]: {
@@ -135,7 +135,7 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
         <div className="col-11 md:col-5 border-1 border-gray-200 text-center my-4 p-5">
           <div className="max-w-19rem mx-auto">
             <div className="flex flex-column">
-              <label htmlFor="fecha">Seleccione:*</label>
+              <label className='my-2' htmlFor="fecha">Seleccione:</label>
               <DatePicker
                 id="fecha"
                 selected={selectedDate}
@@ -148,7 +148,10 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
                 renderMonthContent={(_, fullMonthText) => <p className="uppercase">{fullMonthText}</p>}
                 portalId="root-portal"
               />
-              <p className="mt-3">Seleccione una fecha para visualizar y asignar los horarios de las enfermeras.</p>
+              <p className="mt-3">
+                Seleccione una fecha para visualizar y asignar los horarios de las enfermeras.
+                <JornadasDialog jornadas={jornadas} />
+              </p>
             </div>
           </div>
         </div>
@@ -181,7 +184,7 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
               <Column
                 key={JSON.stringify(day)}
                 className="p-0 m-0 text-center"
-                headerClassName='text-center'
+                headerClassName="text-center"
                 header={
                   <>
                     {day.getDate().toString()}

@@ -5,16 +5,16 @@ import PageTitle from '@src/components/PageTitle';
 import { PAISES } from '@src/constants/paises';
 import { REQUIRED_RULE } from '@src/constants/rules';
 import { CrudActions } from '@src/emuns/crudActions';
+import useCreateUpdate from '@src/hooks/useCreateUpdate';
 import { useParametros } from '@src/hooks/useParametros';
 import useToasts from '@src/hooks/useToasts';
 import PrivateLayout from '@src/layouts/PrivateLayout';
-import API from '@src/services/api';
 import { PARAMETROS } from '@src/services/parametro/parametro.enum';
-import { urlCreatePersona, urlDetailPersona, urlUpdatePersona } from '@src/services/urls';
+import { PersonaService } from '@src/services/persona/persona.service';
+import { PK } from '@src/types/api';
 import { CustomNextPage } from '@src/types/next';
 import { formatearFechaBackend, toFrontDate } from '@src/utils/date';
 import { commandPush } from '@src/utils/router';
-import { AxiosResponse } from 'axios';
 import classNames from 'classnames';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/dist/client/router';
@@ -22,19 +22,21 @@ import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 
-const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; title: string }> = ({
-  crudAction,
-  id,
-  title,
-}) => {
+interface PageProps {
+  crudAction: CrudActions.CREATE | CrudActions.UPDATE;
+  id?: PK;
+  title: string;
+}
+
+const FormPascientePage: CustomNextPage<PageProps> = ({ crudAction, id, title }) => {
   const methods = useForm({ mode: 'onChange' });
 
   const router = useRouter();
-  const { addErrorToast } = useToasts();
+  const toast = useToasts();
 
-  const query = useQuery(['persona', crudAction, id], () => API.private().get(urlDetailPersona(id)), {
+  const query = useQuery(['persona', crudAction, id], () => new PersonaService().retrieve(id), {
     enabled: crudAction === CrudActions.UPDATE,
     onSuccess: (data) => {
       methods.reset({
@@ -43,7 +45,7 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
       });
     },
     onError: () => {
-      addErrorToast('No se ha encontrado el registro');
+      toast.addErrorToast('No se ha encontrado el registro');
       router.push('/personas');
     },
   });
@@ -52,37 +54,29 @@ const FormPascientePage: CustomNextPage<{ crudAction: CrudActions; id: any; titl
     codigos: [PARAMETROS.IDENTIFICACIONES],
   });
 
-  const updateMutation = useMutation<any>((formData: any) => API.private().put(urlUpdatePersona(id), formData));
-
-  const createMutation = useMutation<any>((formData: any) => API.private().post(urlCreatePersona, formData));
+  const mutation = useCreateUpdate({
+    action: crudAction,
+    methods,
+    create: (formData) => new PersonaService().create(formData),
+    update: (formData) => new PersonaService().update(id, formData),
+    onSuccess: () => {
+      router.push('/personas');
+    },
+  });
 
   const _onSubmit = async (formData) => {
-    let res: AxiosResponse = null;
     const Data = {
       ...formData,
       fechaNacimiento: formatearFechaBackend(formData.fechaNacimiento),
     };
-    try {
-      if (CrudActions.CREATE === crudAction) {
-        res = await createMutation.mutateAsync(Data);
-      } else if (CrudActions.UPDATE === crudAction) {
-        res = await updateMutation.mutateAsync(Data);
-      }
-      if (res.status === 201 || res.status === 200) {
-        router.push('/personas');
-      }
-    } catch (error) {
-      console.log(error);
-      methods.reset(formData);
-      addErrorToast('Ha ocurrido un problema al guardar la información');
-    }
+    mutation.submitForm(Data);
   };
 
   return (
     <FormProvider {...methods}>
       <PrivateLayout
         loading={{
-          loading: query.isLoading || queryParametros.isLoading || createMutation.isLoading || updateMutation.isLoading,
+          loading: query.isLoading || queryParametros.isLoading || mutation.isLoading,
         }}
         breadCrumbItems={[
           {

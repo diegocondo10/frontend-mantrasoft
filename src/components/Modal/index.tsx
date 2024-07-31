@@ -45,7 +45,7 @@ const Modal: React.FC<ModalProps> = (props) => {
   );
 };
 
-Modal.defaultProps = {
-  modal: { centered: true, size: 'lg' },
-};
+// Modal.defaultProps = {
+//   modal: { centered: true, size: 'lg' },
+// };
 export default Modal;

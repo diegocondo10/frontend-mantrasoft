@@ -2,44 +2,64 @@ import CONFIGS from '@src/constants/configs';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { URL_BASE } from './urls';
 
-const API = {
+interface API {
+  public(configs?: AxiosRequestConfig): AxiosInstance;
+  private(configs?: AxiosRequestConfig): AxiosInstance;
+  getReporte(url: string): (evt: any) => Promise<void>;
+}
+
+const createAxiosInstance = (configs?: AxiosRequestConfig): AxiosInstance => {
+  return axios.create({
+    baseURL: `${URL_BASE}api/`,
+    responseType: 'json',
+    ...configs,
+  });
+};
+
+const API: API = {
   public(configs?: AxiosRequestConfig): AxiosInstance {
-    return axios.create({
-      baseURL: `${URL_BASE}api/`,
-      responseType: 'json',
-      ...configs,
-    });
+    return createAxiosInstance(configs);
   },
   private(configs?: AxiosRequestConfig): AxiosInstance {
-    return this.public({
+    const token = typeof window !== 'undefined' ? localStorage.getItem(CONFIGS.TOKEN_KEY) : null;
+    return createAxiosInstance({
       headers: {
-        Authorization: `Bearer ${localStorage.getItem(CONFIGS.TOKEN_KEY)}`,
+        Authorization: `Bearer ${token}`,
       },
       ...configs,
     });
   },
   getReporte(url: string) {
-    return async (evt) => {
-      if (evt?.target) {
-        const target = evt.target;
-        target.parentElement.disabled = true;
+    return async (evt: Event) => {
+      const target = evt?.target as HTMLButtonElement | null;
+
+      if (target) {
+        const parentElement = target.parentElement as HTMLButtonElement | null;
+        if (parentElement) {
+          parentElement.disabled = true;
+          parentElement.classList.add('test');
+        }
         target.disabled = true;
-        target.parentElement.classList.add('test');
         target.classList.add('test');
       }
+
       try {
-        const res = await API.private({ responseType: 'blob' }).get(url);
+        const res = await this.private({ responseType: 'blob' }).get(url);
         const objUrl = window.URL.createObjectURL(res.data);
         window.open(objUrl);
       } catch (error) {
+        console.error('Error generating report:', error);
         alert('Ha ocurrido un problema al generar el reporte');
       }
+
       setTimeout(() => {
-        if (evt?.target) {
-          const target = evt.target;
-          target.parentElement.disabled = false;
+        if (target) {
+          const parentElement = target.parentElement as HTMLButtonElement | null;
+          if (parentElement) {
+            parentElement.disabled = false;
+            parentElement.classList.remove('test');
+          }
           target.disabled = false;
-          target.parentElement.classList.remove('test');
           target.classList.remove('test');
         }
       }, 100);

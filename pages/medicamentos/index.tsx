@@ -1,16 +1,20 @@
 import Button from '@src/components/Button';
 import ButtonMenu from '@src/components/ButtonMenu';
+import DeleteRecordConfirm from '@src/components/DeleteRecordConfirm';
+import RecordDetail from '@src/components/DeleteRecordConfirm/RecordDetail';
+import useDeleteRecordConfirm from '@src/components/DeleteRecordConfirm/useDeleteRecordConfirm';
 import PageTitle from '@src/components/PageTitle';
 import PaginatedTable from '@src/components/Tables/PaginatedTable';
+import useDeleteItem from '@src/hooks/useDeleteItem';
 import usePagination from '@src/hooks/v2/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
-import API from '@src/services/api';
-import { urlDeleteMedicamento, urlListarMedicamentos } from '@src/services/urls';
+import { MedicamentoService } from '@src/services/medicamento/medicamento.service';
+import { urlListarMedicamentos } from '@src/services/urls';
 import { CustomNextPage } from '@src/types/next';
 import { commandPush } from '@src/utils/router';
 import { FilterMatchMode, PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { CSSProperties, useState } from 'react';
+import { CSSProperties } from 'react';
 
 const MedicamentosPage: CustomNextPage = () => {
   const pagination = usePagination({
@@ -32,12 +36,18 @@ const MedicamentosPage: CustomNextPage = () => {
     },
   });
 
+  const deleteMutation = useDeleteItem({
+    mutationFn: (record) => new MedicamentoService().delete(record.id),
+    onSuccess: () => {},
+  });
+
+  const { deleteRecordRef, deleteItemCommand } = useDeleteRecordConfirm();
+
   const cabecera = (
     <div className="flex flex-row justify-content-between">
       <Button className="ml-auto" href="/medicamentos/create/form" outlined icon={PrimeIcons.PLUS} label="Agregar" />
     </div>
   );
-  const [eliminando, setEliminando] = useState(false);
 
   return (
     <PrivateLayout
@@ -48,6 +58,23 @@ const MedicamentosPage: CustomNextPage = () => {
         },
       ]}
     >
+      <DeleteRecordConfirm
+        ref={deleteRecordRef}
+        onAccept={async (record) => {
+          await deleteMutation.deleteRecord(record);
+          await pagination.refetch();
+        }}
+        messageDetail={(record) => (
+          <RecordDetail
+            title="Estas seguro de eliminar este medicamento?"
+            items={[
+              ['Nombre', record.nombre],
+              ['Via', record.via],
+              ['Variante', record.variante],
+            ]}
+          />
+        )}
+      />
       <main className="flex flex-column">
         <PageTitle>Medicamentos</PageTitle>
         <PaginatedTable {...pagination.tableProps} header={cabecera} showIndexColumn>
@@ -66,21 +93,7 @@ const MedicamentosPage: CustomNextPage = () => {
                     icon: PrimeIcons.PENCIL,
                     command: commandPush(`/medicamentos/editar/form?id=${rowData?.id}`),
                   },
-                  {
-                    label: 'Eliminar',
-                    icon: PrimeIcons.TRASH,
-                    command: async () => {
-                      if (confirm(`Esta seguro eliminar la información de la persona ${rowData.nombre}?`)) {
-                        try {
-                          setEliminando(true);
-                          await API.private().delete(urlDeleteMedicamento(rowData.id));
-                        } catch (error) {
-                          alert('Se ha eliminado el registro exitosamente');
-                        }
-                        setEliminando(false);
-                      }
-                    },
-                  },
+                  deleteItemCommand(rowData),
                 ]}
               />
             )}

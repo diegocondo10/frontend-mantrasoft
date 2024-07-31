@@ -1,20 +1,23 @@
 import Button from '@src/components/Button';
 import ButtonMenu from '@src/components/ButtonMenu';
+import DeleteRecordConfirm from '@src/components/DeleteRecordConfirm';
+import RecordDetail from '@src/components/DeleteRecordConfirm/RecordDetail';
+import useDeleteRecordConfirm from '@src/components/DeleteRecordConfirm/useDeleteRecordConfirm';
 import PageTitle from '@src/components/PageTitle';
-import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import PaginatedTable from '@src/components/Tables/PaginatedTable';
+import useDeleteItem from '@src/hooks/useDeleteItem';
 import { useParametros } from '@src/hooks/useParametros';
 import usePagination from '@src/hooks/v2/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
-import API from '@src/services/api';
 import { PARAMETROS } from '@src/services/parametro/parametro.enum';
-import { urlDeletePersona, urlListarPersonas } from '@src/services/urls';
+import { PersonaService } from '@src/services/persona/persona.service';
+import { urlListarPersonas } from '@src/services/urls';
 import { CustomNextPage } from '@src/types/next';
 import { commandPush } from '@src/utils/router';
 import { FilterMatchMode, PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MultiSelect } from 'primereact/multiselect';
-import { CSSProperties, useState } from 'react';
+import { CSSProperties } from 'react';
 
 const PersonasPage: CustomNextPage = () => {
   const queryParametros = useParametros({
@@ -52,7 +55,11 @@ const PersonasPage: CustomNextPage = () => {
     },
   });
 
-  const [eliminando, setEliminando] = useState(false);
+  const deleteMutation = useDeleteItem({
+    mutationFn: (persona) => new PersonaService().delete(persona.id),
+  });
+
+  const { deleteRecordRef, deleteItemCommand } = useDeleteRecordConfirm();
 
   const cabecera = () => (
     <div className="flex flex-wrap ">
@@ -62,8 +69,9 @@ const PersonasPage: CustomNextPage = () => {
 
   return (
     <PrivateLayout
+      title="Pacientes"
       loading={{
-        loading: pagination.isLoading || queryParametros.isLoading,
+        loading: pagination.isLoading || queryParametros.isLoading || deleteMutation.isLoading,
       }}
       breadCrumbItems={[
         {
@@ -71,10 +79,29 @@ const PersonasPage: CustomNextPage = () => {
         },
       ]}
     >
+      <DeleteRecordConfirm
+        ref={deleteRecordRef}
+        messageDetail={(paciente) => (
+          <RecordDetail
+            title="Estas seguro de eliminar el registro de este paciente?"
+            items={[
+              ['Tipo Identificación', paciente.tipoIdentificacion],
+              ['Identificación', paciente.identificacion],
+              ['Nombres', paciente.nombresApellidos],
+              ['Celular', paciente.celular],
+              ['Teléfono', paciente.telefono],
+              ['Correo', paciente.correo],
+            ]}
+          />
+        )}
+        onAccept={async (paciente) => {
+          await deleteMutation.deleteRecord(paciente);
+          await pagination.refetch();
+        }}
+      />
       <main className="flex flex-column">
         <PageTitle>Pacientes</PageTitle>
         <PaginatedTable {...pagination.tableProps} header={cabecera}>
-          {ColumnaNo()}
           <Column
             header="Tipo de identificación"
             field="tipoIdentificacion"
@@ -156,21 +183,7 @@ const PersonasPage: CustomNextPage = () => {
                     icon: PrimeIcons.FILE,
                     command: commandPush(`/personas/detalle?id=${rowData.id}`),
                   },
-                  {
-                    label: 'Eliminar',
-                    icon: PrimeIcons.TRASH,
-                    command: async () => {
-                      if (confirm(`Esta seguro eliminar la información de la persona ${rowData.nombresApellidos}?`)) {
-                        try {
-                          setEliminando(true);
-                          await API.private().delete(urlDeletePersona(rowData.id));
-                        } catch (error) {
-                          alert('Se ha eliminado el registro exitosamente');
-                        }
-                        setEliminando(false);
-                      }
-                    },
-                  },
+                  deleteItemCommand(rowData),
                 ]}
               />
             )}

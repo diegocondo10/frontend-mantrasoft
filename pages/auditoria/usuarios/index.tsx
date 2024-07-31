@@ -1,29 +1,32 @@
 import Button from '@src/components/Button';
 import ButtonMenu from '@src/components/ButtonMenu';
+import DeleteRecordConfirm, { DeleteRecordConfirmHandle } from '@src/components/DeleteRecordConfirm';
+import RecordDetail from '@src/components/DeleteRecordConfirm/RecordDetail';
 import PageTitle from '@src/components/PageTitle';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import PaginatedTable from '@src/components/Tables/PaginatedTable';
 import { urlRolesLabelValue } from '@src/containers/auth/urls';
+import useDeleteItem from '@src/hooks/useDeleteItem';
 import usePagination from '@src/hooks/v2/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
 import { urlListarUsuarios } from '@src/services/urls';
+import { UsuarioService } from '@src/services/usuario/usuario.service';
 import { CustomNextPage } from '@src/types/next';
 import { commandPush } from '@src/utils/router';
 import { FilterMatchMode, PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { MultiSelect } from 'primereact/multiselect';
-import { CSSProperties } from 'react';
+import { CSSProperties, useRef } from 'react';
 import { useQuery } from 'react-query';
 
 const UsuarioPage: CustomNextPage<any> = () => {
-  // const { isFetching, data, page, setPage, setOrdering, ordering, refetch, search, setSearch } = usePagination({
-  //   uri: urlListarUsuarios,
-  //   key: 'usuarios',
-  // });
-
   const queryCatalogos = useQuery(['catalogo-usuarios'], () => API.private().get(urlRolesLabelValue), {
     refetchOnWindowFocus: false,
+  });
+
+  const deleteMutation = useDeleteItem({
+    mutationFn: (user) => new UsuarioService().delete(user.id),
   });
 
   const pagination = usePagination({
@@ -63,6 +66,8 @@ const UsuarioPage: CustomNextPage<any> = () => {
     );
   };
 
+  const deleteRecordConfirmRef = useRef<DeleteRecordConfirmHandle>(null);
+
   return (
     <PrivateLayout
       title="Usuarios"
@@ -72,7 +77,28 @@ const UsuarioPage: CustomNextPage<any> = () => {
           label: 'Usuarios',
         },
       ]}
+      loading={{
+        loading: pagination.isLoading || deleteMutation?.isLoading,
+      }}
     >
+      <DeleteRecordConfirm
+        ref={deleteRecordConfirmRef}
+        messageDetail={(user) => (
+          <RecordDetail
+            title="Estas seguro de eliminar al usuario?"
+            items={[
+              ['Identificación', user.username],
+              ['Nombre', user.fullName],
+              ['Correo', user.email],
+              ['Rol', user.rol],
+            ]}
+          />
+        )}
+        onAccept={(user) => {
+          deleteMutation.deleteRecord(user).then(() => pagination.refetch());
+        }}
+      />
+
       <main className="flex flex-column">
         <PageTitle>Usuarios</PageTitle>
 
@@ -125,6 +151,8 @@ const UsuarioPage: CustomNextPage<any> = () => {
                   selectedItemsLabel="{} items"
                   options={queryCatalogos?.data?.data}
                   onChange={(e) => filterApplyCallback(e.value)}
+                  loading={pagination.isQueryLoading}
+                  disabled={pagination.isQueryLoading}
                 />
               );
             }}
@@ -140,6 +168,11 @@ const UsuarioPage: CustomNextPage<any> = () => {
                     label: 'Editar',
                     icon: PrimeIcons.PENCIL,
                     command: commandPush(`/auditoria/usuarios/editar/form?id=${rowData?.id}`),
+                  },
+                  {
+                    label: 'Eliminar',
+                    icon: PrimeIcons.TRASH,
+                    command: deleteRecordConfirmRef.current?.deleteRecord(rowData),
                   },
                 ]}
               />

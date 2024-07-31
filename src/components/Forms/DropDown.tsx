@@ -1,7 +1,7 @@
-import React from 'react';
-import { Dropdown, DropdownProps } from 'primereact/dropdown';
-import { Controller } from 'react-hook-form';
 import classNames from 'classnames';
+import { Dropdown, DropdownProps } from 'primereact/dropdown';
+import React from 'react';
+import { Controller } from 'react-hook-form';
 import { ControllerProps } from './types';
 
 export interface DropDownProps extends Omit<DropdownProps, 'name' | 'defaultValue'> {
@@ -10,7 +10,7 @@ export interface DropDownProps extends Omit<DropdownProps, 'name' | 'defaultValu
 }
 
 const DropDown: React.FC<DropDownProps> = (props) => {
-  const { controller, ...rest } = props;
+  const { controller, block, ...rest } = props;
 
   return (
     <Controller
@@ -18,12 +18,13 @@ const DropDown: React.FC<DropDownProps> = (props) => {
       render={({ field, fieldState }) => (
         <Dropdown
           id={field.name}
-          {...rest}
-          className={classNames(rest.className, { 'p-invalid': fieldState.invalid, 'w-full': props.block })}
+          className={classNames(rest.className, { 'w-full': block })}
+          invalid={fieldState.invalid}
           {...field}
           placeholder="SELECCIONAR"
           emptyMessage="Sin resultados"
           emptyFilterMessage="Sin resultados"
+          {...rest}
         />
       )}
     />

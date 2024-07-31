@@ -19,6 +19,10 @@ export interface ButtonProps extends PropsWithoutRef<PrimeButtonProps> {
   clipBoardItems?: ClipboardItems;
 }
 
+const defaultProps: ButtonProps = {
+  type: 'button',
+};
+
 export const Button: React.FC<ButtonProps> = (props) => {
   const {
     sm,
@@ -68,13 +72,10 @@ export const Button: React.FC<ButtonProps> = (props) => {
         className,
       )}
       onClick={_onClick}
+      type={defaultProps.type}
       {...rest}
     />
   );
-};
-
-Button.defaultProps = {
-  type: 'button',
 };
 
 export default Button;

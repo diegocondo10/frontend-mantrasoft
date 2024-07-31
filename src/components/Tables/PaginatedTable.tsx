@@ -25,7 +25,7 @@ const defaultProps: Partial<PaginatedTableProps<any>> = {
 };
 
 const PaginatedTable = forwardRef<DataTable<any>, PaginatedTableProps<any>>((props, ref) => {
-  const { showIndexColumn, indexColumnProps, ...rest } = props;
+  const { showIndexColumn = defaultProps.showIndexColumn, indexColumnProps, ...rest } = props;
   return (
     <DataTable ref={ref} {...defaultProps} {...rest}>
       {showIndexColumn && (
