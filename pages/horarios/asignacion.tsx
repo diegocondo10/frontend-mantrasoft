@@ -4,7 +4,7 @@ import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
 import { HorarioService } from '@src/services/horarios/Horario.service';
 import { CustomNextPage } from '@src/types/next';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { Column } from 'primereact/column';
@@ -49,7 +49,7 @@ const getDiasDelMes = (selectedDate: Date) => {
 
 const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({ q }) => {
   const router = useRouter();
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date(q || Date.now()));
+  const [selectedDate, setSelectedDate] = useState<Date>(parse(q, 'yyyy-MM-dd', new Date()));
 
   const [enfermeras, setEnfermeras] = useState<Enfermera[]>([]);
 
@@ -82,8 +82,10 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
 
   const queryAsignaciones = useQuery(
     ['asignaciones', q],
+
     ({ signal }) => API.private().post(urlHorarioByDate, { fecha: q }, { signal }),
     {
+      enabled: !!q,
       refetchOnWindowFocus: false,
       onSuccess: ({ data }) => {
         setFilas(data);
@@ -113,10 +115,7 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
       },
     });
   };
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    return format(date, "MMMM 'de' yyyy");
-  };
+
   return (
     <PrivateLayout
       loading={{
@@ -127,7 +126,7 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
           label: 'Asignación de horarios',
         },
         {
-          label: formatDate(q),
+          label: format(selectedDate, "MMMM 'de' yyyy"),
         },
       ]}
     >
@@ -135,7 +134,9 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
         <div className="col-11 md:col-5 border-1 border-gray-200 text-center my-4 p-5">
           <div className="max-w-19rem mx-auto">
             <div className="flex flex-column">
-              <label className='my-2' htmlFor="fecha">Seleccione:</label>
+              <label className="my-2 font-semibold" htmlFor="fecha">
+                Seleccione:
+              </label>
               <DatePicker
                 id="fecha"
                 selected={selectedDate}
@@ -147,6 +148,7 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
                 dateFormat="MMMM/yyyy"
                 renderMonthContent={(_, fullMonthText) => <p className="uppercase">{fullMonthText}</p>}
                 portalId="root-portal"
+                disabled={queryAsignaciones.isLoading}
               />
               <p className="mt-3">
                 Seleccione una fecha para visualizar y asignar los horarios de las enfermeras.
@@ -185,6 +187,10 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
                 key={JSON.stringify(day)}
                 className="p-0 m-0 text-center"
                 headerClassName="text-center"
+                headerTooltip={format(day, "EEEE, d 'de' MMMM 'de' yyyy")}
+                headerTooltipOptions={{
+                  position: 'left',
+                }}
                 header={
                   <>
                     {day.getDate().toString()}
@@ -239,9 +245,22 @@ const AsignacionHorarionsPage: CustomNextPage<AsignacionHorarionsPageProps> = ({
 };
 
 export const getServerSideProps: GetServerSideProps<AsignacionHorarionsPageProps> = async ({ query }) => {
+  const q = query?.q;
+  if (!q) {
+    const queryDate = String(new Date().toISOString().split('T')[0]);
+    return {
+      props: {
+        q: queryDate,
+      },
+      redirect: {
+        permanent: true,
+        destination: `/horarios/asignacion?q=${queryDate}`,
+      },
+    };
+  }
   return {
     props: {
-      q: query?.q ? String(query?.q) : new Date().toISOString().split('T')[0],
+      q: String(query?.q),
     },
   };
 };

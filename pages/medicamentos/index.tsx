@@ -4,11 +4,14 @@ import DeleteRecordConfirm from '@src/components/DeleteRecordConfirm';
 import RecordDetail from '@src/components/DeleteRecordConfirm/RecordDetail';
 import useDeleteRecordConfirm from '@src/components/DeleteRecordConfirm/useDeleteRecordConfirm';
 import PageTitle from '@src/components/PageTitle';
+import MultiSelectFilter from '@src/components/Tables/filters/MultiSelectFilter';
 import PaginatedTable from '@src/components/Tables/PaginatedTable';
 import useDeleteItem from '@src/hooks/useDeleteItem';
+import { useParametros } from '@src/hooks/useParametros';
 import usePagination from '@src/hooks/v2/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import { MedicamentoService } from '@src/services/medicamento/medicamento.service';
+import { PARAMETROS } from '@src/services/parametro/parametro.enum';
 import { urlListarMedicamentos } from '@src/services/urls';
 import { CustomNextPage } from '@src/types/next';
 import { commandPush } from '@src/utils/router';
@@ -42,6 +45,10 @@ const MedicamentosPage: CustomNextPage = () => {
   });
 
   const { deleteRecordRef, deleteItemCommand } = useDeleteRecordConfirm();
+
+  const queryParametros = useParametros({
+    codigos: [PARAMETROS.MEDICACION_VIAS, PARAMETROS.MEDICACION_VARIANTES],
+  });
 
   const cabecera = (
     <div className="flex flex-row justify-content-between">
@@ -79,8 +86,36 @@ const MedicamentosPage: CustomNextPage = () => {
         <PageTitle>Medicamentos</PageTitle>
         <PaginatedTable {...pagination.tableProps} header={cabecera} showIndexColumn>
           <Column header="Nombre" field="nombre" sortable filter showFilterMenu={false} />
-          <Column header="Via" field="via" sortable filter showFilterMenu={false} />
-          <Column header="Variante" field="variante" sortable filter showFilterMenu={false} />
+          <Column
+            header="Via"
+            field="via"
+            sortable
+            filter
+            showFilterMenu={false}
+            filterElement={(filterProps) => (
+              <MultiSelectFilter
+                filterProps={filterProps}
+                options={queryParametros?.data?.MEDICACION_VIAS}
+                loading={pagination.isQueryLoading}
+                disabled={pagination.isQueryLoading}
+              />
+            )}
+          />
+          <Column
+            header="Variante"
+            field="variante"
+            sortable
+            filter
+            showFilterMenu={false}
+            filterElement={(filterProps) => (
+              <MultiSelectFilter
+                filterProps={filterProps}
+                options={queryParametros?.data?.MEDICACION_VARIANTES}
+                loading={pagination.isQueryLoading}
+                disabled={pagination.isQueryLoading}
+              />
+            )}
+          />
           <Column
             header="Acciones"
             bodyClassName="p-0 m-0 text-center"

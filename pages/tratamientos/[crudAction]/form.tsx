@@ -5,12 +5,10 @@ import TextArea from '@src/components/Forms/TextArea';
 import ColumnaNo from '@src/components/Tables/ColumnaNo';
 import { REQUIRED_RULE } from '@src/constants/rules';
 import FormMedicamentos from '@src/containers/tratamientos/FormMedicamentos';
-import { urlTratamiento } from '@src/containers/tratamientos/urls';
 import { CrudActions } from '@src/emuns/crudActions';
 import useCreateUpdate from '@src/hooks/useCreateUpdate';
 import { useParametro } from '@src/hooks/useParametro';
 import PrivateLayout from '@src/layouts/PrivateLayout';
-import API from '@src/services/api';
 import { FichaIngresoService } from '@src/services/fichaIngreso/fichaIngreso.service';
 import { MedicamentoService } from '@src/services/medicamento/medicamento.service';
 import { PARAMETROS } from '@src/services/parametro/parametro.enum';
@@ -24,7 +22,6 @@ import Router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-import { Skeleton } from 'primereact/skeleton';
 import { useState } from 'react';
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useQuery } from 'react-query';
@@ -32,6 +29,7 @@ import { useQuery } from 'react-query';
 const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudAction }) => {
   const methods = useForm({ mode: 'onChange' });
   const [minDate, setMinDate] = useState<Date>(null);
+
   const queryCatalogo = useParametro({
     codigo: PARAMETROS.FRECUENCIAS_MEDICACION,
   });
@@ -65,7 +63,7 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
     },
   });
 
-  const queryTratamiento = useQuery<any>(['tratamiento', id, back], () => API.private().get(urlTratamiento(id)), {
+  const queryTratamiento = useQuery<any>(['tratamiento', id, back], () => new TratamientoService().retrieve(id), {
     enabled: crudAction === CrudActions.UPDATE,
     refetchOnWindowFocus: false,
     onError: () => Router.replace(back),
@@ -130,19 +128,16 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
               <div className="field col">
                 <label htmlFor="fechaInicio">Fecha de inicio:*</label>
 
-                {queryResumen?.isLoading && <Skeleton className="w-full" />}
-                {!queryResumen?.isLoading && (
-                  <DateInput
-                    block
-                    inputId="fechaInicio"
-                    controller={{
-                      name: 'fechaInicio',
-                      rules: { ...REQUIRED_RULE },
-                    }}
-                    minDate={minDate}
-                    disabled={crudAction === CrudActions.UPDATE}
-                  />
-                )}
+                <DateInput
+                  block
+                  inputId="fechaInicio"
+                  controller={{
+                    name: 'fechaInicio',
+                    rules: { ...REQUIRED_RULE },
+                  }}
+                  minDate={minDate}
+                  disabled={crudAction === CrudActions.UPDATE}
+                />
 
                 <ErrorMessage name="fechaInicio" />
               </div>

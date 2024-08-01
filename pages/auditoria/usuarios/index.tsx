@@ -1,9 +1,10 @@
 import Button from '@src/components/Button';
 import ButtonMenu from '@src/components/ButtonMenu';
-import DeleteRecordConfirm, { DeleteRecordConfirmHandle } from '@src/components/DeleteRecordConfirm';
+import DeleteRecordConfirm from '@src/components/DeleteRecordConfirm';
 import RecordDetail from '@src/components/DeleteRecordConfirm/RecordDetail';
+import useDeleteRecordConfirm from '@src/components/DeleteRecordConfirm/useDeleteRecordConfirm';
 import PageTitle from '@src/components/PageTitle';
-import ColumnaNo from '@src/components/Tables/ColumnaNo';
+import MultiSelectFilter from '@src/components/Tables/filters/MultiSelectFilter';
 import PaginatedTable from '@src/components/Tables/PaginatedTable';
 import { urlRolesLabelValue } from '@src/containers/auth/urls';
 import useDeleteItem from '@src/hooks/useDeleteItem';
@@ -16,8 +17,7 @@ import { CustomNextPage } from '@src/types/next';
 import { commandPush } from '@src/utils/router';
 import { FilterMatchMode, PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MultiSelect } from 'primereact/multiselect';
-import { CSSProperties, useRef } from 'react';
+import { CSSProperties } from 'react';
 import { useQuery } from 'react-query';
 
 const UsuarioPage: CustomNextPage<any> = () => {
@@ -66,7 +66,7 @@ const UsuarioPage: CustomNextPage<any> = () => {
     );
   };
 
-  const deleteRecordConfirmRef = useRef<DeleteRecordConfirmHandle>(null);
+  const { deleteRecordRef, deleteItemCommand } = useDeleteRecordConfirm();
 
   return (
     <PrivateLayout
@@ -82,20 +82,21 @@ const UsuarioPage: CustomNextPage<any> = () => {
       }}
     >
       <DeleteRecordConfirm
-        ref={deleteRecordConfirmRef}
-        messageDetail={(user) => (
+        ref={deleteRecordRef}
+        messageDetail={(record) => (
           <RecordDetail
             title="Estas seguro de eliminar al usuario?"
             items={[
-              ['Identificación', user.username],
-              ['Nombre', user.fullName],
-              ['Correo', user.email],
-              ['Rol', user.rol],
+              ['Identificación', record.username],
+              ['Nombre', record.fullName],
+              ['Correo', record.email],
+              ['Rol', record.rol],
             ]}
           />
         )}
-        onAccept={(user) => {
-          deleteMutation.deleteRecord(user).then(() => pagination.refetch());
+        onAccept={async (record) => {
+          await deleteMutation.deleteRecord(record);
+          await pagination.refetch();
         }}
       />
 
@@ -103,7 +104,6 @@ const UsuarioPage: CustomNextPage<any> = () => {
         <PageTitle>Usuarios</PageTitle>
 
         <PaginatedTable header={tableHeader} {...pagination?.tableProps}>
-          {ColumnaNo()}
           <Column
             header="Identificación"
             field="username"
@@ -140,22 +140,14 @@ const UsuarioPage: CustomNextPage<any> = () => {
             showFilterMenu={false}
             filterField="rol"
             sortable
-            filterElement={({ value, filterApplyCallback }) => {
-              return (
-                <MultiSelect
-                  value={value}
-                  filter
-                  className="w-full"
-                  placeholder="Seleccione"
-                  maxSelectedLabels={0}
-                  selectedItemsLabel="{} items"
-                  options={queryCatalogos?.data?.data}
-                  onChange={(e) => filterApplyCallback(e.value)}
-                  loading={pagination.isQueryLoading}
-                  disabled={pagination.isQueryLoading}
-                />
-              );
-            }}
+            filterElement={(filterProps) => (
+              <MultiSelectFilter
+                filterProps={filterProps}
+                options={queryCatalogos?.data?.data}
+                loading={pagination.isQueryLoading}
+                disabled={pagination.isQueryLoading}
+              />
+            )}
           />
           <Column
             header="Acciones"
@@ -169,11 +161,7 @@ const UsuarioPage: CustomNextPage<any> = () => {
                     icon: PrimeIcons.PENCIL,
                     command: commandPush(`/auditoria/usuarios/editar/form?id=${rowData?.id}`),
                   },
-                  {
-                    label: 'Eliminar',
-                    icon: PrimeIcons.TRASH,
-                    command: deleteRecordConfirmRef.current?.deleteRecord(rowData),
-                  },
+                  deleteItemCommand(rowData),
                 ]}
               />
             )}

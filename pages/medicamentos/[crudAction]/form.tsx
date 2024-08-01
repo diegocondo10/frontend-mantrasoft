@@ -1,63 +1,57 @@
 import Button from '@src/components/Button';
+import DropDown from '@src/components/Forms/DropDown';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
+import { REQUIRED_RULE } from '@src/constants/rules';
 import { CrudActions } from '@src/emuns/crudActions';
-import useToasts from '@src/hooks/useToasts';
+import useCreateUpdate from '@src/hooks/useCreateUpdate';
+import { useParametros } from '@src/hooks/useParametros';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import API from '@src/services/api';
-import { urlCreateMedicamento, urlDetailMedicamento, urlUpdateMedicamento } from '@src/services/urls';
+import { MedicamentoService } from '@src/services/medicamento/medicamento.service';
+import { PARAMETROS } from '@src/services/parametro/parametro.enum';
+import { urlDetailMedicamento } from '@src/services/urls';
 import { CustomNextPage } from '@src/types/next';
 import { commandPush } from '@src/utils/router';
-import { AxiosResponse } from 'axios';
 import classNames from 'classnames';
-import { useRouter } from 'next/dist/client/router';
-import { Dropdown } from 'primereact/dropdown';
+import Router from 'next/router';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 
 const FormMedicamentosPage: CustomNextPage<any> = ({ crudAction, id }) => {
   const methods = useForm({ mode: 'onChange', shouldUnregister: true });
-  const router = useRouter();
-  const { addErrorToast } = useToasts();
+
+  const queryParametros = useParametros({
+    codigos: [PARAMETROS.MEDICACION_VIAS, PARAMETROS.MEDICACION_VARIANTES],
+  });
 
   const query = useQuery(['medicamento', crudAction, id], () => API.private().get(urlDetailMedicamento(id)), {
     enabled: crudAction === CrudActions.UPDATE,
     onSuccess(data) {
       methods.reset(data?.data);
     },
-    onError(err) {
-      addErrorToast('No se ha podido encontrar el registro');
-      router.push('/medicamentos');
+  });
+
+  const mutation = useCreateUpdate({
+    action: crudAction,
+    methods,
+    create: (formData) => new MedicamentoService().create(formData),
+    update: (formData) => new MedicamentoService().update(id, formData),
+    onSuccess: () => {
+      Router.push('/medicamentos');
     },
   });
 
-  const updateMutation = useMutation<any>((formData: any) => API.private().put(urlUpdateMedicamento(id), formData));
-
-  const createMutation = useMutation<any>((formData: any) => API.private().post(urlCreateMedicamento, formData));
-
   const _onSubmit = async (formData) => {
-    try {
-      let res: AxiosResponse = null;
-
-      if (CrudActions.CREATE === crudAction) {
-        res = await createMutation.mutateAsync(formData);
-      } else if (CrudActions.UPDATE === crudAction) {
-        res = await updateMutation.mutateAsync(formData);
-      }
-      if (res.status === 201 || res.status === 200) {
-        router.push('/medicamentos');
-      }
-    } catch (error) {
-      addErrorToast('Ha ocurrido un problema al guardar la información');
-    }
+    mutation.submitForm(formData);
   };
 
   return (
     <FormProvider {...methods}>
       <PrivateLayout
         loading={{
-          loading: query.isLoading || createMutation.isLoading || updateMutation.isLoading,
+          loading: query.isLoading || mutation.isLoading,
         }}
         breadCrumbItems={[
           {
@@ -114,37 +108,31 @@ const FormMedicamentosPage: CustomNextPage<any> = ({ crudAction, id }) => {
 
                 <div className="field col-12 md:col-6">
                   <label htmlFor="via">Via: *</label>
-                  <Controller
-                    name="via"
-                    rules={{ required: 'Este campo es obligatorio' }}
-                    render={({ field, fieldState }) => (
-                      <Dropdown
-                        inputId="via"
-                        {...field}
-                        placeholder="Seleccione"
-                        options={['VO', 'VR', 'VI']}
-                        className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
-                        inputRef={field.ref}
-                      />
-                    )}
+                  <DropDown
+                    inputId="via"
+                    block
+                    options={queryParametros.data?.MEDICACION_VIAS}
+                    controller={{
+                      name: 'via',
+                      rules: {
+                        ...REQUIRED_RULE,
+                      },
+                    }}
                   />
                   <ErrorMessage name="via" />
                 </div>
                 <div className="field col-12 md:col-6">
                   <label htmlFor="via">Variante: *</label>
-                  <Controller
-                    name="variante"
-                    rules={{ required: 'Este campo es obligatorio' }}
-                    render={({ field, fieldState }) => (
-                      <Dropdown
-                        inputId="variante"
-                        {...field}
-                        placeholder="Seleccione"
-                        options={['TABLETA', 'GOTAS', 'INYECTABLE']}
-                        className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
-                        inputRef={field.ref}
-                      />
-                    )}
+                  <DropDown
+                    inputId="variante"
+                    block
+                    options={queryParametros.data?.MEDICACION_VARIANTES}
+                    controller={{
+                      name: 'variante',
+                      rules: {
+                        ...REQUIRED_RULE,
+                      },
+                    }}
                   />
                   <ErrorMessage name="variante" />
                 </div>
