@@ -1,21 +1,43 @@
 import Button from '@src/components/Button';
 import ButtonMenu from '@src/components/ButtonMenu';
 import PageTitle from '@src/components/PageTitle';
+import MultiSelectFilter from '@src/components/Tables/filters/MultiSelectFilter';
 import PaginatedTable from '@src/components/Tables/PaginatedTable';
 import usePagination from '@src/hooks/v2/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
+import { AlaService } from '@src/services/alas/ala.service';
 import API from '@src/services/api';
+import { PersonaService } from '@src/services/persona/persona.service';
 import { urlImprimirFichaIngreso, urlImprimirReporteEnfermeria, urlListarFichasIngreso } from '@src/services/urls';
 import { CustomNextPage } from '@src/types/next';
 import { commandPush } from '@src/utils/router';
-import { PrimeIcons } from 'primereact/api';
+import { FilterMatchMode, PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { CSSProperties } from 'react';
+import { useQuery } from 'react-query';
 
 const FichasIngresoPage: CustomNextPage = () => {
   const pagination = usePagination({
     uri: urlListarFichasIngreso,
     key: 'ListadoFichasIngreso',
+    defaultFilters: {
+      paciente: {
+        value: [],
+        matchMode: FilterMatchMode.IN,
+      },
+      habitacion: {
+        value: [],
+        matchMode: FilterMatchMode.IN,
+      },
+    },
+  });
+
+  const queryPersonas = useQuery(['personas-label-value'], () => new PersonaService().labelValue(), {
+    refetchOnWindowFocus: false,
+  });
+
+  const queryAlas = useQuery(['alas-label-value-habitacion'], () => new AlaService().labelValueWithHabitaciones(), {
+    refetchOnWindowFocus: false,
   });
 
   const cabecera = (
@@ -41,9 +63,48 @@ const FichasIngresoPage: CustomNextPage = () => {
 
         <PaginatedTable header={cabecera} {...pagination.tableProps}>
           <Column header="Código" field="id" sortable />
-          <Column header="Paciente" field="pacienteView.str" sortable />
-          <Column header="Ala" field="habitacionView.ala.str" sortable />
-          <Column header="Habitación" field="habitacionView.numero" sortable />
+          <Column
+            header="Paciente"
+            field="paciente.str"
+            sortable
+            sortField="paciente"
+            filter
+            filterPlaceholder="Buscar"
+            showFilterMenu={false}
+            filterField="paciente"
+            filterElement={(filterProps) => (
+              <MultiSelectFilter
+                filterProps={filterProps}
+                options={queryPersonas?.data?.data}
+                loading={pagination.isQueryLoading}
+                disabled={pagination.isQueryLoading}
+              />
+            )}
+          />
+          <Column
+            header="Habitación"
+            field="habitacion.str"
+            sortField="habitacion"
+            sortable
+            filter
+            filterPlaceholder="Buscar"
+            showFilterMenu={false}
+            filterField="habitacion"
+            filterElement={(filterProps) => (
+              <MultiSelectFilter
+                filterProps={filterProps}
+                options={queryAlas?.data?.data}
+                loading={pagination.isQueryLoading}
+                disabled={pagination.isQueryLoading}
+                optionGroupLabel="label"
+                optionGroupChildren="items"
+                optionValue="value"
+                filter
+                filterMatchMode="contains"
+                optionGroupTemplate={(option) => `Habitaciones - ${option.label}`}
+              />
+            )}
+          />
           <Column
             header="Acciones"
             bodyClassName="p-0 m-0 text-center"

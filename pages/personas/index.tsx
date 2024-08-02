@@ -4,6 +4,7 @@ import DeleteRecordConfirm from '@src/components/DeleteRecordConfirm';
 import RecordDetail from '@src/components/DeleteRecordConfirm/RecordDetail';
 import useDeleteRecordConfirm from '@src/components/DeleteRecordConfirm/useDeleteRecordConfirm';
 import PageTitle from '@src/components/PageTitle';
+import MultiSelectFilter from '@src/components/Tables/filters/MultiSelectFilter';
 import PaginatedTable from '@src/components/Tables/PaginatedTable';
 import useDeleteItem from '@src/hooks/useDeleteItem';
 import { useParametros } from '@src/hooks/useParametros';
@@ -108,16 +109,13 @@ const PersonasPage: CustomNextPage = () => {
             sortable
             filter
             showFilterMenu={false}
+            bodyStyle={{ minWidth: '15rem' }}
             filterField="tipo_identificacion"
-            filterElement={(filter) => (
-              <MultiSelect
-                value={filter.value}
+            filterElement={(filterProps) => (
+              <MultiSelectFilter
+                filterProps={filterProps}
                 options={queryParametros.data?.IDENTIFICACIONES}
-                loading={queryParametros.isLoading}
-                maxSelectedLabels={0}
-                selectedItemsLabel="{} items"
-                placeholder="Seleccione"
-                onChange={(e) => filter.filterApplyCallback(e.value)}
+                loading={queryParametros.isLoading || pagination.isQueryLoading}
               />
             )}
           />
@@ -129,6 +127,7 @@ const PersonasPage: CustomNextPage = () => {
             showFilterMenu={false}
             filterField="identificacion"
             filterType="select"
+            bodyStyle={{ minWidth: '15rem' }}
           />
           <Column
             header="Nombres"
@@ -138,6 +137,7 @@ const PersonasPage: CustomNextPage = () => {
             filter
             showFilterMenu={false}
             filterField="nombres"
+            bodyStyle={{ minWidth: '20rem' }}
           />
           <Column
             header="Celular"
@@ -147,6 +147,7 @@ const PersonasPage: CustomNextPage = () => {
             showFilterMenu={false}
             filterField="celular"
             filterType="number"
+            bodyStyle={{ minWidth: '10rem' }}
           />
           <Column
             header="Telefono"
@@ -156,6 +157,7 @@ const PersonasPage: CustomNextPage = () => {
             showFilterMenu={false}
             filterField="telefono"
             filterType="number"
+            bodyStyle={{ minWidth: '10rem' }}
           />
           <Column
             header="Correo"
