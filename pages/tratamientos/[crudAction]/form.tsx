@@ -22,6 +22,7 @@ import Router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
+import { Editor } from 'primereact/editor';
 import { useState } from 'react';
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useQuery } from 'react-query';
@@ -177,6 +178,7 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
                   rows={7}
                   controller={{ name: 'diagnostico', rules: { ...REQUIRED_RULE } }}
                 />
+                <Editor />
                 <ErrorMessage name="diagnostico" />
               </div>
 
@@ -237,10 +239,10 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
 
               <div className="field col-12 grid justify-content-center mt-5">
                 <div className="col-6">
-                  <Button variant="info" label="Regresar" block href={back} />
+                  <Button variant="info" label="Regresar" block href={back} outlined />
                 </div>
                 <div className="col-6">
-                  <Button type="submit" label="Guardar" block />
+                  <Button type="submit" label="Guardar" block outlined />
                 </div>
               </div>
             </form>

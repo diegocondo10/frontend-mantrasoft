@@ -47,15 +47,11 @@ const buildUrl = ({ url, page, filters = {}, ordering }: BuildUrlParams): string
   return url + (queryParams ? `?${queryParams}` : '');
 };
 
-interface Pagination {
-  registrosTotales: number;
-  paginasTotales: number;
-  registrosPorPagina: number;
-}
-
 interface ResponseApi<T> {
-  pagina: Pagination;
-  data: T[];
+  totalRecords: number;
+  rows: number;
+  first: number;
+  value: T[];
 }
 
 const usePagination = <TData extends ResponseApi<any>>({
@@ -109,16 +105,20 @@ const usePagination = <TData extends ResponseApi<any>>({
     setFilters,
     isQueryLoading: query.isLoading || query.isFetching,
     tableProps: {
-      onPage: (event) => setPage(event.page),
-      onFilter: (event) => setFilters(event.filters),
+      onPage: (event) => {
+        setPage(event.page);
+      },
+      onFilter: (event) => {
+        setPage(0);
+        setFilters(event.filters);
+      },
       filters,
-      value: query.data?.data?.data || [],
-      rows: query.data?.data?.pagina?.registrosPorPagina,
-      totalRecords: query.data?.data?.pagina?.registrosTotales,
+      dataKey: 'id',
       first: page,
       loading: query.isLoading || query.isFetching,
       multiSortMeta: multiSortMeta,
       onSort: (event) => setMultiSortMeta(event.multiSortMeta),
+      ...query.data?.data,
     },
   };
 };

@@ -1,5 +1,7 @@
 import Button from '@src/components/Button';
 import DropDown from '@src/components/Forms/DropDown';
+import ErrorMessage from '@src/components/Forms/ErrorMessage';
+import TextArea from '@src/components/Forms/TextArea';
 import TextInput from '@src/components/Forms/TextInput';
 import { REQUIRED_RULE } from '@src/constants/rules';
 import { uuidV4 } from '@src/utils/uuid';
@@ -41,8 +43,9 @@ const FormMedicamentos: React.FC<{ medicamentos: any[]; frecuencias: any[] }> = 
           draggable={false}
           header="Agregar Medicamento"
           visible={visible}
-          style={{ width: '50vw' }}
+          style={{ minWidth: '25rem', maxWidth: '40vw' }}
           onHide={closeModal}
+          closeOnEscape={false}
         >
           <FormProvider {...methods}>
             <form className="formgrid grid justify-content-center" onSubmit={methods.handleSubmit(onSubmit)}>
@@ -55,7 +58,7 @@ const FormMedicamentos: React.FC<{ medicamentos: any[]; frecuencias: any[] }> = 
                   filterMatchMode="contains"
                   filterPlaceholder="Buscar..."
                   filterInputAutoFocus
-                  panelClassName='border border-1 border-gray-400'
+                  panelClassName="border border-1 border-gray-400"
                   controller={{
                     name: 'medicamento',
                     rules: {
@@ -63,6 +66,7 @@ const FormMedicamentos: React.FC<{ medicamentos: any[]; frecuencias: any[] }> = 
                     },
                   }}
                 />
+                <ErrorMessage name="medicamento" />
               </div>
 
               <div className="field col-12">
@@ -84,24 +88,37 @@ const FormMedicamentos: React.FC<{ medicamentos: any[]; frecuencias: any[] }> = 
                     },
                   }}
                 />
+                <ErrorMessage name="frecuencia" />
+              </div>
+
+              <div className="field col-12">
+                <label htmlFor="motivo">Motivo:*</label>
+                <TextArea block id="motivo" controller={{ name: 'motivo', rules: { ...REQUIRED_RULE } }} />
+                <ErrorMessage name="motivo" />
               </div>
 
               <div className="field col-12">
                 <label className="w-full" htmlFor="horas">
                   Horas suministro:*
                 </label>
-                {range(frecuencia?.cantidadHoras)?.map((hora) => (
-                  <TextInput
-                    key={`${frecuencia.label}-${hora}`}
-                    type="time"
-                    controller={{
-                      name: `horas.${hora}`,
-                      rules: {
-                        ...REQUIRED_RULE,
-                      },
-                    }}
-                  />
-                ))}
+                <div className="grid">
+                  {range(frecuencia?.cantidadHoras)?.map((hora) => (
+                    <div className="col">
+                      <TextInput
+                        block
+                        key={`${frecuencia.label}-${hora}`}
+                        type="time"
+                        controller={{
+                          name: `horas.${hora}`,
+                          rules: {
+                            ...REQUIRED_RULE,
+                          },
+                        }}
+                      />
+                      <ErrorMessage name={`horas.${hora}`} />
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="field col-8 my-2">

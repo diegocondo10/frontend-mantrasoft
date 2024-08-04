@@ -71,6 +71,7 @@ const TratamientosPage: CustomNextPage<{
             </div>
           }
         >
+          <Column header="Estado" field="estado" />
           <Column header="Fecha inicio" field="fechaInicio" />
           <Column header="Fecha fin" field="fechaFin" />
           <Column header="Asignado por" field="asignadoPor.fullName" />
