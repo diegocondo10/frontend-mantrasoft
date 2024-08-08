@@ -1,13 +1,10 @@
-import SignosVitales from '@src/containers/SignosVitales';
-import { useParametros } from '@src/hooks/useParametros';
 import { FichaIngresoService } from '@src/services/fichaIngreso/fichaIngreso.service';
-import { PARAMETROS } from '@src/services/parametro/parametro.enum';
-import { Accordion, AccordionTab } from 'primereact/accordion';
+import { PrimeIcons } from 'primereact/api';
 import { InputText } from 'primereact/inputtext';
 import { ChangeEvent, useState } from 'react';
 import { useQuery } from 'react-query';
+import Button from '../Button';
 import Loading from '../Loading';
-import AccordionBody from './AccordionBody';
 
 const ResumenMedicacion = () => {
   const [pacientes, setPacientes] = useState([]);
@@ -23,10 +20,6 @@ const ResumenMedicacion = () => {
     },
   );
 
-  const queryParametros = useParametros({
-    codigos: [PARAMETROS.MEDICACION_TIPOS_SUMINISTRACION],
-  });
-
   const onChangeBuscar = (evt: ChangeEvent<HTMLInputElement>) => {
     const result = queryMedicacion.data.data.pacientes.filter((item) => {
       return item.label.toLowerCase().includes(evt.target.value);
@@ -34,35 +27,28 @@ const ResumenMedicacion = () => {
     setPacientes(result);
   };
   return (
-    <div className="col-12">
+    <div className="col-12 mb-5">
       <div className="grid grid-nogutter justify-content-center">
-        <div className="col-11 xl:col-10">
-          <Loading loading={queryMedicacion.isFetching} />
+        <div className="col-11 md:col-10 xl:col-8">
+          <Loading loading={queryMedicacion.isFetching} texto="Buscando tus pacientes..." />
           {!queryMedicacion.isFetching && (
             <>
               <div className="mb-5">
                 <label htmlFor="buscar">Buscar: </label>
-                <InputText type="search" onChange={onChangeBuscar} />
+                <InputText className="w-15rem md:w-20rem" type="search" onChange={onChangeBuscar} />
               </div>
-              
-              <Accordion>
-                {pacientes?.map((item) => (
-                  <AccordionTab key={item.id} header={item.label}>
-                    <Accordion multiple>
-                      <AccordionTab header="Registro de medicación">
-                        <AccordionBody
-                          paciente={item}
-                          tiposSuministracion={queryParametros?.data?.MEDICACION_TIPOS_SUMINISTRACION}
-                        />
-                      </AccordionTab>
-                      <AccordionTab header="Signos vitales">
-                        <SignosVitales />
-                      </AccordionTab>
-                      <AccordionTab header="Anomalias y observaciones"></AccordionTab>
-                    </Accordion>
-                  </AccordionTab>
-                ))}
-              </Accordion>
+
+              {pacientes.map((paciente) => (
+                <Button
+                  className="text-left my-1"
+                  outlined
+                  block
+                  icon={PrimeIcons.CARET_RIGHT}
+                  href={`/pacientes/seguimiento?idFicha=${paciente.id}`}
+                >
+                  {paciente.label}
+                </Button>
+              ))}
             </>
           )}
         </div>
