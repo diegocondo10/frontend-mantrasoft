@@ -17,7 +17,6 @@ import { CustomNextPage } from '@src/types/next';
 import { commandPush } from '@src/utils/router';
 import { FilterMatchMode, PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { MultiSelect } from 'primereact/multiselect';
 import { CSSProperties } from 'react';
 
 const PersonasPage: CustomNextPage = () => {
@@ -200,5 +199,7 @@ PersonasPage.help = {
   title: 'Dashboard de Personas',
   content: 'Contiene información de las personas registradas dentro del sistema',
 };
+
+PersonasPage.isPrivate = true;
 
 export default PersonasPage;

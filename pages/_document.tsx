@@ -10,7 +10,7 @@ class MyDocument extends Document {
     return (
       <Html lang="es" style={{ fontSize: '0.9rem' }}>
         <Head />
-        <body>
+        <body className="h-screen">
           <Main />
           <NextScript />
         </body>

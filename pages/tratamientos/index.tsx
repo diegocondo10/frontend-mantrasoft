@@ -18,7 +18,7 @@ const TratamientosPage: CustomNextPage<{
   id: number;
   urlListarTratamientos: string;
   pacienteId: string;
-}> = ({ id, urlListarTratamientos, pacienteId }) => {
+}> = ({ id, urlListarTratamientos }) => {
   const pagination = usePagination({
     uri: urlListarTratamientos,
     key: [urlListarTratamientos, id],
@@ -106,5 +106,7 @@ TratamientosPage.getInitialProps = ({ query }): any => {
     urlListarTratamientos: urlListarTratamientosPaciente(query?.id as string),
   };
 };
+
+TratamientosPage.isPrivate = true;
 
 export default TratamientosPage;

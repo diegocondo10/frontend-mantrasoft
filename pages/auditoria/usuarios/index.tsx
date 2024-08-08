@@ -179,4 +179,6 @@ UsuarioPage.help = {
   content: 'Contiene información de los usuarios del sistema conjunto con las acciones a realizar sobre los registros',
 };
 
+UsuarioPage.isPrivate = true;
+
 export default UsuarioPage;

@@ -1,10 +1,10 @@
 import PrivateNavbar from '@src/components/Navbars/PrivateNavbar';
+import useToasts from '@src/hooks/useToasts';
 import API from '@src/services/api';
 import { urlPerfil } from '@src/services/urls';
 import useUsuario from '@src/store/usuario/useUsuario';
 import { commandPush } from '@src/utils/router';
 import { useRouter } from 'next/router';
-import { PrimeIcons } from 'primereact/api';
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { MenuItem } from 'primereact/menuitem';
 import React from 'react';
@@ -17,16 +17,22 @@ export interface PrivateLayoutProps extends BaseLayoutProps {
 
 const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children, breadCrumbItems = [], ...rest }) => {
   const router = useRouter();
+
   const { isValidSession, setUsuario } = useUsuario();
+
+  const toast = useToasts();
 
   const { isLoading } = useQuery('perfil', () => API.private().post(urlPerfil), {
     refetchOnWindowFocus: false,
     onError: () => {
       router.replace('/logout');
+      toast.addErrorToast('No tienes una sesión de usuario');
     },
     onSuccess: ({ data }) => {
       setUsuario(data);
     },
+    refetchInterval: 1000 * 60 * 30,
+    refetchIntervalInBackground: true,
     enabled: isValidSession(),
   });
 

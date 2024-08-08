@@ -22,7 +22,6 @@ import Router from 'next/router';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-import { Editor } from 'primereact/editor';
 import { useState } from 'react';
 import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 import { useQuery } from 'react-query';
@@ -48,6 +47,7 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
     () => new FichaIngresoService().resumenFichaPaciente(idFicha),
     {
       refetchOnWindowFocus: false,
+      cacheTime: 0,
       onSuccess: (data) => {
         setMinDate(parseISO(data?.data?.ficha?.fechaIngreso));
       },
@@ -75,6 +75,8 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
         fechaFin: toFrontDate(res?.data?.fechaFin),
       });
     },
+    isDataEqual: () => false,
+    cacheTime: 0,
   });
 
   const onSubmit = async (data) => {
@@ -87,6 +89,7 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
         medicamento: item.medicamento.value,
         frecuencia: item.frecuencia,
         horas: item.horas,
+        motivo: item.motivo,
       })),
     };
     await mutation.submitForm(formData);
@@ -99,7 +102,7 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
       <PrivateLayout
         loading={{
           loading:
-            queryCatalogo.isLoading || queryTratamiento.isLoading || mutation.isLoading || queryResumen.isLoading,
+            queryCatalogo.isFetching || queryTratamiento.isFetching || mutation.isLoading || queryResumen.isLoading,
         }}
         breadCrumbItems={[
           {
@@ -124,7 +127,7 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
               {queryResumen.data?.data?.ficha?.ubicacion}
             </p>
           </div>
-          <div className="col-11 lg:col-10 xl:col-8 border-1 border-gray-200 p-5">
+          <div className="col-11 lg:col-10 border-1 border-gray-200 p-5">
             <form onSubmit={methods.handleSubmit(onSubmit)} className="formgrid grid p-5">
               <div className="field col">
                 <label htmlFor="fechaInicio">Fecha de inicio:*</label>
@@ -178,7 +181,7 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
                   rows={7}
                   controller={{ name: 'diagnostico', rules: { ...REQUIRED_RULE } }}
                 />
-                <Editor />
+                {/* <RitchTextEditor /> */}
                 <ErrorMessage name="diagnostico" />
               </div>
 
@@ -206,6 +209,7 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
                       {ColumnaNo()}
                       <Column header="Medicamento" field="medicamento.label" />
                       <Column className="text-center" header="Frecuencia" field="frecuencia" />
+                      <Column header="Motivo" field="motivo" />
                       <Column
                         header="Horas"
                         field="horas"
@@ -218,12 +222,13 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
                         }
                       />
                       <Column
-                        className="p-0 m-0 text-center"
+                        className="p-1 m-0 text-center"
                         header={<i className={PrimeIcons.TRASH} />}
                         body={(rowData) => (
                           <Button
                             variant="danger"
                             outlined
+                            sm
                             icon={PrimeIcons.TRASH}
                             onClick={() => {
                               const newItems = field.value?.filter((item) => item.uuid !== rowData.uuid);
@@ -254,5 +259,7 @@ const FormTratamientoPage: CustomNextPage<any> = ({ id, idFicha, back, crudActio
 };
 
 FormTratamientoPage.getInitialProps = ({ query }) => query;
+
+FormTratamientoPage.isPrivate = true;
 
 export default FormTratamientoPage;

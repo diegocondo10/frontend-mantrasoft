@@ -3,8 +3,10 @@ import DropDown from '@src/components/Forms/DropDown';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
 import TextArea from '@src/components/Forms/TextArea';
 import TextInput from '@src/components/Forms/TextInput';
+import TimePicker from '@src/components/Forms/TimePicker';
 import { REQUIRED_RULE } from '@src/constants/rules';
 import { uuidV4 } from '@src/utils/uuid';
+import { format } from 'date-fns';
 import { range } from 'lodash';
 import { PrimeIcons } from 'primereact/api';
 import { Dialog } from 'primereact/dialog';
@@ -24,6 +26,8 @@ const FormMedicamentos: React.FC<{ medicamentos: any[]; frecuencias: any[] }> = 
     data.uuid = uuidV4();
     data.medicamento = medicamentos.find((item) => item.value === data.medicamento);
     data.frecuencia = frecuencia?.label;
+    data.horas = data.horas.map((hora) => format(hora, 'HH:mm:ss'));
+    console.log(data);
     const medicamentosForm = parentForm.getValues('medicamentos') || [];
     parentForm.setValue('medicamentos', [...medicamentosForm, data]);
     closeModal();
@@ -103,16 +107,17 @@ const FormMedicamentos: React.FC<{ medicamentos: any[]; frecuencias: any[] }> = 
                 </label>
                 <div className="grid">
                   {range(frecuencia?.cantidadHoras)?.map((hora) => (
-                    <div className="col">
-                      <TextInput
-                        block
+                    <div className="col my-2">
+                      <TimePicker
                         key={`${frecuencia.label}-${hora}`}
-                        type="time"
                         controller={{
                           name: `horas.${hora}`,
                           rules: {
                             ...REQUIRED_RULE,
                           },
+                        }}
+                        datePicker={{
+                          placeholderText: 'Seleccione...',
                         }}
                       />
                       <ErrorMessage name={`horas.${hora}`} />

@@ -1,3 +1,4 @@
+import { setHours, setMinutes } from 'date-fns';
 import moment from 'moment';
 export const DATE_FORMAT = 'yyyy-MM-DD';
 export const DATE_TIME_FORMAT = 'yyyy-MM-DD HH:mm';
@@ -39,4 +40,25 @@ export const generarFechasEntre = (startDate: moment.Moment, endDate: moment.Mom
     now.add(1, 'days');
   }
   return fechas;
+};
+
+export const generateTimes = (startHour: number, endHour: number) => {
+  const times = [];
+  for (let hour = startHour; hour <= endHour; hour++) {
+    for (let minute = 0; minute < 60; minute += 15) {
+      times.push(setHours(setMinutes(new Date(), minute), hour));
+    }
+  }
+  return times;
+};
+
+export const getMinMaxTimesAmPm = (isAM: boolean = true) => {
+  const minTime = isAM ? setHours(setMinutes(new Date(), 0), 0) : setHours(setMinutes(new Date(), 0), 12);
+  const maxTime = isAM ? setHours(setMinutes(new Date(), 59), 11) : setHours(setMinutes(new Date(), 59), 23);
+  return { minTime, maxTime };
+};
+
+export const isAm = (): boolean => {
+  const hours = new Date().getHours();
+  return hours < 12;
 };

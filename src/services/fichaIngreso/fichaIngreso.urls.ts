@@ -4,6 +4,8 @@ import { BaseURLs } from '../service.types';
 export interface FichaIngresoUrls extends BaseURLs {
   resumenFichaPaciente: (id: PK) => string;
   listByPaciente: (idPaciente: string) => string;
+  tratamientoMedicacion: (id: PK) => string;
+  listByEnfermera: string;
 }
 
 export const FICHA_INGRESO_URLS: FichaIngresoUrls = {
@@ -13,4 +15,6 @@ export const FICHA_INGRESO_URLS: FichaIngresoUrls = {
   retrieve: (id: PK) => `fichas-ingreso/${id}/`,
   resumenFichaPaciente: (id: PK) => `fichas-ingreso/${id}/resumen-ficha-paciente/`,
   listByPaciente: (idPaciente: string) => `tratamientos/?paciente=${idPaciente}`,
+  tratamientoMedicacion: (id: PK) => `fichas-ingreso/${id}/tratamiento-medicacion/`,
+  listByEnfermera: 'fichas-ingreso/list-by-enfermera/',
 };

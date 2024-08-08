@@ -1,9 +1,13 @@
+import Loading from '@src/components/Loading';
+import CONFIGS from '@src/constants/configs';
+import useUsuario from '@src/store/usuario/useUsuario';
+import { CustomAppProps } from '@src/types/next';
 import '@styles/index.scss';
 import { setDefaultOptions } from 'date-fns';
 import { es } from 'date-fns/locale';
+import Cookies from 'js-cookie';
 import moment from 'moment';
 import 'moment/locale/es';
-import { AppProps } from 'next/app';
 import { addLocale, PrimeReactProvider } from 'primereact/api';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { registerLocale, setDefaultLocale } from 'react-datepicker';
@@ -11,16 +15,12 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { defaults } from 'react-sweet-state';
 import { ToastProvider } from 'react-toast-notifications';
 
-// Configuración de locales
 const configureLocales = () => {
-  // Configurar react-datepicker con el locale español
   registerLocale('es', es);
   setDefaultLocale('es');
 
-  // Configurar date-fns con el locale español
   setDefaultOptions({ locale: es });
 
-  // Configurar PrimeReact con el locale español
   addLocale('es', {
     firstDayOfWeek: 1,
     dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
@@ -46,11 +46,9 @@ const configureLocales = () => {
     apply: 'Aplicar',
   });
 
-  // Configurar moment con el locale español
   moment.locale('es');
 };
 
-// Componente para evitar problemas de hidratación
 const Hydration: React.FC<PropsWithChildren> = ({ children }) => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -62,12 +60,34 @@ const Hydration: React.FC<PropsWithChildren> = ({ children }) => {
     return null;
   }
 
-  return <>{children}</>;
+  return children;
+};
+
+const AuthHydratation: React.FC<PropsWithChildren & { isPrivate: boolean }> = ({ children, isPrivate }) => {
+  const [loading, setLoading] = useState(true);
+  const { setUsuario } = useUsuario();
+
+  useEffect(() => {
+    if (isPrivate) {
+      const userCookie = Cookies.get(CONFIGS.USER_KEY);
+      if (userCookie) {
+        try {
+          const user = JSON.parse(userCookie);
+          setUsuario(user);
+        } catch (error) {
+          console.error('Error parsing user cookie', error);
+        }
+      }
+    }
+    setLoading(false);
+  }, []);
+
+  return <Loading loading={loading}>{children}</Loading>;
 };
 
 const queryClient = new QueryClient();
 
-function MyApp({ Component, pageProps }: AppProps) {
+const MyApp: React.FC<CustomAppProps> = ({ Component, pageProps }) => {
   useEffect(() => {
     configureLocales();
     defaults.devtools = true;
@@ -75,16 +95,17 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <Hydration>
-      <PrimeReactProvider value={{ locale: 'es' }}>
+      <AuthHydratation isPrivate={Component.isPrivate}>
         <QueryClientProvider client={queryClient}>
-          <ToastProvider autoDismiss autoDismissTimeout={10000} placement="top-right">
-            <Component {...pageProps} />
-          </ToastProvider>
+          <PrimeReactProvider value={{ locale: 'es' }}>
+            <ToastProvider autoDismiss autoDismissTimeout={10000} placement="top-right">
+              <Component {...pageProps} />
+            </ToastProvider>
+          </PrimeReactProvider>
         </QueryClientProvider>
-        {/* {Component?.help && <HelpButton title={Component.help?.title} content={Component?.help?.content} />} */}
-      </PrimeReactProvider>
+      </AuthHydratation>
     </Hydration>
   );
-}
+};
 
 export default MyApp;

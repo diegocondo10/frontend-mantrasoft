@@ -1,37 +1,43 @@
 import CONFIGS from '@src/constants/configs';
 import { Perfil } from '@src/types/usuario';
-import router from 'next/router';
-import { useEffect, useMemo } from 'react';
+import Cookies from 'js-cookie';
+import { useEffect } from 'react';
+import { useUsuarioStore } from './store';
 
 const useUsuario = () => {
-  const usuario = useMemo<Perfil | null>(() => {
-    const usuarioJSON = localStorage.getItem('usuario') || null;
-    const usuario = usuarioJSON !== null ? JSON.parse(usuarioJSON) : null;
-    return usuario;
-  }, []);
+  const [state, actions] = useUsuarioStore();
 
   const isValidSession = () => {
     const access = localStorage.getItem(CONFIGS.TOKEN_KEY);
     const refresh = localStorage.getItem(CONFIGS.REFRESH_TOKEN_KEY);
+    const usuario = localStorage.getItem(CONFIGS.USER_KEY);
     if (access && refresh && usuario) {
       return true;
     }
-    router.replace('/logout');
     return false;
   };
 
   useEffect(() => {
-    isValidSession();
-  }, [usuario]);
+    if (!state.usuario && isValidSession()) {
+      setUsuario(JSON.parse(localStorage.getItem(CONFIGS.USER_KEY)));
+    }
+  }, []);
 
   const setUsuario = (data: Perfil) => {
-    localStorage.setItem('usuario', JSON.stringify(data));
+    localStorage.setItem(CONFIGS.USER_KEY, JSON.stringify(data));
+    actions.setUsuario(data);
+  };
+
+  const logOut = () => {
+    Cookies.remove(CONFIGS.TOKEN_KEY);
+    Cookies.remove(CONFIGS.USER_KEY);
   };
 
   return {
     isValidSession,
     setUsuario,
-    usuario,
+    usuario: state.usuario,
+    logOut,
   };
 };
 

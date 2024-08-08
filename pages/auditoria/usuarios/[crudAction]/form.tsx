@@ -168,4 +168,6 @@ FormUsuarioPage.help = {
   content: 'Formulario de ingreso de parámetros para la creación de usuarios',
 };
 
+FormUsuarioPage.isPrivate = true;
+
 export default FormUsuarioPage;

@@ -6,10 +6,14 @@ import { REQUIRED_RULE } from '@src/constants/rules';
 import useToasts from '@src/hooks/useToasts';
 import PublicLayout from '@src/layouts/PublicLayout';
 import { UsuarioService } from '@src/services/usuario/usuario.service';
+import useUsuario from '@src/store/usuario/useUsuario';
 import { CustomNextPage } from '@src/types/next';
+import { Perfil } from '@src/types/usuario';
 import { AxiosResponse } from 'axios';
+import Cookies from 'js-cookie';
 import { useRouter } from 'next/dist/client/router';
 import { PrimeIcons } from 'primereact/api';
+import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 
@@ -17,6 +21,9 @@ const LoginPage: CustomNextPage = () => {
   const methods = useForm({ mode: 'onChange' });
 
   const toast = useToasts();
+  const [loading, setLoading] = useState(false);
+
+  const { setUsuario } = useUsuario();
 
   const loginMutation = useMutation<AxiosResponse>((formData: any) =>
     new UsuarioService().login(formData.username, formData.password),
@@ -26,19 +33,25 @@ const LoginPage: CustomNextPage = () => {
 
   const _onSubmit = async (data: any) => {
     try {
+      setLoading(true);
       const res = await loginMutation.mutateAsync(data);
-      localStorage.setItem(CONFIGS.TOKEN_KEY, res.data.access);
-      localStorage.setItem(CONFIGS.REFRESH_TOKEN_KEY, res.data.refresh);
+      Cookies.set(CONFIGS.TOKEN_KEY, res.data.access);
+
+      const responsePerfil = await new UsuarioService().perfil();
+      setUsuario(responsePerfil.data as Perfil);
+      Cookies.set(CONFIGS.USER_KEY, JSON.stringify(responsePerfil.data));
+
       router.replace('/');
     } catch (error) {
       toast.addErrorToast(error?.allMessagesLikeReact || error.message);
     }
+    setLoading(false);
   };
 
   return (
     <PublicLayout
       loading={{
-        loading: loginMutation.isLoading,
+        loading: loading,
         texto: 'Verificando información',
       }}
     >
@@ -63,7 +76,7 @@ const LoginPage: CustomNextPage = () => {
                     name: 'username',
                     rules: { ...REQUIRED_RULE },
                   }}
-                  disabled={loginMutation.isLoading}
+                  disabled={loading}
                 />
                 <ErrorMessage name="username" />
 
@@ -77,7 +90,7 @@ const LoginPage: CustomNextPage = () => {
                     name: 'password',
                     rules: { ...REQUIRED_RULE },
                   }}
-                  disabled={loginMutation.isLoading}
+                  disabled={loading}
                 />
 
                 <ErrorMessage name="password" />
@@ -88,7 +101,7 @@ const LoginPage: CustomNextPage = () => {
                   className="w-full mt-3"
                   icon={PrimeIcons.SEND}
                   iconPos="right"
-                  loading={loginMutation.isLoading}
+                  loading={loading}
                 />
               </div>
             </div>

@@ -1,13 +1,14 @@
-import CONFIGS from '@src/constants/configs';
 import PublicLayout from '@src/layouts/PublicLayout';
+import useUsuario from '@src/store/usuario/useUsuario';
 import { CustomNextPage } from '@src/types/next';
 import Router from 'next/router';
 import { useEffect } from 'react';
 
 const LogOutPage: CustomNextPage = () => {
+  const { logOut } = useUsuario();
+
   useEffect(() => {
-    localStorage.removeItem(CONFIGS.TOKEN_KEY);
-    localStorage.removeItem(CONFIGS.REFRESH_TOKEN_KEY);
+    logOut();
     Router.replace('/login');
   }, []);
 

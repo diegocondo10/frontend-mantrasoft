@@ -20,9 +20,10 @@ const NumberInput: React.FC<NumberInputProps> = (props) => {
           <InputNumber
             // id={field.name}
             {...rest}
-            className={classNames(rest.className, { 'p-invalid': fieldState.invalid, 'w-full': block })}
+            className={classNames(rest.className, { 'w-full': block })}
             name={field.name}
             value={field.value}
+            invalid={fieldState.invalid}
             onValueChange={(e) => {
               field.onChange(e.value);
             }}

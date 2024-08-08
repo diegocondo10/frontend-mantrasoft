@@ -145,4 +145,6 @@ MedicamentosPage.help = {
     'Presenta información de los medicamentos ingresados conjunto con las acciones a realizar sobre los registros',
 };
 
+MedicamentosPage.isPrivate = true;
+
 export default MedicamentosPage;

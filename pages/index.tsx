@@ -1,3 +1,4 @@
+import ResumenMedicacion from '@src/components/ResumenMedicacion';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import useUsuario from '@src/store/usuario/useUsuario';
 import { CustomNextPage } from '@src/types/next';
@@ -8,19 +9,12 @@ const Home: CustomNextPage<any> = () => {
 
   return (
     <PrivateLayout loading={{ loading: false }}>
-      <main className="container">
-        <h1 className="text-center text-5xl">¡BIENVENIDO!</h1>
-        <h3 className="text-center">{usuario.fullName}</h3>
-        {usuario.isEnfermera && (
-          <React.Fragment>
-            <div className="row g-1 align-items-center"></div>
-            <div className="row">
-              <div className="col-12">
-                <h3 className="text-center">Resumen</h3>
-              </div>
-            </div>
-          </React.Fragment>
-        )}
+      <main className="grid grid-nogutter">
+        <div className="col-12 text-center">
+          <h1 className="text-5xl">¡BIENVENIDO!</h1>
+          <h3>{usuario.fullName}</h3>
+        </div>
+        {usuario.isEnfermera && <ResumenMedicacion />}
       </main>
     </PrivateLayout>
   );
@@ -30,4 +24,7 @@ Home.help = {
   title: 'Pagina de inicio',
   content: 'Dashboard de presentación de la página',
 };
+
+Home.isPrivate = true;
+
 export default Home;

@@ -5,9 +5,14 @@
 @import '~primereact/resources/primereact.min.css';
 @import '~primereact/resources/themes/lara-light-blue/theme.css';
 @import '~react-datepicker/dist/react-datepicker.css';
+@import '~ckeditor5/ckeditor5.css';
 @import './var.scss';
 @import './overrides/index.scss';
 @import './typography.scss';
+
+#__next {
+  height: 100vh;
+}
 
 .checkbox-round {
   margin-top: -0.5rem;
@@ -96,4 +101,10 @@
 .custom-datepicker-panel {
   z-index: 99999999 !important; /* Ajusta el z-index según sea necesario */
   background-color: red;
+}
+
+.hide-disabled-times {
+  .react-datepicker__time-list-item--disabled {
+    display: none;
+  }
 }

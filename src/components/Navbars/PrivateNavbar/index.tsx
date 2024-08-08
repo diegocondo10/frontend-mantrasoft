@@ -5,7 +5,7 @@ import { PrimeIcons } from 'primereact/api';
 import { Menubar } from 'primereact/menubar';
 import { MenuItem } from 'primereact/menuitem';
 import { OverlayPanel } from 'primereact/overlaypanel';
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 
 const PrivateNavbar = () => {
   const { usuario } = useUsuario();

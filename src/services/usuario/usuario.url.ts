@@ -3,6 +3,7 @@ import { BaseURLs } from '../service.types';
 
 export interface UsuarioUrls extends BaseURLs {
   login: string;
+  perfil: string;
 }
 
 export const USUARIO_URLS: UsuarioUrls = {
@@ -11,4 +12,5 @@ export const USUARIO_URLS: UsuarioUrls = {
   delete: (id: PK) => `usuarios/${id}/`,
   retrieve: (id: PK) => `usuarios/${id}/`,
   login: `usuarios/login/`,
+  perfil: 'usuarios/perfil/',
 };

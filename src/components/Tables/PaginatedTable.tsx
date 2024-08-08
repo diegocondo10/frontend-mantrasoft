@@ -25,14 +25,18 @@ const defaultProps: Partial<PaginatedTableProps<any>> = {
 };
 
 const PaginatedTable = forwardRef<DataTable<any>, PaginatedTableProps<any>>((props, ref) => {
-  const { showIndexColumn = defaultProps.showIndexColumn, indexColumnProps, ...rest } = props;
+  const { showIndexColumn = defaultProps.showIndexColumn, indexColumnProps, ...restProps } = props;
+
+  const dataTableProps = { ...defaultProps, ...restProps };
+  delete dataTableProps.showIndexColumn;
+
   return (
-    <DataTable ref={ref} {...defaultProps} {...rest}>
+    <DataTable ref={ref} {...dataTableProps}>
       {showIndexColumn && (
         <Column
           header="#"
           className="text-center font-bold"
-          body={(_, rowData) => rowData.rowIndex + 1}
+          body={(rowData, options) => options.rowIndex + 1}
           {...indexColumnProps}
         />
       )}

@@ -160,4 +160,6 @@ FormMedicamentosPage.help = {
   content: 'Formulario de ingreso de datos para medicamentos',
 };
 
+FormMedicamentosPage.isPrivate = true;
+
 export default FormMedicamentosPage;

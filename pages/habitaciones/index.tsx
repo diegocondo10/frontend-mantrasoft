@@ -134,4 +134,7 @@ HabitacionesPage.help = {
   content:
     'Contiene información de las habitaciones registradas con las acciones que se pueden realizar en los registros',
 };
+
+HabitacionesPage.isPrivate = true;
+
 export default HabitacionesPage;

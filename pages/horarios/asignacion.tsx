@@ -265,4 +265,6 @@ export const getServerSideProps: GetServerSideProps<AsignacionHorarionsPageProps
   };
 };
 
+AsignacionHorarionsPage.isPrivate = true;
+
 export default AsignacionHorarionsPage;

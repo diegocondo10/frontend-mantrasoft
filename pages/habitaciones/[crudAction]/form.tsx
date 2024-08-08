@@ -152,4 +152,6 @@ HabitacionFormPage.help = {
   content: 'Formulario de ingreso de datos de habitaciones',
 };
 
+HabitacionFormPage.isPrivate = true;
+
 export default HabitacionFormPage;

@@ -442,5 +442,5 @@ FormPascientePage.help = {
   title: 'Formulario de registro de datos de personas dentro del sistema',
   content: 'Formulario de ingreso de datos de personas',
 };
-
+FormPascientePage.isPrivate = true;
 export default FormPascientePage;

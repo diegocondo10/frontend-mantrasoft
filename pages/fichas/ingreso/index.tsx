@@ -115,7 +115,7 @@ const FichasIngresoPage: CustomNextPage = () => {
                   {
                     label: 'Tratamientos',
                     icon: PrimeIcons.LIST,
-                    command: commandPush(`/tratamientos?id=${rowData.id}&pacienteId=${rowData.pacienteView?.id}`),
+                    command: commandPush(`/tratamientos?id=${rowData.id}`),
                   },
                   {
                     label: 'Editar',
