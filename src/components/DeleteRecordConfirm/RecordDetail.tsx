@@ -1,19 +1,21 @@
 import React from 'react';
 
-type RecordItem = { label: string; value: string } | [string, string];
+type RecordItem = { label: string; value: string | React.ReactNode } | [string, string | React.ReactNode];
 
 interface RecordDetailProps {
   items: RecordItem[];
-  title: string;
+  title?: string;
 }
 
 const RecordDetail: React.FC<RecordDetailProps> = React.memo(
   ({ items, title }) => {
     return (
       <div className="grid mt-1">
-        <div className="col-12">
-          <div className="text-center text-xl font-bold">{title}</div>
-        </div>
+        {title && (
+          <div className="col-12">
+            <div className="text-center text-xl font-bold">{title}</div>
+          </div>
+        )}
         {items.map((item, index) => {
           const isTuple = Array.isArray(item);
           const label = isTuple ? item[0] : item.label;

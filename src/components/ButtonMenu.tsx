@@ -1,8 +1,8 @@
 import { PrimeIcons } from 'primereact/api';
-import { Button } from 'primereact/button';
 import { MenuItem } from 'primereact/menuitem';
 import { TieredMenu } from 'primereact/tieredmenu';
 import React, { useRef } from 'react';
+import Button from './Button';
 
 export interface ButtonMenuProps {
   label?: string;

@@ -1,4 +1,8 @@
+import Button from '@src/components/Button';
+import Loading from '@src/components/Loading';
+import { useParametros } from '@src/hooks/useParametros';
 import { FichaIngresoService } from '@src/services/fichaIngreso/fichaIngreso.service';
+import { PARAMETROS } from '@src/services/parametro/parametro.enum';
 import { RegistroMedicacionService } from '@src/services/registroMedicacion/registroMedicacion.service';
 import { PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
@@ -7,12 +11,14 @@ import { Dialog } from 'primereact/dialog';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import Button from '../Button';
-import Loading from '../Loading';
 
-const AccordionBody = ({ paciente, tiposSuministracion }) => {
+const Medicacion = ({ paciente }) => {
   const [show, setShow] = useState(false);
   const [filas, setFilas] = useState({});
+
+  const queryParametros = useParametros({
+    codigos: [PARAMETROS.MEDICACION_TIPOS_SUMINISTRACION],
+  });
 
   const queryTratamiento = useQuery<any>(
     ['tratamiento-medicacion-resumen', paciente],
@@ -36,7 +42,7 @@ const AccordionBody = ({ paciente, tiposSuministracion }) => {
 
   const tratamiento = queryTratamiento.data?.data?.tratamiento;
 
-  if (queryTratamiento.isFetching || queryRegistro.isFetching) {
+  if (queryTratamiento.isFetching || queryRegistro.isFetching || queryParametros.isLoading) {
     return <Loading loading />;
   }
 
@@ -68,7 +74,7 @@ const AccordionBody = ({ paciente, tiposSuministracion }) => {
           field="label"
           style={{ minWidth: '25rem' }}
           body={(record) => (
-            <p className="m-0 p-0" style={{ minWidth: '25rem' }}>
+            <p className="m-0 p-0 font-semibold" style={{ minWidth: '25rem' }}>
               {record.label}
             </p>
           )}
@@ -81,25 +87,28 @@ const AccordionBody = ({ paciente, tiposSuministracion }) => {
         />
         <Column
           header="Estado"
-          className="w-20rem p-0 m-0"
+          className="w-23rem p-0 m-0"
           body={(rowData) => {
             const key = `${rowData.horaRaw}--${rowData.id}--${paciente.id}`;
             return (
               <Dropdown
                 className="p-inputtext-sm outline-none shadow-none border-noround dropdown__horario w-full"
-                options={tiposSuministracion}
+                options={queryParametros?.data?.MEDICACION_TIPOS_SUMINISTRACION}
                 panelClassName="p-0 m-0 dropdown__horario flex flex-column align-items-center white-space-wrap"
                 placeholder="Selececcione..."
                 value={filas[key] || null}
                 optionValue=""
                 onChange={onChangeEstado(key, rowData)}
+                scrollHeight="50"
                 itemTemplate={(item) => (
                   <div
-                    className="flex flex-column justify-content-center text-center border-1 border-gray-400 w-25rem"
+                    className="flex flex-column justify-content-center text-center border-1 border-gray-400 w-26rem font-bold"
                     style={{
                       backgroundColor: item.color,
                       color: item?.colorLetra,
                       height: '2.3rem',
+                      marginTop: '0.1rem',
+                      marginBottom: '0.1rem',
                     }}
                   >
                     <span>{item.label}</span>
@@ -112,7 +121,7 @@ const AccordionBody = ({ paciente, tiposSuministracion }) => {
                       color: item?.colorLetra,
                       height: '2.3rem',
                     }}
-                    className="flex flex-column justify-content-center text-center"
+                    className="flex flex-column justify-content-center text-center font-bold"
                   >
                     <span>{item?.label || 'Seleccione'}</span>
                   </div>
@@ -133,11 +142,11 @@ const AccordionBody = ({ paciente, tiposSuministracion }) => {
         <h4 className="my-1">Asignado por: {tratamiento?.asignadoPor}</h4>
         <h4 className="my-1">Fecha inicio: {tratamiento.fechaInicio}</h4>
         <h4 className="my-1">Fecha fin: {tratamiento.fechaFin}</h4>
-        <h4 className="my-1">Paciente: {paciente.nombre}</h4>
+        <h4 className="my-1">Paciente: {paciente.nombresApellidos}</h4>
         <p className="text-justify">{queryTratamiento?.data?.data?.tratamiento?.diagnostico}</p>
       </Dialog>
     </>
   );
 };
 
-export default AccordionBody;
+export default Medicacion;

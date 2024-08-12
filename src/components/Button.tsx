@@ -1,10 +1,10 @@
 import classNames from 'classnames';
-import { useRouter } from 'next/dist/client/router';
+import { useRouter } from 'next/router';
 import { Button as PrimeButton, ButtonProps as PrimeButtonProps } from 'primereact/button';
-import React, { PropsWithoutRef } from 'react';
+import { FC, MouseEvent } from 'react';
 import { UrlObject } from 'url';
 
-export interface ButtonProps extends PropsWithoutRef<PrimeButtonProps> {
+interface ButtonProps extends PrimeButtonProps {
   href?: UrlObject | string;
   variant?: 'primary' | 'secondary' | 'danger' | 'warning' | 'info' | 'help' | 'success';
   outlined?: boolean;
@@ -14,46 +14,41 @@ export interface ButtonProps extends PropsWithoutRef<PrimeButtonProps> {
   text?: boolean;
   rounded?: boolean;
   access?: string;
-
   clipBoardText?: string;
   clipBoardItems?: ClipboardItems;
 }
 
-const defaultProps: ButtonProps = {
-  type: 'button',
-};
-
-export const Button: React.FC<ButtonProps> = (props) => {
-  const {
-    sm,
-    lg,
-    block,
-    outlined,
-    href,
-    text,
-    rounded,
-    access,
-    clipBoardItems,
-    clipBoardText,
-    variant,
-    className,
-    onClick,
-    ...rest
-  } = props;
-
+const Button: FC<ButtonProps> = ({
+  sm = false,
+  lg = false,
+  block = false,
+  outlined = false,
+  href,
+  text = false,
+  rounded = false,
+  access,
+  clipBoardItems,
+  clipBoardText,
+  variant = 'primary',
+  className,
+  onClick,
+  type = 'button',
+  ...rest
+}) => {
   const router = useRouter();
 
-  const _onClick = (evt: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    onClick && onClick(evt);
+  const _onClick = (evt: MouseEvent<HTMLButtonElement>) => {
+    if (onClick) {
+      onClick(evt);
+    }
     if (href) {
       router.push(href);
     }
-
-    if (props.clipBoardText) {
-      navigator.clipboard.writeText(props.clipBoardText);
+    if (clipBoardText) {
+      navigator.clipboard.writeText(clipBoardText);
     }
-    if (props.clipBoardItems) {
-      navigator.clipboard.write(props.clipBoardItems);
+    if (clipBoardItems) {
+      navigator.clipboard.write(clipBoardItems);
     }
   };
 
@@ -66,13 +61,13 @@ export const Button: React.FC<ButtonProps> = (props) => {
           'p-button-outlined': outlined,
           'p-button-text': text,
           'p-button-sm': sm,
-          'p-button-lg': lg || false,
+          'p-button-lg': lg,
           'w-full': block,
         },
         className,
       )}
       onClick={_onClick}
-      type={defaultProps.type}
+      type={type}
       {...rest}
     />
   );
