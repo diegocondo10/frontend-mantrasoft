@@ -6,6 +6,7 @@ import { URL_BASE } from './urls';
 interface API {
   public(configs?: AxiosRequestConfig): AxiosInstance;
   private(configs?: AxiosRequestConfig): AxiosInstance;
+  getReporte(): any;
 }
 
 const createAxiosInstance = (configs?: AxiosRequestConfig): AxiosInstance => {
@@ -38,6 +39,7 @@ const API: API = {
 
     return instance;
   },
+  getReporte: () => {},
 };
 
 export default API;

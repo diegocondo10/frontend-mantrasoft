@@ -31,50 +31,50 @@ const PrivateNavbar = () => {
           label: 'Usuarios',
           icon: PrimeIcons.USERS,
           url: '/auditoria/usuarios/',
-          visible: usuario.isAdmin,
+          visible: usuario?.isAdmin,
         },
         {
           label: 'Horarios',
           icon: PrimeIcons.CLOCK,
           url: '/horarios/asignacion',
-          visible: usuario.isAdmin,
+          visible: usuario?.isAdmin,
         },
         {
           icon: PrimeIcons.FOLDER,
           label: 'Catalogos',
-          visible: usuario.isAdmin,
+          visible: usuario?.isAdmin,
           items: [
             {
               label: 'Habitaciones',
               icon: PrimeIcons.BUILDING,
               url: '/habitaciones/',
-              visible: usuario.isAdmin,
+              visible: usuario?.isAdmin,
             },
 
             {
               label: 'Medicamentos',
               icon: PrimeIcons.LIST,
               url: '/medicamentos/',
-              visible: usuario.isAdmin,
+              visible: usuario?.isAdmin,
             },
           ],
         },
         {
           icon: PrimeIcons.FOLDER,
           label: 'Fichas',
-          visible: usuario.isAdmin,
+          visible: usuario?.isAdmin,
           items: [
             {
               icon: PrimeIcons.USERS,
               label: 'Pacientes',
               url: '/personas/',
-              visible: usuario.isAdmin,
+              visible: usuario?.isAdmin,
             },
             {
               label: 'Ingreso',
               icon: PrimeIcons.FILE,
               url: '/fichas/ingreso',
-              visible: usuario.isAdmin,
+              visible: usuario?.isAdmin,
             },
           ],
         },

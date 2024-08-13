@@ -16,16 +16,22 @@ const DropDown: React.FC<DropDownProps> = (props) => {
     <Controller
       {...controller}
       render={({ field, fieldState }) => (
-        <Dropdown
-          id={field.name}
-          className={classNames(rest.className, { 'w-full': block })}
-          invalid={fieldState.invalid}
-          {...field}
-          placeholder="SELECCIONAR"
-          emptyMessage="Sin resultados"
-          emptyFilterMessage="Sin resultados"
-          {...rest}
-        />
+        <React.Fragment>
+          <Dropdown
+            id={field.name}
+            className={classNames(rest.className, { 'w-full': block })}
+            invalid={fieldState.invalid}
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            name={field.name}
+            placeholder="SELECCIONAR"
+            emptyMessage="Sin resultados"
+            emptyFilterMessage="Sin resultados"
+            focusInputRef={field.ref}
+            {...rest}
+          />
+        </React.Fragment>
       )}
     />
   );

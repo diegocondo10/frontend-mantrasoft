@@ -1,5 +1,7 @@
 import Button from '@src/components/Button';
+import DropDown from '@src/components/Forms/DropDown';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
+import TextInput from '@src/components/Forms/TextInput';
 import Toggle from '@src/components/Forms/Toggle';
 import PageTitle from '@src/components/PageTitle';
 import { PAISES } from '@src/constants/paises';
@@ -97,18 +99,13 @@ const FormPascientePage: CustomNextPage<PageProps> = ({ crudAction, id, title })
               <form onSubmit={methods.handleSubmit(_onSubmit)} className="grid justify-content-center mb-5">
                 <div className="field col-12 md:col-6 my-2">
                   <label htmlFor="tipoIdentificacion">Tipo de identificación: *</label>
-                  <Controller
-                    name="tipoIdentificacion"
-                    rules={{ ...REQUIRED_RULE }}
-                    render={({ field, fieldState }) => (
-                      <Dropdown
-                        inputId="tipoIdentificacion"
-                        options={queryParametros?.data.IDENTIFICACIONES}
-                        {...field}
-                        placeholder="Seleccione"
-                        className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
-                      />
-                    )}
+                  <DropDown
+                    options={queryParametros?.data?.IDENTIFICACIONES}
+                    controller={{
+                      name: 'tipoIdentificacion',
+                      rules: { ...REQUIRED_RULE },
+                    }}
+                    block
                   />
                   <ErrorMessage name="tipoIdentificacion" />
                 </div>
@@ -129,16 +126,12 @@ const FormPascientePage: CustomNextPage<PageProps> = ({ crudAction, id, title })
                 </div>
                 <div className="field col-12 md:col-6 my-2">
                   <label>Primer Nombre: *</label>
-                  <Controller
-                    name="primerNombre"
-                    rules={{ ...REQUIRED_RULE }}
-                    render={({ field, fieldState }) => (
-                      <InputText
-                        id="primerNombre"
-                        {...field}
-                        className={classNames('w-full', { 'p-invalid': fieldState.invalid })}
-                      />
-                    )}
+                  <TextInput
+                    controller={{
+                      name: 'primerNombre',
+                      rules: { ...REQUIRED_RULE },
+                    }}
+                    block
                   />
                   <ErrorMessage name="primerNombre" />
                 </div>
