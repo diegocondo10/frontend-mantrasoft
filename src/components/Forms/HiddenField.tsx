@@ -2,15 +2,18 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 import { ControllerProps } from './types';
 
-export interface HiddenFieldProps extends ControllerProps {}
+export interface HiddenFieldProps extends ControllerProps {
+  hidden?: boolean;
+}
 const HiddenField: React.FC<HiddenFieldProps> = (props) => {
+  const { hidden = true, ...rest } = props;
   return (
     <Controller
-      name={props.name}
-      defaultValue={props.defaultValue}
-      shouldUnregister={props.shouldUnregister}
-      rules={props.rules}
-      render={({ field }) => <small hidden>{JSON.stringify(field.value)}</small>}
+      name={rest.name}
+      defaultValue={rest.defaultValue}
+      shouldUnregister={rest.shouldUnregister}
+      rules={rest.rules}
+      render={({ field }) => <small hidden={hidden}>{JSON.stringify(field.value)}</small>}
     />
   );
 };

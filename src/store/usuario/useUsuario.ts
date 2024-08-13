@@ -36,7 +36,7 @@ const useUsuario = () => {
   return {
     isValidSession,
     setUsuario,
-    usuario: state.usuario,
+    usuario: state.usuario as Perfil,
     logOut,
   };
 };

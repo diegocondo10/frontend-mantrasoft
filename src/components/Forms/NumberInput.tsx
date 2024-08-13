@@ -21,6 +21,7 @@ const NumberInput: React.FC<NumberInputProps> = (props) => {
             // id={field.name}
             {...rest}
             className={classNames(rest.className, { 'w-full': block })}
+            inputClassName={classNames(rest.inputClassName, { 'w-full': block })}
             name={field.name}
             value={field.value}
             invalid={fieldState.invalid}

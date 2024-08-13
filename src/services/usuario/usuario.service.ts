@@ -1,3 +1,4 @@
+import { PK } from '@src/types/api';
 import { BaseService } from '../base.service';
 import { USUARIO_URLS, UsuarioUrls } from './usuario.url';
 
@@ -12,5 +13,9 @@ export class UsuarioService extends BaseService<UsuarioUrls> {
 
   async perfil() {
     return this.request('POST', this.urls.perfil);
+  }
+
+  async setPassword(id: PK, password: string) {
+    return this.request('POST', this.urls.setPassword(id), { password });
   }
 }

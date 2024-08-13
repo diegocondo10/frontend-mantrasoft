@@ -8,10 +8,11 @@ import { ControllerProps } from './types';
 export interface TextAreaProps extends Omit<InputTextareaProps, 'name' | 'defaultValue' | 'ref' | 'onChange'> {
   controller: ControllerProps;
   block?: boolean;
+  loading?: boolean;
 }
 
 const TextArea: React.FC<TextAreaProps> = (props) => {
-  const { controller, ...rest } = props;
+  const { controller, loading, ...rest } = props;
 
   return (
     <Controller
@@ -22,7 +23,9 @@ const TextArea: React.FC<TextAreaProps> = (props) => {
           <InputTextarea
             id={field.name}
             {...rest}
-            className={classNames(rest.className, { 'p-invalid': fieldState.invalid, 'w-full': props.block })}
+            className={classNames(rest.className, { 'w-full': props.block })}
+            invalid={fieldState.invalid}
+            disabled={loading}
             {...field}
           />
         </React.Fragment>

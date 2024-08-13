@@ -1,6 +1,8 @@
 import React from 'react';
 
-type RecordItem = { label: string; value: string | React.ReactNode } | [string, string | React.ReactNode];
+type RecordItem =
+  | { label: string | React.ReactNode; value: string | React.ReactNode }
+  | [string | React.ReactNode, string | React.ReactNode];
 
 interface RecordDetailProps {
   items: RecordItem[];
@@ -17,13 +19,12 @@ const RecordDetail: React.FC<RecordDetailProps> = React.memo(
           </div>
         )}
         {items.map((item, index) => {
-          const isTuple = Array.isArray(item);
-          const label = isTuple ? item[0] : item.label;
-          const value = isTuple ? item[1] : item.value;
-
+          const [label, value] = Array.isArray(item) ? item : [item.label, item.value];
           return (
-            <React.Fragment key={index}>
-              <div className="col-4 label text-right detail-grid-border">{label}</div>
+            <React.Fragment key={`${index}-${label?.toString()}`}>
+              <div className="col-4 label text-right detail-grid-border flex flex-column">
+                <div className="my-auto">{label}</div>
+              </div>
               <div className="col-8 value detail-grid-border">{value}</div>
             </React.Fragment>
           );

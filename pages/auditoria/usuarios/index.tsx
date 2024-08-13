@@ -161,6 +161,11 @@ const UsuarioPage: CustomNextPage<any> = () => {
                     icon: PrimeIcons.PENCIL,
                     command: commandPush(`/auditoria/usuarios/editar/form?id=${rowData?.id}`),
                   },
+                  {
+                    label: 'Cambiar contraseña',
+                    icon: PrimeIcons.PENCIL,
+                    command: commandPush(`/auditoria/usuarios/cambiarContrasenia?id=${rowData?.id}`),
+                  },
                   deleteItemCommand(rowData),
                 ]}
               />

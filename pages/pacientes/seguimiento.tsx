@@ -1,16 +1,22 @@
 import RecordDetail from '@src/components/DeleteRecordConfirm/RecordDetail';
 import Medicacion from '@src/containers/pacientes/seguimiento/components/Medicacion';
+import ObservacionAnomalia from '@src/containers/pacientes/seguimiento/components/ObservacionAnomalia';
+import ProgresoSignosVitales from '@src/containers/pacientes/seguimiento/components/ProgresoSignosVitales';
+import RegistroSignosVitales from '@src/containers/pacientes/seguimiento/components/RegistroSignosVitales';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import { FichaIngresoService } from '@src/services/fichaIngreso/fichaIngreso.service';
 import { PK } from '@src/types/api';
 import { CustomNextPage } from '@src/types/next';
 import { AxiosResponse } from 'axios';
 import { GetServerSideProps } from 'next';
+import Router, { useRouter } from 'next/router';
 import { Divider } from 'primereact/divider';
-import { TabPanel, TabView } from 'primereact/tabview';
+import { TabPanel, TabView, TabViewTabChangeEvent } from 'primereact/tabview';
+import { useMemo, useState } from 'react';
+import DatePicker from 'react-datepicker';
 import { useQuery } from 'react-query';
 
-const SeguimientoPacientesPage: CustomNextPage<{ idFicha: PK }> = ({ idFicha }) => {
+const SeguimientoPacientesPage: CustomNextPage<{ idFicha: PK; tab: number }> = ({ idFicha }) => {
   const queryResumen = useQuery<AxiosResponse<any>>(
     ['resumen-ficha-paciente', idFicha],
     () => new FichaIngresoService().resumenFichaPaciente(idFicha),
@@ -19,9 +25,21 @@ const SeguimientoPacientesPage: CustomNextPage<{ idFicha: PK }> = ({ idFicha }) 
     },
   );
 
-  const resumen = queryResumen.data?.data;
+  const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date());
 
-  console.log(resumen);
+  const resumen = queryResumen.data?.data;
+  const { query } = useRouter();
+  const selectedTab = useMemo(() => Number(query?.tab || 0), [query?.tab]);
+
+  const onTabChange = (evt: TabViewTabChangeEvent) => {
+    Router.replace({
+      pathname: Router.pathname,
+      query: {
+        idFicha,
+        tab: evt.index,
+      },
+    });
+  };
 
   return (
     <PrivateLayout
@@ -44,29 +62,41 @@ const SeguimientoPacientesPage: CustomNextPage<{ idFicha: PK }> = ({ idFicha }) 
               ['Paciente', resumen?.paciente?.nombresApellidos],
               ['Ubicación', resumen?.ficha?.ubicacion],
               ['Fecha Ingreso', resumen?.ficha?.fechaIngresoFormat],
+              [
+                'Fecha de consulta',
+                <DatePicker
+                  className="p-inputtext p-component font-semibold text-center uppercase w-full"
+                  calendarClassName="p-input w-full"
+                  wrapperClassName="w-full"
+                  selected={fechaSeleccionada}
+                  onChange={(date: Date) => setFechaSeleccionada(date)}
+                  dateFormat="dd-MM-yyyy"
+                />,
+              ],
             ]}
           />
         </div>
         <Divider />
         <div className="col-12 mb-8 mx-auto">
-          <TabView className="border-1 border-gray-200" panelContainerStyle={{ minHeight: '30rem' }} scrollable>
-            <TabPanel header="Tratamiento"></TabPanel>
+          <TabView
+            className="border-1 border-gray-200"
+            panelContainerStyle={{ minHeight: '30rem' }}
+            scrollable
+            onTabChange={onTabChange}
+            activeIndex={selectedTab}
+          >
+            {/* <TabPanel header="Tratamiento"></TabPanel> */}
             <TabPanel header="Medicación">
-              <Medicacion paciente={resumen?.paciente} />
+              <Medicacion paciente={resumen?.paciente} fechaSeleccionada={fechaSeleccionada} />
             </TabPanel>
             <TabPanel header="Signos Vitales">
-              <p>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsum similique, exercitationem iste
-                temporibus eligendi repudiandae veniam, necessitatibus, fuga commodi hic tempore at doloremque rerum
-                nesciunt? Quas quasi culpa explicabo porro?
-              </p>
+              <RegistroSignosVitales idFicha={idFicha} fechaSeleccionada={fechaSeleccionada} />
+            </TabPanel>
+            <TabPanel header="Progreso">
+              <ProgresoSignosVitales idFicha={idFicha} />
             </TabPanel>
             <TabPanel header="Observaciones y anomalias">
-              <p>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ipsum similique, exercitationem iste
-                temporibus eligendi repudiandae veniam, necessitatibus, fuga commodi hic tempore at doloremque rerum
-                nesciunt? Quas quasi culpa explicabo porro?
-              </p>
+              <ObservacionAnomalia idFicha={idFicha} />
             </TabPanel>
           </TabView>
         </div>
@@ -78,9 +108,11 @@ const SeguimientoPacientesPage: CustomNextPage<{ idFicha: PK }> = ({ idFicha }) 
 SeguimientoPacientesPage.isPrivate = true;
 
 export const getServerSideProps: GetServerSideProps<any> = async ({ query }) => {
+  const tab = query?.tab || 0;
   return {
     props: {
       ...query,
+      tab,
     },
   };
 };

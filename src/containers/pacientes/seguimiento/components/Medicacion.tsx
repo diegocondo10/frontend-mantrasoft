@@ -9,28 +9,28 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 
-const Medicacion = ({ paciente }) => {
+const Medicacion: React.FC<{ paciente: any; fechaSeleccionada: Date }> = ({ paciente, fechaSeleccionada }) => {
   const [show, setShow] = useState(false);
   const [filas, setFilas] = useState({});
 
   const queryParametros = useParametros({
     codigos: [PARAMETROS.MEDICACION_TIPOS_SUMINISTRACION],
   });
-
+  console.log(fechaSeleccionada.toISOString());
   const queryTratamiento = useQuery<any>(
-    ['tratamiento-medicacion-resumen', paciente],
-    () => new FichaIngresoService().tratamientoMedicacion(paciente.id),
+    ['tratamiento-medicacion-resumen', paciente, fechaSeleccionada],
+    () => new FichaIngresoService().tratamientoMedicacion(paciente.id, fechaSeleccionada.toISOString()),
     {
       refetchOnWindowFocus: false,
     },
   );
 
   const queryRegistro = useQuery<any>(
-    ['registro-medicacion', paciente],
-    () => new RegistroMedicacionService().registroPaciente(paciente.id),
+    ['registro-medicacion', paciente, fechaSeleccionada],
+    () => new RegistroMedicacionService().registroPaciente(paciente.id, fechaSeleccionada.toISOString()),
     {
       onSuccess: ({ data }) => {
         console.log(data);
@@ -102,7 +102,7 @@ const Medicacion = ({ paciente }) => {
                 scrollHeight="50"
                 itemTemplate={(item) => (
                   <div
-                    className="flex flex-column justify-content-center text-center border-1 border-gray-400 w-26rem font-bold"
+                    className="flex flex-column justify-content-center text-center border-1 border-gray-400 w-27rem font-bold"
                     style={{
                       backgroundColor: item.color,
                       color: item?.colorLetra,
@@ -121,7 +121,7 @@ const Medicacion = ({ paciente }) => {
                       color: item?.colorLetra,
                       height: '2.3rem',
                     }}
-                    className="flex flex-column justify-content-center text-center font-bold"
+                    className="flex flex-column justify-content-center text-center font-bold px-2"
                   >
                     <span>{item?.label || 'Seleccione'}</span>
                   </div>

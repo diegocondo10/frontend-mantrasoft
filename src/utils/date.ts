@@ -62,3 +62,7 @@ export const isAm = (): boolean => {
   const hours = new Date().getHours();
   return hours < 12;
 };
+
+export const isDateAm = (date: Date) => {
+  return date.getHours() < 12;
+};

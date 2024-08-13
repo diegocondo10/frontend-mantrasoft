@@ -14,7 +14,7 @@ export class FichaIngresoService extends BaseService<FichaIngresoUrls> {
     return this.request('GET', this.urls.listByEnfermera);
   }
 
-  async tratamientoMedicacion(id: PK) {
-    return this.request('POST', this.urls.tratamientoMedicacion(id));
+  async tratamientoMedicacion(id: PK, fecha: string) {
+    return this.request('POST', this.urls.tratamientoMedicacion(id), { fecha });
   }
 }

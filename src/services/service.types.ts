@@ -16,6 +16,7 @@ export interface FieldError {
 }
 
 export interface BaseURLs {
+  list?: string;
   create: string;
   update: (id: PK) => string;
   delete: (id: PK) => string;

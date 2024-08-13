@@ -13,6 +13,9 @@ const useDeleteRecordConfirm = () => {
         command: deleteRecordRef.current?.deleteRecord(rowData),
       };
     },
+    deleteEvent: (rowData: any) => {
+      return deleteRecordRef.current?.deleteRecord(rowData);
+    },
   };
 };
 

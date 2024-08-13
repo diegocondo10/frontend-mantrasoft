@@ -85,7 +85,13 @@ const AuthHydratation: React.FC<PropsWithChildren & { isPrivate: boolean }> = ({
   return <Loading loading={loading}>{children}</Loading>;
 };
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const MyApp: React.FC<CustomAppProps> = ({ Component, pageProps }) => {
   useEffect(() => {
