@@ -24,6 +24,7 @@ const CambiarContraseniaPage: CustomNextPage<any> = ({ id }) => {
     enabled: !!id,
     refetchOnWindowFocus: false,
   });
+  
 
   const usuario = query.data?.data;
   const fullName = `${usuario?.username} - ${usuario?.email}`;
