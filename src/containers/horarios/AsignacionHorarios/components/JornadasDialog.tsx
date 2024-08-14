@@ -24,7 +24,10 @@ const JornadasDialog = ({ jornadas }) => {
         draggable
       >
         {jornadas.map((jornada) => (
-          <div className="flex flex-row align-items-center border border-1 border-gray-200 my-2 mx-8 justify-content-center px-5">
+          <div
+            key={JSON.stringify(jornada)}
+            className="flex flex-row align-items-center border border-1 border-gray-200 my-2 mx-8 justify-content-center px-5"
+          >
             <div
               style={{
                 backgroundColor: jornada?.color,
