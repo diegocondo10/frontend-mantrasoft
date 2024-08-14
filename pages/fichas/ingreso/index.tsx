@@ -6,10 +6,11 @@ import PaginatedTable from '@src/components/Tables/PaginatedTable';
 import usePagination from '@src/hooks/v2/usePagination';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import { AlaService } from '@src/services/alas/ala.service';
-import API from '@src/services/api';
+import { FichaIngresoService } from '@src/services/fichaIngreso/fichaIngreso.service';
 import { PersonaService } from '@src/services/persona/persona.service';
-import { urlImprimirFichaIngreso, urlImprimirReporteEnfermeria, urlListarFichasIngreso } from '@src/services/urls';
+import { urlListarFichasIngreso } from '@src/services/urls';
 import { CustomNextPage } from '@src/types/next';
+import { downloadReport } from '@src/utils/file';
 import { commandPush } from '@src/utils/router';
 import { FilterMatchMode, PrimeIcons } from 'primereact/api';
 import { Column } from 'primereact/column';
@@ -126,80 +127,22 @@ const FichasIngresoPage: CustomNextPage = () => {
                     separator: true,
                   },
                   {
-                    label: 'Reportes',
-                    icon: PrimeIcons.PRINT,
-                    items: [
-                      {
-                        label: 'Imprimir ficha de ingreso',
-                        icon: PrimeIcons.PRINT,
-                        command: API.getReporte(urlImprimirFichaIngreso(rowData.id)),
-                      },
-                      {
-                        label: 'Imprimir Reporte de enfermeria',
-                        icon: PrimeIcons.PRINT,
-                        command: API.getReporte(urlImprimirReporteEnfermeria(rowData.id)),
-                      },
-                      // {
-                      //   label: 'Control de medicación',
-                      //   icon: PrimeIcons.PRINT,
-                      //   command: () => {
-                      //     setShowModal(true);
-                      //     setId(rowData.id);
-                      //   },
-                      // },
-                    ],
-                  },
-
-                  {
-                    label: 'Bitacora de enfermeria',
-                    icon: PrimeIcons.LIST,
-                    command: commandPush(`/fichas/ingreso/seguimientos?id=${rowData.id}`),
-                  },
-                  {
-                    label: 'Signo vitales',
-                    icon: PrimeIcons.LIST,
-                    command: commandPush(`/fichas/ingreso/signos-vitales?id=${rowData.id}`),
-                  },
-                  {
                     label: 'Registro de pertenencias',
                     icon: PrimeIcons.LIST,
                     command: commandPush(`/fichas/ingreso/pertenencias?id=${rowData.id}`),
+                  },
+                  {
+                    label: 'Imprimir Ficha',
+                    icon: PrimeIcons.PRINT,
+                    command: () => {
+                      downloadReport(new FichaIngresoService().imprimirFicha(rowData.id));
+                    },
                   },
                 ]}
               />
             )}
           />
         </PaginatedTable>
-
-        {/* <Modal
-          show={showModal}
-          onHide={() => setShowModal(false)}
-          modal={{ size: 'sm', centered: true }}
-          header={{ title: 'Control de medicación', closeButton: true }}
-        >
-          <div className="d-flex">
-            <input
-              value={fecha}
-              onChange={(evt) => {
-                setFecha(evt.target.value);
-              }}
-              className="form-control"
-              type="date"
-              required
-              name="fecha"
-            />
-            <Button
-              type="submit"
-              className="rounded-0"
-              label="Imprimir"
-              sm
-              icon={PrimeIcons.PRINT}
-              onClick={API.getReporte(
-                urlImprimirControlMedicacion(id, +fecha?.split?.('-')?.[1], fecha?.split?.('-')?.[0]),
-              )}
-            />
-          </div>
-        </Modal> */}
       </main>
     </PrivateLayout>
   );

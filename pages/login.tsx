@@ -12,6 +12,7 @@ import { Perfil } from '@src/types/usuario';
 import { AxiosResponse } from 'axios';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/dist/client/router';
+import Image from 'next/image';
 import { PrimeIcons } from 'primereact/api';
 import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -61,8 +62,9 @@ const LoginPage: CustomNextPage = () => {
             className="flex align-items-center justify-content-center h-screen"
             onSubmit={methods.handleSubmit(_onSubmit)}
           >
-            <div className="surface-card p-4 shadow-2 border-round w-full w-10 md:w-8 lg:w-6 xl:w-4 my-auto">
+            <div className="surface-card p-4 shadow-2 border-round w-full w-10 sm:w-8 md:w-6 lg:w-5 xl:w-4 my-auto">
               <div className="text-center mb-5">
+                <Image alt="Los Jardines" src="/logo.jpeg" width="200" height="200" />
                 <div className="text-900 text-5xl font-medium mb-3">Bienvenido</div>
               </div>
 
@@ -96,6 +98,7 @@ const LoginPage: CustomNextPage = () => {
                 <ErrorMessage name="password" />
 
                 <Button
+                  outlined
                   label="Ingresar"
                   type="submit"
                   className="w-full mt-3"

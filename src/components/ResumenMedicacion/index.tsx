@@ -22,7 +22,7 @@ const ResumenMedicacion = () => {
 
   const onChangeBuscar = (evt: ChangeEvent<HTMLInputElement>) => {
     const result = queryMedicacion.data.data.pacientes.filter((item) => {
-      return item.label.toLowerCase().includes(evt.target.value);
+      return item.label.toLowerCase().includes(evt.target.value.toLowerCase());
     });
     setPacientes(result);
   };
@@ -37,7 +37,7 @@ const ResumenMedicacion = () => {
                 <label htmlFor="buscar">Buscar: </label>
                 <InputText className="w-15rem md:w-20rem" type="search" onChange={onChangeBuscar} />
               </div>
-
+              <p>Tus pacientes para hoy son:</p>
               {pacientes.map((paciente) => (
                 <Button
                   className="text-left my-1"

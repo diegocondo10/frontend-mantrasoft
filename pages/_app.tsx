@@ -8,9 +8,11 @@ import { es } from 'date-fns/locale';
 import Cookies from 'js-cookie';
 import moment from 'moment';
 import 'moment/locale/es';
+import Router from 'next/router';
 import { addLocale, PrimeReactProvider } from 'primereact/api';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { registerLocale, setDefaultLocale } from 'react-datepicker';
+import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { defaults } from 'react-sweet-state';
 import { ToastProvider } from 'react-toast-notifications';
@@ -67,19 +69,26 @@ const AuthHydratation: React.FC<PropsWithChildren & { isPrivate: boolean }> = ({
   const [loading, setLoading] = useState(true);
   const { setUsuario } = useUsuario();
 
-  useEffect(() => {
+  const init = async () => {
     if (isPrivate) {
       const userCookie = Cookies.get(CONFIGS.USER_KEY);
       if (userCookie) {
         try {
           const user = JSON.parse(userCookie);
           setUsuario(user);
+          setLoading(false);
+          return;
         } catch (error) {
           console.error('Error parsing user cookie', error);
         }
       }
+      await Router.replace('/logout');
     }
     setLoading(false);
+  };
+
+  useEffect(() => {
+    init();
   }, []);
 
   return <Loading loading={loading}>{children}</Loading>;
@@ -106,6 +115,7 @@ const MyApp: React.FC<CustomAppProps> = ({ Component, pageProps }) => {
           <PrimeReactProvider value={{ locale: 'es' }}>
             <ToastProvider autoDismiss autoDismissTimeout={10000} placement="top-right">
               <Component {...pageProps} />
+              <Toaster />
             </ToastProvider>
           </PrimeReactProvider>
         </QueryClientProvider>

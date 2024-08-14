@@ -6,6 +6,7 @@ export interface FichaIngresoUrls extends BaseURLs {
   listByPaciente: (idPaciente: string) => string;
   tratamientoMedicacion: (id: PK) => string;
   listByEnfermera: string;
+  imprimirFicha: (id: PK) => string;
 }
 
 export const FICHA_INGRESO_URLS: FichaIngresoUrls = {
@@ -17,4 +18,5 @@ export const FICHA_INGRESO_URLS: FichaIngresoUrls = {
   listByPaciente: (idPaciente: string) => `tratamientos/?paciente=${idPaciente}`,
   tratamientoMedicacion: (id: PK) => `fichas-ingreso/${id}/tratamiento-medicacion/`,
   listByEnfermera: 'fichas-ingreso/list-by-enfermera/',
+  imprimirFicha: (id) => `fichas-ingreso/${id}/imprimir-ficha/`,
 };

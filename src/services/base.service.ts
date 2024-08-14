@@ -1,4 +1,4 @@
-import { PK } from '@src/types/api';
+import { PK, ReportResponse } from '@src/types/api';
 import { AxiosInstance, AxiosResponse, isAxiosError, Method } from 'axios';
 import API from './api';
 import { ApiException } from './service.exceptions';
@@ -43,6 +43,28 @@ export class BaseService<T extends BaseURLs> {
     } catch (error) {
       this.handleError(error);
     }
+  }
+
+  public async requestReport<B>(url: string, body: B | any = {}, defaultFilename = null): Promise<ReportResponse> {
+    const response = await this.privateApi.post(url, body, {
+      responseType: 'blob',
+    });
+
+    const contentDisposition = response.headers['content-disposition'];
+
+    let filename = defaultFilename;
+
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+      if (filenameMatch.length > 1) {
+        filename = filenameMatch[1];
+      }
+    }
+
+    return {
+      data: response.data,
+      filename,
+    };
   }
 
   async create<T>(data: T): Promise<AxiosResponse> {

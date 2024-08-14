@@ -17,4 +17,8 @@ export class FichaIngresoService extends BaseService<FichaIngresoUrls> {
   async tratamientoMedicacion(id: PK, fecha: string) {
     return this.request('POST', this.urls.tratamientoMedicacion(id), { fecha });
   }
+
+  async imprimirFicha(id: PK) {
+    return await this.requestReport(this.urls.imprimirFicha(id));
+  }
 }

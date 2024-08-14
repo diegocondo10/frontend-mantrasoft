@@ -1,9 +1,10 @@
+import Button from '@src/components/Button';
 import CheckOptionsMultipleInline from '@src/components/Forms/CheckOptionsMultipleInline';
 import ErrorMessage from '@src/components/Forms/ErrorMessage';
 import { REQUIRED_RULE } from '@src/constants/rules';
 import { uuidV4 } from '@src/utils/uuid';
 import { PrimeIcons } from 'primereact/api';
-import { Button } from 'primereact/button';
+
 import { Checkbox } from 'primereact/checkbox';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
@@ -49,7 +50,7 @@ const Diagnosticos = () => {
             size="small"
             header={
               <div>
-                <Button size="small" label="Agregar" outlined icon={PrimeIcons.PLUS} onClick={onClickAgregar} />
+                <Button label="Agregar" outlined icon={PrimeIcons.PLUS} onClick={onClickAgregar} />
               </div>
             }
             emptyMessage="No se ha agregado valores"

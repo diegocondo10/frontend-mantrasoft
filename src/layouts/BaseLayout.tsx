@@ -2,7 +2,7 @@ import Loading, { LoadingWrapperProps } from '@src/components/Loading';
 import { PrimeIcons } from 'primereact/api';
 import { ScrollTop } from 'primereact/scrolltop';
 import React, { useRef } from 'react';
-import HeadHtml, { HeadHtmlProps } from './components/HeadHtml';
+import { HeadHtmlProps } from './components/HeadHtml';
 
 export interface BaseLayoutProps extends HeadHtmlProps {
   header?: React.ReactNode;
@@ -13,7 +13,7 @@ const BaseLayout: React.FC<BaseLayoutProps> = ({ header, loading, title, childre
   const headerRef = useRef<HTMLElement>(null);
   return (
     <>
-      <HeadHtml title={title} />
+      {/* <HeadHtml title={title} /> */}
       <div className="flex flex-row h-screen w-full">
         <div className="flex flex-column w-full">
           {header && <header ref={headerRef}>{header}</header>}
