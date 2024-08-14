@@ -26,7 +26,7 @@ const CambiarContraseniaPage: CustomNextPage<any> = ({ id }) => {
   });
 
   const usuario = query.data?.data;
-  const fullName = `${usuario.username} - ${usuario.email}`;
+  const fullName = `${usuario?.username} - ${usuario?.email}`;
   const onSubmit = (formData) => {
     setLoading(true);
     try {
