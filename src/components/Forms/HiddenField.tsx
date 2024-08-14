@@ -13,7 +13,7 @@ const HiddenField: React.FC<HiddenFieldProps> = (props) => {
       defaultValue={rest.defaultValue}
       shouldUnregister={rest.shouldUnregister}
       rules={rest.rules}
-      render={({ field }) => <small hidden={hidden}>{JSON.stringify(field.value)}</small>}
+      render={({ field }) => <small style={{ display: 'none' }}>{JSON.stringify(field.value)}</small>}
     />
   );
 };

@@ -58,6 +58,7 @@ const FichaIngresoFormPage: CustomNextPage<{ id: string | number; crudAction: Cr
 
   const onSubmit = async (formData) => {
     try {
+      console.log('FORM: ', formData);
       await mutation.mutateAsync(formData);
       console.log(formData);
       router.push('/fichas/ingreso');
