@@ -12,6 +12,6 @@ export class RegistroMedicacionService extends BaseService<RegistroMedicacionUrl
   }
 
   async registroPaciente(idPaciente: PK, fecha: string) {
-    return this.request('GET', this.urls.registroPaciente(idPaciente));
+    return this.request('POST', this.urls.registroPaciente(idPaciente), { fecha });
   }
 }
