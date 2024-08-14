@@ -179,11 +179,6 @@ const PersonasPage: CustomNextPage = () => {
                     icon: PrimeIcons.PENCIL,
                     command: commandPush(`/personas/editar/form?id=${rowData?.id}`),
                   },
-                  {
-                    label: 'Detalle',
-                    icon: PrimeIcons.FILE,
-                    command: commandPush(`/personas/detalle?id=${rowData.id}`),
-                  },
                   deleteItemCommand(rowData),
                 ]}
               />

@@ -127,9 +127,9 @@ const FichasIngresoPage: CustomNextPage = () => {
                     separator: true,
                   },
                   {
-                    label: 'Registro de pertenencias',
-                    icon: PrimeIcons.LIST,
-                    command: commandPush(`/fichas/ingreso/pertenencias?id=${rowData.id}`),
+                    label: 'Registro completo',
+                    icon: PrimeIcons.HISTORY,
+                    command: commandPush(`/pacientes/seguimiento?idFicha=${rowData.id}`),
                   },
                   {
                     label: 'Imprimir Ficha',
