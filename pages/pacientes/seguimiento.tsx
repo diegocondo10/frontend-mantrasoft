@@ -5,9 +5,11 @@ import ProgresoSignosVitales from '@src/containers/pacientes/seguimiento/compone
 import RegistroSignosVitales from '@src/containers/pacientes/seguimiento/components/RegistroSignosVitales';
 import PrivateLayout from '@src/layouts/PrivateLayout';
 import { FichaIngresoService } from '@src/services/fichaIngreso/fichaIngreso.service';
+import useUsuario from '@src/store/usuario/useUsuario';
 import { PK } from '@src/types/api';
 import { CustomNextPage } from '@src/types/next';
 import { AxiosResponse } from 'axios';
+import { addDays, subDays } from 'date-fns';
 import { GetServerSideProps } from 'next';
 import Router, { useRouter } from 'next/router';
 import { Divider } from 'primereact/divider';
@@ -25,6 +27,20 @@ const SeguimientoPacientesPage: CustomNextPage<{ idFicha: PK; tab: number }> = (
     },
   );
 
+  const { usuario } = useUsuario();
+
+  const datePickerProps = useMemo(() => {
+    const props = {
+      maxDate: addDays(new Date(), 1),
+    };
+    if (usuario.isEnfermera) {
+      return {
+        minDate: subDays(new Date(), 5),
+      };
+    }
+    return props;
+  }, [usuario]);
+
   const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date());
 
   const resumen = queryResumen.data?.data;
@@ -40,7 +56,7 @@ const SeguimientoPacientesPage: CustomNextPage<{ idFicha: PK; tab: number }> = (
       },
     });
   };
-
+  console.log('PICKER: ', datePickerProps);
   return (
     <PrivateLayout
       loading={{
@@ -71,6 +87,7 @@ const SeguimientoPacientesPage: CustomNextPage<{ idFicha: PK; tab: number }> = (
                   selected={fechaSeleccionada}
                   onChange={(date: Date) => setFechaSeleccionada(date)}
                   dateFormat="dd-MM-yyyy"
+                  {...datePickerProps}
                 />,
               ],
             ]}
