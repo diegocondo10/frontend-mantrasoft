@@ -2,7 +2,7 @@
     "rewrites": [
         {
             "source": "/api/(.*)",
-            "destination": "http://mantra-dev.us-east-1.elasticbeanstalk.com/$1"
+            "destination": "http://mantra-dev.us-east-1.elasticbeanstalk.com/api/$1"
         }
     ]
 }
